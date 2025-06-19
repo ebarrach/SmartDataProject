@@ -1,0 +1,15 @@
+ Structure du projet
+ --------------------
+ polybase/
+ └── app/
+     ├── main.py
+     ├── models.py
+     ├── database.py
+     ├── schemas.py
+     ├── auth.py
+     ├── routers/
+     │   ├── user.py
+     │   ├── project.py
+     │   └── analytics.py
+     └── utils/
+         └── outlook_sync.py
