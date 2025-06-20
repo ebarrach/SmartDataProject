@@ -9,9 +9,10 @@ services:
       MYSQL_ROOT_PASSWORD: polyroot
       MYSQL_DATABASE: Relation
     ports:
-      - "3306:3306"
+      - "3307:3306"  # ✅ Port externe 3307 pour éviter conflit avec MySQL local
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro  # ✅ Injection SQL automatique au 1er run
 
   api:
     build:
@@ -25,9 +26,11 @@ services:
     environment:
       DB_USER: root
       DB_PASSWORD: polyroot
-      DB_HOST: mysql
-      DB_PORT: 3307
+      DB_HOST: mysql        # ✅ Nom du service MySQL (accès réseau Docker interne)
+      DB_PORT: 3306         # ✅ Port MySQL interne (non 3307 !)
       DB_NAME: Relation
+      HOST: 0.0.0.0
+      PORT: 8000
 
 volumes:
   mysql_data:

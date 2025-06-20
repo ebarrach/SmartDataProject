@@ -1,15 +1,12 @@
-from app.database import SessionLocal
-from sqlalchemy import text
+from sqlalchemy import create_engine, text
 
-def test_connection():
-    try:
-        db = SessionLocal()
-        db.execute(text("SELECT 1"))
-        print("✅ Connexion réussie à la base de données")
-    except Exception as e:
-        print("❌ Erreur de connexion :", e)
-    finally:
-        db.close()
+engine = create_engine("mysql+pymysql://root:polyroot@localhost:3307/Relation")
 
-if __name__ == "__main__":
-    test_connection()
+with engine.connect() as conn:
+    with open("init.sql", "r", encoding="utf-8") as file:
+        sql_code = file.read()
+    for statement in sql_code.split(";"):
+        if statement.strip():
+            conn.execute(text(statement))
+    print("✅ Schéma et données injectés.")
+

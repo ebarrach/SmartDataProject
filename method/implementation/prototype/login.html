@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion PolyBase</title>
+    <link rel="stylesheet" href="login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="logo">
+            <span class="material-icons">lock</span>
+        </div>
+        <h2>Connexion à PolyBase</h2>
+        <form method="post" action="/login">
+            <div class="input-group">
+                <label for="id">ID Collaborateur</label>
+                <input type="text" id="id" name="id" required placeholder="Ex: P001">
+            </div>
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
