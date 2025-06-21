@@ -137,3 +137,19 @@ def delete_planification(id_planification: str, db: Session = Depends(get_db)):
     db.delete(plan)
     db.commit()
     return {"message": "Planification successfully deleted"}
+
+
+@router.delete("/factures/{id_facture}")
+def delete_facture(id_facture: str, db: Session = Depends(get_db)):
+    facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
+    if not facture:
+        raise HTTPException(status_code=404, detail="Facture not found")
+
+    try:
+        db.delete(facture)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
+
+    return {"message": f"Facture {id_facture} deleted successfully"}

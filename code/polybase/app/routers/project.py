@@ -5,7 +5,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ..database import SessionLocal
-from ..models import Projet, Phase
+from ..models import Projet, Phase, Facture
 from ..schemas import ProjetCreate, ProjetOut, PhaseCreate, PhaseOut
 
 # ============================================
@@ -121,3 +121,42 @@ def add_phase(id_projet: str, phase: PhaseCreate, db: Session = Depends(get_db))
     db.commit()
     db.refresh(new_phase)
     return new_phase
+
+@router.delete("/projects/{id_projet}")
+def delete_project(id_projet: str, db: Session = Depends(get_db)):
+    """Deletes a project from the database.
+    Raises 404 if not found.
+    """
+    project = db.query(Projet).filter(Projet.id_projet == id_projet).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    db.delete(project)
+    db.commit()
+    return {"message": f"Project {id_projet} deleted successfully"}
+
+@router.delete("/phases/{id_phase}")
+def delete_phase(id_phase: str, db: Session = Depends(get_db)):
+    """Deletes a phase from the database.
+    Raises 404 if not found.
+    """
+    phase = db.query(Phase).filter(Phase.id_phase == id_phase).first()
+    if not phase:
+        raise HTTPException(status_code=404, detail="Phase not found")
+    db.delete(phase)
+    db.commit()
+    return {"message": f"Phase {id_phase} deleted successfully"}
+
+@router.delete("/factures/{id_facture}")
+def delete_facture(id_facture: str, db: Session = Depends(get_db)):
+    facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
+    if not facture:
+        raise HTTPException(status_code=404, detail="Facture not found")
+
+    try:
+        db.delete(facture)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
+
+    return {"message": f"Facture {id_facture} deleted successfully"}

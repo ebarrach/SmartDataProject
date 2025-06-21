@@ -16,6 +16,7 @@ from app.routers import (
 )
 
 from app.auth import authenticate_user, get_current_user, get_db
+from app.routers import collaborateur
 
 # ============================================
 # INITIALISATION DE L'APPLICATION FASTAPI
@@ -62,6 +63,8 @@ app.include_router(facture.router)
 app.include_router(dashboard.router)
 app.include_router(planification.router)
 app.include_router(prestation.router)
+
+app.include_router(collaborateur.router)
 """These instructions include routers for each domain (user, tache, etc.).
 Version:
 --------

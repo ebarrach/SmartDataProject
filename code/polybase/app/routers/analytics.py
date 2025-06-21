@@ -4,7 +4,22 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from ..models import ProjectionFacturation, PlanificationCollaborateur, Facture
 from ..database import SessionLocal
+
+# ============================================
+# DATABASE DEPENDENCY
+# ============================================
+
+from ..database import SessionLocal
+
+def get_db():
+    """Provides a database session for dependency injection."""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -38,3 +53,44 @@ def get_multiplicating_factor(honoraire: float, cout: float):
     if cout == 0:
         raise HTTPException(400, detail="Cost cannot be zero")
     return {"multiplicating_factor": round(honoraire / cout, 2)}
+
+
+@router.delete("/projection_facturation/{id_projection}")
+def delete_projection(id_projection: str, db: Session = Depends(get_db)):
+    """Deletes a billing projection entry.
+    Raises 404 if not found.
+    """
+    projection = db.query(ProjectionFacturation).filter(
+        ProjectionFacturation.id_projection == id_projection
+    ).first()
+    if not projection:
+        raise HTTPException(status_code=404, detail="Projection not found")
+    db.delete(projection)
+    db.commit()
+    return {"message": f"Projection {id_projection} deleted successfully"}
+
+@router.delete("/factures/{id_facture}")
+def delete_facture(id_facture: str, db: Session = Depends(get_db)):
+    facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
+    if not facture:
+        raise HTTPException(status_code=404, detail="Facture not found")
+
+    try:
+        db.delete(facture)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
+
+    return {"message": f"Facture {id_facture} deleted successfully"}
+
+@router.delete("/planifications/{id_planification}")
+def delete_planification(id_planification: str, db: Session = Depends(get_db)):
+    planif = db.query(PlanificationCollaborateur).filter(
+        PlanificationCollaborateur.id_planification == id_planification
+    ).first()
+    if not planif:
+        raise HTTPException(status_code=404, detail="Planification not found")
+    db.delete(planif)
+    db.commit()
+    return {"message": f"Planification {id_planification} deleted successfully"}

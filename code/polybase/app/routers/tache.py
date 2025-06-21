@@ -5,7 +5,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ..database import SessionLocal
-from ..models import Tache
+from ..models import Tache, Facture
 from ..schemas import TacheCreate, TacheOut
 
 # ============================================
@@ -131,3 +131,19 @@ def delete_task(id_tache: str, db: Session = Depends(get_db)):
     db.delete(task)
     db.commit()
     return {"message": "Task successfully deleted"}
+
+
+@router.delete("/factures/{id_facture}")
+def delete_facture(id_facture: str, db: Session = Depends(get_db)):
+    facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
+    if not facture:
+        raise HTTPException(status_code=404, detail="Facture not found")
+
+    try:
+        db.delete(facture)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
+
+    return {"message": f"Facture {id_facture} deleted successfully"}

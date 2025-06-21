@@ -5,6 +5,7 @@ README.md
 bin/
     README.txt
 code/
+    README.md
     README.txt
     polybase/
         .env
@@ -17,6 +18,7 @@ code/
             routers/
                 analytics.py
                 client.py
+                collaborateur.py
                 dashboard.py
                 facture.py
                 planification.py
@@ -27,6 +29,8 @@ code/
             schemas.py
             utils/
                 outlook_sync.py
+        demo/
+            demo_api.py
         docker-compose.yml
         mysql-init/
             init.sql
@@ -55,6 +59,8 @@ code/
             login.html
             task_detail.html
         test.db.py
+    screenshots/
+        bookmarks_polybase.png
 doc/
     PDFs/
         _README.txt
