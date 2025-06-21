@@ -1,0 +1,78 @@
+Structure du projet :
+
+.gitignore
+README.md
+bin/
+    README.txt
+code/
+    README.txt
+    RunDB
+    polybase/
+        .env
+        Dockerfile
+        app/
+            auth.py
+            database.py
+            main.py
+            models.py
+            routers/
+                analytics.py
+                client.py
+                project.py
+                user.py
+            schemas.py
+            utils/
+                outlook_sync.py
+        docker-compose.yml
+        mysql-init/
+            init.sql
+        polybase_skeleton
+        requirements.txt
+        test.db.py
+doc/
+    PDFs/
+        _README.txt
+    README.txt
+    sources/
+        README.txt
+        programmer/
+        user/
+legacy/
+    README.txt
+method/
+    analysis/
+        Charter/
+            PDFs/
+                Readme.txt
+            sources/
+                README.txt
+        Meeting/
+            00-06-2025 – PolyBase.docx
+            12-06-2025 – PolyBase.Draw.pdf
+            12-06-2025 – PolyBase.pdf
+        Step Charter/
+            PDF/
+                14-06-2025 – BaseDonnee.pdf
+                19-06-2025 – BaseDonnee.pdf
+                20-06-2025 – OpenVpnWindows.pdf
+                20-06-2025 – Prototype.pdf
+                README.txt
+            Sources/
+                README.txt
+    design/
+        13-06-2025 – BDConceptuelle/
+            PolyBase.lun
+            PolyBase.sql
+        PolyBase2.ddl
+    implementation/
+        prototype/
+            agenda.html
+            login.css
+            login.html
+            planification.html
+            style.css
+planning/
+    README.txt
+    gantt.xlsx
+structure.py
+structure.txt
