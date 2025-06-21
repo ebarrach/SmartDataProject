@@ -6,7 +6,6 @@ bin/
     README.txt
 code/
     README.txt
-    RunDB.txt
     polybase/
         .env
         Dockerfile

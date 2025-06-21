@@ -36,7 +36,6 @@ The codebase is composed of the following key components:
 
 #### ⬢ Basic setup (without data deletion)
 ```bash
-cd code/polybase
 docker compose up -d --build
 ```
 
