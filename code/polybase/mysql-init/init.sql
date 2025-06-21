@@ -311,14 +311,14 @@ BEGIN
     WHERE id_tache = NEW.id_tache;
 END$$
 
--- 🎯 Trigger 2 : mise à jour du dépassement si heures estimées changent
-CREATE TRIGGER maj_depassement_apres_modif_estimee
+-- 🎯 Trigger 2 : mise à jour du dépassement si heures estimées ou prestées changent
+CREATE TRIGGER maj_depassement_apres_modif_tache
     BEFORE UPDATE ON Tache
     FOR EACH ROW
 BEGIN
     DECLARE depassement DECIMAL(5,2);
 
-    IF NEW.heures_estimees != OLD.heures_estimees THEN
+    IF NEW.heures_estimees != OLD.heures_estimees OR NEW.heures_prestées != OLD.heures_prestées THEN
         SET depassement = GREATEST(NEW.heures_prestées - NEW.heures_estimees, 0);
         SET NEW.heures_depassees = depassement;
     END IF;
@@ -366,6 +366,8 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
 
 
 
