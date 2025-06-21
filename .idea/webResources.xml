@@ -7,6 +7,16 @@
           <resourceRoots>
             <path value="file://$PROJECT_DIR$/code/polybase/static" />
             <path value="file://$PROJECT_DIR$/code/polybase/mysql-init" />
+            <path value="file://$PROJECT_DIR$/doc" />
+            <path value="file://$PROJECT_DIR$/planning" />
+            <path value="file://$PROJECT_DIR$/code/screenshots" />
+          </resourceRoots>
+        </entryData>
+      </entry>
+      <entry url="file://$PROJECT_DIR$/method/analysis">
+        <entryData>
+          <resourceRoots>
+            <path value="file://$PROJECT_DIR$/method/analysis" />
           </resourceRoots>
         </entryData>
       </entry>
