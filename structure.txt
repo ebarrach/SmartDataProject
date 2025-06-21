@@ -97,6 +97,8 @@ method/
             PolyBase.sql
         PolyBase2.ddl
     implementation/
+        demo/
+            demo.sql
         prototype/
             agenda.html
             login.css

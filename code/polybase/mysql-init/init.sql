@@ -6,9 +6,11 @@
 -- * Modifié par Esteban BARRACHO
 -- *********************************************
 
-DROP DATABASE PolyBase;
-CREATE DATABASE PolyBase;
-USE PolyBase;
+-- DROP DATABASE PolyBase;
+-- CREATE DATABASE PolyBase;
+drop schema if exists Polybase;
+create schema Polybase;
+USE Polybase;
 
 -- Tables Section
 -- _______________

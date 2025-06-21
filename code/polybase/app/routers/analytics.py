@@ -6,6 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ..models import ProjectionFacturation, PlanificationCollaborateur, Facture
 from ..database import SessionLocal
+from ..models import HonoraireReparti
+from ..schemas import HonoraireRepartiCreate, ProjectionFacturationCreate, ProjectionFacturationOut
 
 # ============================================
 # DATABASE DEPENDENCY
@@ -94,3 +96,34 @@ def delete_planification(id_planification: str, db: Session = Depends(get_db)):
     db.delete(planif)
     db.commit()
     return {"message": f"Planification {id_planification} deleted successfully"}
+
+@router.post("/analytics/honoraire")
+def create_honoraire_reparti(entry: HonoraireRepartiCreate, db: Session = Depends(get_db)):
+    """Creates an honoraire repartition for a given project.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
+    """
+    repartition = HonoraireReparti(**entry.dict())
+    db.add(repartition)
+    db.commit()
+    return {"message": f"Honoraire {entry.id_repartition} added for project {entry.id_projet}"}
+
+
+@router.put("/projection_facturation/{id_projection}", response_model=ProjectionFacturationOut)
+def update_projection_facturation(id_projection: str, update: ProjectionFacturationCreate, db: Session = Depends(get_db)):
+    """Updates a projection entry, including uncertainty status.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
+    """
+    proj = db.query(ProjectionFacturation).filter(ProjectionFacturation.id_projection == id_projection).first()
+    if not proj:
+        raise HTTPException(status_code=404, detail="Projection not found")
+    for key, value in update.dict().items():
+        setattr(proj, key, value)
+    db.commit()
+    db.refresh(proj)
+    return proj

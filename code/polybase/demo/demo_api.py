@@ -42,6 +42,17 @@ def get(endpoint):
     except Exception as e:
         print("❌ Exception HTTP:", e)
 
+def put(endpoint, data):
+    try:
+        r = httpx.put(f"{BASE_URL}{endpoint}", json=data)
+        print(f"[PUT] {endpoint} -> {r.status_code}")
+        try:
+            print(r.json())
+        except Exception:
+            print("⚠️ Réponse brute (non-JSON) :", r.text)
+    except Exception as e:
+        print("❌ Exception HTTP:", e)
+
 # 🔁 Étape 0 : Nettoyage dynamique des données précédentes
 step("0. Suppression dynamique des anciennes entrées")
 delete("/projection_facturation/PROJ003")
@@ -145,7 +156,7 @@ post("/prestation", {
     "commentaire": "Début d'analyse des données collectées"
 })
 
-# 8️⃣ Projection
+# 8️⃣ Projection de facturation
 step("8. Projection de facturation")
 post("/projection_facturation", {
     "id_projection": "PROJ003",
@@ -157,18 +168,30 @@ post("/projection_facturation", {
     "id_projet": "P003"
 })
 
-# 9️⃣ Vue alertes
-step("9. Affichage des alertes sur les tâches")
-get("/dashboard/tasks/alertes")
+# 🔟 Mise à jour : est_certain = False
+step("9. Mise à jour de l'indicateur d'incertitude")
+put("/projection_facturation/PROJ003", {
+    "id_projection": "PROJ003",
+    "mois": "2025-06",
+    "montant_projete": 8000.00,
+    "montant_facturable_actuel": 7200.00,
+    "seuil_minimal": 7000.00,
+    "alerte_facturation": False,
+    "id_projet": "P003",
+    "est_certain": False
+})
 
-# 🔟 Vue facturation
-step("10. Vue facturation dans le dashboard")
-get("/dashboard/facturation")
-
-# 1️⃣1️⃣ Total heures dépassées
-step("11. Total heures dépassées")
-get("/dashboard/heures-depassees")
-
-# 12️⃣ Multiplicating Factor
-step("12. Calcul Multiplicating Factor")
-get("/multiplicating-factor/8000/7200")
+# 🔁 Répartition des honoraires
+step("10. Répartition des honoraires entre entités")
+post("/analytics/honoraire", {
+    "id_repartition": "HR001",
+    "id_projet": "P003",
+    "societe": "Pirnay SA",
+    "montant": 15000.00
+})
+post("/analytics/honoraire", {
+    "id_repartition": "HR002",
+    "id_projet": "P003",
+    "societe": "Poly-Tech Engineering",
+    "montant": 10000.00
+})

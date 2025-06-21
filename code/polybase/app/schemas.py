@@ -256,14 +256,13 @@ class CoutOut(BaseModel):
 # SCHEMAS: BILLING PROJECTION
 # ============================================
 
-class ProjectionFacturationOut(BaseModel):
-    """Schema for returning a billing projection.
+class ProjectionFacturationCreate(BaseModel):
+    """Schema for creating or updating a billing projection.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
-    implement: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 21/06/2025)
     """
-
     id_projection: str
     mois: str
     montant_projete: float
@@ -271,9 +270,30 @@ class ProjectionFacturationOut(BaseModel):
     seuil_minimal: float
     alerte_facturation: bool
     id_projet: str
+    est_certain: Optional[bool] = True
 
+class ProjectionFacturationOut(ProjectionFacturationCreate):
+    """Schema for returning billing projection (ORM-enabled).
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
+    """
     class Config:
         orm_mode = True
+
+class HonoraireRepartiCreate(BaseModel):
+    """Schema for creating a repartition of honoraires.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
+    """
+    id_repartition: str
+    id_projet: str
+    societe: str
+    montant: float
+
 
 # ============================================
 # SCHEMAS: IMPORT LOG

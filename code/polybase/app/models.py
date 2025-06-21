@@ -251,7 +251,7 @@ class ProjectionFacturation(Base):
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
-    implement: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 21/06/2025)
     """
 
     __tablename__ = "ProjectionFacturation"
@@ -262,6 +262,7 @@ class ProjectionFacturation(Base):
     seuil_minimal = Column(DECIMAL(10, 2))
     alerte_facturation = Column(Boolean)
     id_projet = Column(String(10), ForeignKey("Projet.id_projet"))
+    est_certain = Column(Boolean, default=True)
 
 # ============================================
 # TABLE : IMPORT LOG
@@ -282,3 +283,21 @@ class ImportLog(Base):
     date_import = Column(Date)
     statut = Column(String(20))
     message_log = Column(Text)
+
+# ============================================
+# TABLE : HONORAIRE REPARTI
+# ============================================
+
+class HonoraireReparti(Base):
+    """ORM model for the 'HonoraireReparti' table.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
+    """
+
+    __tablename__ = "HonoraireReparti"
+    id_repartition = Column(String(10), primary_key=True)
+    id_projet = Column(String(10), ForeignKey("Projet.id_projet"))
+    societe = Column(String(100))
+    montant = Column(DECIMAL(10, 2))
