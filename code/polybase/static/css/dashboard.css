@@ -1,0 +1,14 @@
+.stats {
+    display: flex;
+    gap: 1em;
+    padding: 2em;
+}
+
+.card {
+    background-color: white;
+    border-left: 6px solid #AA3939;
+    padding: 1em;
+    border-radius: 5px;
+    flex: 1;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}

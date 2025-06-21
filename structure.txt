@@ -6,7 +6,7 @@ bin/
     README.txt
 code/
     README.txt
-    RunDB
+    RunDB.txt
     polybase/
         .env
         Dockerfile
@@ -18,7 +18,12 @@ code/
             routers/
                 analytics.py
                 client.py
+                dashboard.py
+                facture.py
+                planification.py
+                prestation.py
                 project.py
+                tache.py
                 user.py
             schemas.py
             utils/
@@ -28,6 +33,28 @@ code/
             init.sql
         polybase_skeleton
         requirements.txt
+        static/
+            css/
+                agenda.css
+                base.css
+                dashboard.css
+                documents.css
+                login.css
+                task_detail.css
+            js/
+                agenda.js
+                base.js
+                dashboard.js
+                documents.js
+                login.js
+                task_detail.js
+        templates/
+            agenda.html
+            base.html
+            dashboard.html
+            documents.html
+            login.html
+            task_detail.html
         test.db.py
 doc/
     PDFs/

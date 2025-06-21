@@ -17,6 +17,16 @@ Avec Api:
 2- Lancer le docker
 docker compose up --build
 
+Sans supprimer les données:
+--------------------------
+1- docker compose up -d --build
+2- docker compose down
+
+Vérifier que app est lancer:
+---------------------------
+1- docker logs polybase-api
+
+
 
 
 

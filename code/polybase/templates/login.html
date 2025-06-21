@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="../static/css/login.css">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h2>Connexion à PolyBase</h2>
+    <form action="/login" method="post">
+        <input type="email" name="email" placeholder="Adresse email" required>
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <input type="text" name="code" placeholder="Code 2FA" required>
+        <button type="submit">Se connecter</button>
+    </form>
+    <a href="mailto:admin@polytech.be?subject=Demande accès PolyBase">Demander l’accès</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="../static/js/login.js"></script>
+{% endblock %}

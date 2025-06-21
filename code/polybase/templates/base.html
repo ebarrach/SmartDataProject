@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}PolyBase{% endblock %}</title>
+    <link rel="stylesheet" href="../static/css/base.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <a href="/dashboard">Tableau de bord</a>
+        <a href="/projects">Projets</a>
+        <a href="/tasks">Tâches</a>
+        <a href="/agenda">Agenda</a>
+        <a href="/documents">Documents</a>
+        <div class="profile">
+            <span id="user-email">user@polytech.be</span>
+            <a href="/logout">Déconnexion</a>
+        </div>
+    </nav>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<script src="../static/js/base.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

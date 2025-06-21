@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Agenda{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="../static/css/agenda.css">
+{% endblock %}
+
+{% block content %}
+<h2>Mon agenda</h2>
+<div class="agenda-layout">
+    <div class="calendar-sidebar">
+        <h3>Mois</h3>
+        <div id="mini-calendar"></div>
+    </div>
+    <div class="calendar-main">
+        <h3>Semaine en cours</h3>
+        <div id="weekly-view">
+            <!-- Colonnes jour/heure -->
+        </div>
+    </div>
+    <div class="task-sidebar">
+        <h3>Mes tâches</h3>
+        <ul id="task-list">
+            <!-- Tâches dynamiques -->
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="../static/js/agenda.js"></script>
+{% endblock %}

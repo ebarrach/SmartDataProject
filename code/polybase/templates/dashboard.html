@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="../static/css/dashboard.css">
+{% endblock %}
+
+{% block content %}
+<h2>Tableau de bord</h2>
+<p>Bienvenue, {{ user.prenom }} {{ user.nom }} ({{ user.fonction }})</p>
+
+<div class="stats">
+    <div class="card">
+        <h3>Tâches en retard</h3>
+        <p id="tasks-retard">Chargement...</p>
+    </div>
+    <div class="card">
+        <h3>Heures dépassées</h3>
+        <p id="heures-depassees">Chargement...</p>
+    </div>
+    <div class="card">
+        <h3>État facturation</h3>
+        <div id="facturation"></div>
+    </div>
+    <div class="card">
+        <h3>Mes tâches en cours</h3>
+        <ul id="mes-taches">Chargement...</ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="../static/js/dashboard.js"></script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Documents{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="../static/css/documents.css">
+{% endblock %}
+
+{% block content %}
+<h2>Mes documents</h2>
+<div class="documents-container">
+  <ul id="document-list">
+    <li><a href="../static/docs/doc1.pdf">Planning Phase 1</a></li>
+    <li><a href="../static/docs/rapport_audit.pdf">Rapport d’Audit</a></li>
+  </ul>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="../static/js/documents.js"></script>
+{% endblock %}

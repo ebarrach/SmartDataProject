@@ -1,0 +1,16 @@
+.documents-container {
+    padding: 2em;
+}
+
+#document-list {
+    list-style: none;
+    padding: 0;
+}
+
+#document-list li {
+    background-color: #D6A3A3;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+    border-left: 5px solid #AA3939;
+    border-radius: 4px;
+}

@@ -1,0 +1,21 @@
+.agenda-layout {
+    display: flex;
+    padding: 1em;
+    gap: 1em;
+}
+
+.calendar-sidebar, .task-sidebar {
+    width: 20%;
+    background-color: #C06969;
+    padding: 1em;
+    border-radius: 5px;
+    color: white;
+}
+
+.calendar-main {
+    flex: 1;
+    background-color: white;
+    padding: 1em;
+    border-radius: 5px;
+    border: 1px solid #AA3939;
+}

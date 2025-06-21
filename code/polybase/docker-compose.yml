@@ -12,7 +12,7 @@ services:
       - "3307:3306"  # ✅ Port externe 3307 pour éviter conflit avec MySQL local
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro  # ✅ Injection SQL automatique au 1er run
+      - ./mysql-init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # ✅ Injection SQL automatique au 1er run
 
   api:
     build:

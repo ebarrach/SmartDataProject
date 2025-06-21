@@ -1,0 +1,30 @@
+.task-detail-container {
+    max-width: 600px;
+    margin: 2em auto;
+    background-color: white;
+    padding: 2em;
+    border: 2px solid #941212;
+    border-radius: 8px;
+}
+
+textarea {
+    width: 100%;
+    margin-top: 1em;
+    padding: 1em;
+    border: 1px solid #C06969;
+    border-radius: 4px;
+}
+
+button {
+    margin-top: 1em;
+    padding: 0.5em 1em;
+    background-color: #AA3939;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #941212;
+}
