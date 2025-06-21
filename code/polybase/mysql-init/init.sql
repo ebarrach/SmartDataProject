@@ -6,6 +6,9 @@
 -- * Modifié par Esteban BARRACHO
 -- *********************************************
 
+DROP DATABASE PolyBase;
+CREATE DATABASE PolyBase;
+USE PolyBase;
 
 -- Tables Section
 -- _______________
@@ -82,6 +85,24 @@ create table Projet (
                         constraint ID_Projet_ID primary key (id_projet),
                         foreign key (id_client) references Client(id_client)
 );
+
+ALTER TABLE Projet
+    ADD COLUMN type_projet VARCHAR(50) NULL,
+    ADD COLUMN region VARCHAR(50) NULL,
+    ADD COLUMN maitre_ouvrage VARCHAR(100) NULL,
+    ADD COLUMN architecte VARCHAR(100) NULL,
+    ADD COLUMN contact_client VARCHAR(100) NULL;
+
+-- TABLE REPARTITION DES HONORAIRE
+
+CREATE TABLE HonoraireReparti (
+                                  id_repartition VARCHAR(10) PRIMARY KEY,
+                                  id_projet VARCHAR(10) NOT NULL,
+                                  societe VARCHAR(50) NOT NULL, -- 'Poly-Tech', 'Pirnay', etc.
+                                  montant DECIMAL(10,2) NOT NULL,
+                                  FOREIGN KEY (id_projet) REFERENCES Projet(id_projet)
+);
+
 
 -- TABLE ASSOCIATIVE GERER (ResponsableProjet ↔ Projet)
 create table Gerer (
@@ -167,6 +188,10 @@ create table ProjectionFacturation (
                                        constraint ID_ProjectionFacturation_ID primary key (id_projection),
                                        foreign key (id_projet) references Projet(id_projet)
 );
+
+ALTER TABLE ProjectionFacturation
+    ADD COLUMN est_certain BOOLEAN DEFAULT TRUE;
+
 
 -- TABLE DES LOGS D'IMPORT
 create table ImportLog (
@@ -274,6 +299,19 @@ FROM Tache T
          JOIN PlanificationCollaborateur PC ON PC.id_tache = T.id_tache
          LEFT JOIN PrestationCollaborateur P ON P.id_tache = T.id_tache
 GROUP BY T.id_tache, T.nom_tache, PC.heures_prevues;
+
+CREATE VIEW VuePrestationsNonFacturees AS
+SELECT
+    PC.id_prestation,
+    PC.id_tache,
+    PC.id_collaborateur,
+    PC.date,
+    PC.heures_effectuees,
+    PC.taux_horaire,
+    (PC.heures_effectuees * PC.taux_horaire) AS montant_encours
+FROM PrestationCollaborateur PC
+WHERE PC.facture_associee IS NULL;
+
 
 -- ======= TRIGGER =======
 -- 🔁 Nettoyage préalable

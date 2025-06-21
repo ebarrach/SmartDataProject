@@ -1,5 +1,4 @@
 # ----- Docker Compose Configuration -----
-version: "3.9"
 
 # ----- Services Definition -----
 services:
