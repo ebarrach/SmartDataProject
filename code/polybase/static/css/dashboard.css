@@ -1,9 +1,11 @@
+/* ----- Conteneur des cartes de statistiques ----- */
 .stats {
     display: flex;
     gap: 1em;
     padding: 2em;
 }
 
+/* ----- Style de chaque carte individuelle ----- */
 .card {
     background-color: white;
     border-left: 6px solid #AA3939;

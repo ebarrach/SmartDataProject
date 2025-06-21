@@ -1,6 +1,10 @@
+# ----- Docker Compose Configuration -----
 version: "3.9"
 
+# ----- Services Definition -----
 services:
+
+  # ----- MySQL Service -----
   mysql:
     image: mysql:8.0
     container_name: polybase-mysql
@@ -9,11 +13,12 @@ services:
       MYSQL_ROOT_PASSWORD: polyroot
       MYSQL_DATABASE: Relation
     ports:
-      - "3307:3306"  # ✅ Port externe 3307 pour éviter conflit avec MySQL local
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql-init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro # ✅ Injection SQL automatique au 1er run
+      - ./mysql-init/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
+  # ----- FastAPI Backend Service -----
   api:
     build:
       context: .
@@ -26,11 +31,12 @@ services:
     environment:
       DB_USER: root
       DB_PASSWORD: polyroot
-      DB_HOST: mysql        # ✅ Nom du service MySQL (accès réseau Docker interne)
-      DB_PORT: 3306         # ✅ Port MySQL interne (non 3307 !)
+      DB_HOST: mysql
+      DB_PORT: 3306
       DB_NAME: Relation
       HOST: 0.0.0.0
       PORT: 8000
 
+# ----- Persistent Volumes -----
 volumes:
   mysql_data:

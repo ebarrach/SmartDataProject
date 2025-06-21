@@ -1,20 +1,21 @@
+# ----- Base Python Image -----
 FROM python:3.11-slim
 
-# Installer les dépendances système
+# ----- System Dependencies -----
 RUN apt-get update && apt-get install -y gcc libmariadb-dev
 
-# Créer un dossier de travail
+# ----- Working Directory -----
 WORKDIR /app
 
-# Copier le contenu de l'app
+# ----- Copy Application Source -----
 COPY . /app
 
-# Installer les dépendances Python
+# ----- Install Python Dependencies -----
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Exposer le port
+# ----- Expose Port -----
 EXPOSE 8000
 
-# Lancer l'application FastAPI avec uvicorn
+# ----- Launch FastAPI with Uvicorn -----
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 
 {% block title %}Documents{% endblock %}
+
 {% block extra_css %}
+<!-- Feuille de style spécifique à la page des documents -->
 <link rel="stylesheet" href="../static/css/documents.css">
 {% endblock %}
 
 {% block content %}
+<!-- Titre principal -->
 <h2>Mes documents</h2>
+
+<!-- Conteneur de la liste des documents -->
 <div class="documents-container">
   <ul id="document-list">
+    <!-- Liens vers les documents disponibles -->
     <li><a href="../static/docs/doc1.pdf">Planning Phase 1</a></li>
     <li><a href="../static/docs/rapport_audit.pdf">Rapport d’Audit</a></li>
   </ul>
@@ -16,5 +22,6 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Script JS spécifique à la page des documents -->
 <script src="../static/js/documents.js"></script>
 {% endblock %}

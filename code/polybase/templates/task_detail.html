@@ -1,24 +1,34 @@
 {% extends "base.html" %}
 
 {% block title %}Détail tâche{% endblock %}
+
 {% block extra_css %}
+<!-- Feuille de style spécifique au détail de la tâche -->
 <link rel="stylesheet" href="../static/css/task_detail.css">
 {% endblock %}
 
 {% block content %}
+<!-- Conteneur principal de la vue détail de la tâche -->
 <div class="task-detail-container">
+
+    <!-- Titre de la tâche -->
     <h2 id="task-name">Nom de la tâche</h2>
+
+    <!-- Informations sur la tâche -->
     <p><strong>Description :</strong> <span id="task-desc"></span></p>
     <p><strong>Statut :</strong> <span id="task-status"></span></p>
     <p><strong>Projet/Client :</strong> <span id="task-context"></span></p>
     <p><strong>Dates :</strong> <span id="task-dates"></span></p>
 
+    <!-- Actions disponibles -->
     <button id="mark-complete">Marquer comme terminé</button>
     <textarea id="comment" placeholder="Ajouter un commentaire..."></textarea>
     <button id="save-comment">Enregistrer</button>
+
 </div>
 {% endblock %}
 
 {% block extra_js %}
+<!-- Script JS spécifique à la page de détail de tâche -->
 <script src="../static/js/task_detail.js"></script>
 {% endblock %}

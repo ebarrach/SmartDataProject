@@ -1,9 +1,11 @@
+/* ----- Style général du corps de page ----- */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #D6A3A3;
 }
 
+/* ----- Barre de navigation principale ----- */
 .navbar {
     background-color: #7E0000;
     padding: 1em;
@@ -12,12 +14,14 @@ body {
     color: white;
 }
 
+/* ----- Liens de navigation ----- */
 .navbar a {
     color: white;
     text-decoration: none;
     margin-right: 1em;
 }
 
+/* ----- Zone d'information utilisateur ----- */
 .profile {
     margin-left: auto;
     color: #D6A3A3;

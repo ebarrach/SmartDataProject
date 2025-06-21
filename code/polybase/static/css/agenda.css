@@ -1,9 +1,11 @@
+/* ----- Layout principal de la page agenda ----- */
 .agenda-layout {
     display: flex;
     padding: 1em;
     gap: 1em;
 }
 
+/* ----- Colonnes latérales (gauche et droite) ----- */
 .calendar-sidebar, .task-sidebar {
     width: 20%;
     background-color: #C06969;
@@ -12,6 +14,7 @@
     color: white;
 }
 
+/* ----- Colonne centrale (agenda hebdomadaire) ----- */
 .calendar-main {
     flex: 1;
     background-color: white;

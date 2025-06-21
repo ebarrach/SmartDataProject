@@ -1,12 +1,15 @@
+/* ----- Conteneur principal des documents ----- */
 .documents-container {
     padding: 2em;
 }
 
+/* ----- Liste des documents ----- */
 #document-list {
     list-style: none;
     padding: 0;
 }
 
+/* ----- Style individuel pour chaque document ----- */
 #document-list li {
     background-color: #D6A3A3;
     padding: 0.5em;

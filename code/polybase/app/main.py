@@ -1,3 +1,7 @@
+# ============================================
+# IMPORTS
+# ============================================
+
 from fastapi import FastAPI, Request, Form, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -13,15 +17,42 @@ from app.routers import (
 
 from app.auth import authenticate_user, get_current_user, get_db
 
+# ============================================
+# INITIALISATION DE L'APPLICATION FASTAPI
+# ============================================
+
 app = FastAPI()
+"""This object initializes the FastAPI application.
+Version:
+--------
+specification: Esteban Barracho (v.1 19/06/2025)
+implement: Esteban Barracho (v.1 19/06/2025)
+"""
 
-# Monter les fichiers statiques
+# ============================================
+# CONFIGURATION DES FICHIERS STATIQUES & TEMPLATES
+# ============================================
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
+"""This instruction mounts the static directory under the /static path.
+Version:
+--------
+specification: Esteban Barracho (v.1 19/06/2025)
+implement: Esteban Barracho (v.1 19/06/2025)
+"""
 
-# Configuration des templates
 templates = Jinja2Templates(directory="templates")
+"""This object defines the folder path used for HTML Jinja2 templates.
+Version:
+--------
+specification: Esteban Barracho (v.1 19/06/2025)
+implement: Esteban Barracho (v.1 19/06/2025)
+"""
 
-# Inclusion des API REST
+# ============================================
+# ROUTAGE DES MODULES
+# ============================================
+
 app.include_router(user.router)
 app.include_router(analytics.router)
 app.include_router(client.router)
@@ -31,22 +62,47 @@ app.include_router(facture.router)
 app.include_router(dashboard.router)
 app.include_router(planification.router)
 app.include_router(prestation.router)
+"""These instructions include routers for each domain (user, tache, etc.).
+Version:
+--------
+specification: Esteban Barracho (v.1 19/06/2025)
+implement: Esteban Barracho (v.1 19/06/2025)
+"""
+
+# ============================================
+# ROUTES PUBLIQUES (HTML)
+# ============================================
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
+    """This route returns the login page.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 19/06/2025)
+    """
+
     return templates.TemplateResponse("login.html", {"request": request})
+
 
 @app.post("/login", response_class=HTMLResponse)
 def login_user(
         request: Request,
         email: str = Form(...),
-        password: str = Form(...),  # simulé
+        password: str = Form(...),
         code: str = Form(...),
         db: Session = Depends(get_db)
 ):
+    """This route processes the login form and simulates 2FA authentication.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 19/06/2025)
+    """
+
     user = authenticate_user(email=email, db=db)
 
-    if user and code == "123456":  # simple 2FA simulé
+    if user and code == "123456":
         response = RedirectResponse(url="/dashboard", status_code=HTTP_302_FOUND)
         response.set_cookie(key="session_id", value=user.id_personnel)
         return response
@@ -56,28 +112,82 @@ def login_user(
         "error": "Email ou code invalide"
     })
 
+
 @app.get("/logout")
 def logout():
+    """This route handles logout by deleting the session cookie.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 19/06/2025)
+    """
+
     response = RedirectResponse(url="/")
     response.delete_cookie("session_id")
     return response
 
+# ============================================
+# ROUTES PROTÉGÉES PAR AUTHENTIFICATION
+# ============================================
+
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard_page(request: Request, user=Depends(get_current_user)):
+    """This route renders the dashboard view for the authenticated user.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 19/06/2025)
+    """
+
     return templates.TemplateResponse("dashboard.html", {"request": request, "user": user})
+
 
 @app.get("/agenda", response_class=HTMLResponse)
 def agenda_page(request: Request, user=Depends(get_current_user)):
+    """This route renders the agenda page with weekly and task views.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 19/06/2025)
+    """
+
     return templates.TemplateResponse("agenda.html", {"request": request, "user": user})
+
 
 @app.get("/documents", response_class=HTMLResponse)
 def documents_page(request: Request, user=Depends(get_current_user)):
+    """This route displays uploaded or linked documents.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 19/06/2025)
+    """
+
     return templates.TemplateResponse("documents.html", {"request": request, "user": user})
+
 
 @app.get("/tasks", response_class=HTMLResponse)
 def task_list_page(request: Request, user=Depends(get_current_user)):
+    """This route displays the detailed task view for the user.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 19/06/2025)
+    """
+
     return templates.TemplateResponse("task_detail.html", {"request": request, "user": user})
+
+# ============================================
+# ÉVÉNEMENT DE DÉMARRAGE
+# ============================================
 
 @app.on_event("startup")
 def startup_message():
+    """This event is triggered when the API server starts.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 19/06/2025)
+    """
+
     print("✅ API disponible sur http://localhost:8000")

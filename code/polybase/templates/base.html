@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <!-- Métadonnées et titre de la page -->
     <meta charset="UTF-8">
     <title>{% block title %}PolyBase{% endblock %}</title>
+
+    <!-- Feuille de style principale -->
     <link rel="stylesheet" href="../static/css/base.css">
+
+    <!-- Bloc pour ajouter des styles supplémentaires -->
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+
+<!-- En-tête et barre de navigation -->
 <header>
     <nav class="navbar">
         <a href="/dashboard">Tableau de bord</a>
@@ -21,11 +28,16 @@
     </nav>
 </header>
 
+<!-- Contenu principal de la page -->
 <main>
     {% block content %}{% endblock %}
 </main>
 
+<!-- Script JS principal -->
 <script src="../static/js/base.js"></script>
+
+<!-- Bloc pour ajouter des scripts spécifiques -->
 {% block extra_js %}{% endblock %}
+
 </body>
 </html>

@@ -1,3 +1,4 @@
+/* ----- Conteneur du formulaire de connexion ----- */
 .login-container {
     max-width: 400px;
     margin: 5em auto;
@@ -7,6 +8,7 @@
     border-radius: 8px;
 }
 
+/* ----- Champs de saisie et bouton ----- */
 input, button {
     display: block;
     width: 100%;
@@ -16,12 +18,14 @@ input, button {
     border-radius: 4px;
 }
 
+/* ----- Style du bouton principal ----- */
 button {
     background-color: #AA3939;
     color: white;
     cursor: pointer;
 }
 
+/* ----- Effet au survol du bouton ----- */
 button:hover {
     background-color: #941212;
 }

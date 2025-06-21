@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Simule un chargement de l'agenda
+    // ----- Génération de la vue hebdomadaire -----
     const days = ["Lun", "Mar", "Mer", "Jeu", "Ven"];
     const container = document.getElementById("weekly-view");
 
@@ -10,9 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
         container.appendChild(col);
     });
 
-    // Tâches à droite
+    // ----- Remplissage de la liste de tâches -----
     const taskList = document.getElementById("task-list");
     const tasks = ["Préparer audit", "Rédiger rapport", "Réunion client"];
+
     tasks.forEach(t => {
         const li = document.createElement("li");
         li.textContent = t;
