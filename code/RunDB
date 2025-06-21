@@ -1,0 +1,22 @@
+Lancer Docker Desktop
+Sans Api:
+--------
+
+1- Choisir le bon repertoire
+cd "C:\Users\Esteban BARRACHO\Desktop\PolyBase\code\polybase"
+
+2- Lancer le docker
+docker compose up -d --build
+
+3- Fermer le docker
+docker compose down -v
+
+Avec Api:
+--------
+
+2- Lancer le docker
+docker compose up --build
+
+
+
+

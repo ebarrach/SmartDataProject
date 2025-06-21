@@ -104,9 +104,14 @@ create table Tache (
                        est_realisable boolean not null,
                        date_debut date not null,
                        date_fin date not null,
+                       heures_estimees DECIMAL(5,2),
+                       heures_prestées DECIMAL(5,2),
+                       heures_depassees DECIMAL(5,2),
                        constraint ID_Tache_ID primary key (id_tache),
                        foreign key (id_phase) references Phase(id_phase)
 );
+
+
 
 -- TABLE DE PLANIFICATION DES COLLABORATEURS
 create table PlanificationCollaborateur (
@@ -217,9 +222,15 @@ VALUES
     ('PH001', 'Analyse', 1, 10000.00, 'F001');
 
 -- ======= TACHES =======
-INSERT INTO Tache (id_tache, id_phase, nom_tache, description, alerte_retard, conges_integres, statut, est_realisable, date_debut, date_fin)
-VALUES
-    ('T001', 'PH001', 'Audit existant', 'Évaluation du système actuel', FALSE, TRUE, 'en cours', TRUE, '2025-06-02', '2025-06-10');
+INSERT INTO Tache (
+    id_tache, id_phase, nom_tache, description, alerte_retard, conges_integres,
+    statut, est_realisable, date_debut, date_fin, heures_estimees, heures_prestées, heures_depassees
+) VALUES (
+             'T001', 'PH001', 'Audit existant', 'Évaluation du système actuel',
+             FALSE, TRUE, 'en cours',
+             TRUE, '2025-06-01', '2025-06-10',
+             35.00, 37.50, 2.50
+         );
 
 -- ======= PLANIFICATION COLLABORATEUR =======
 INSERT INTO PlanificationCollaborateur (id_planification, id_tache, id_collaborateur, heures_disponibles, alerte_depassement, semaine, heures_prevues)
@@ -227,9 +238,14 @@ VALUES
     ('PL001', 'T001', 'P002', 40.00, FALSE, '2025-W23', 35.00);
 
 -- ======= PRESTATION COLLABORATEUR =======
-INSERT INTO PrestationCollaborateur (id_prestation, date, id_tache, id_collaborateur, heures_effectuees, mode_facturation, facture_associee, taux_horaire, commentaire)
-VALUES
-    ('PC001', '2025-06-03', 'T001', 'P002', 7.50, 'horaire', 'F001', 120.00, 'Première journée d’analyse.');
+INSERT INTO PrestationCollaborateur (
+    id_prestation, date, id_tache, id_collaborateur, heures_effectuees, mode_facturation,
+    facture_associee, taux_horaire, commentaire
+) VALUES (
+             'PC001', '2025-06-21', 'T001',
+             'P002', 37.50, 'horaire',
+             'F001', 120.00, 'Phase d’audit réalisée selon planning.'
+         );
 
 -- ======= COUTS =======
 INSERT INTO Cout (id_cout, type_cout, montant, nature_cout, date, source)
@@ -245,3 +261,111 @@ VALUES
 INSERT INTO ImportLog (id_import, source, type_donnee, date_import, statut, message_log)
 VALUES
     ('IMP001', 'Excel v2025', 'Personnel', '2025-06-01', 'succès', 'Import initial sans erreurs.');
+
+-- ======= VUE =======
+CREATE VIEW VueAnalyseTache AS
+SELECT
+    T.id_tache,
+    T.nom_tache,
+    SUM(P.heures_effectuees) AS heures_prestées,
+    PC.heures_prevues AS heures_estimees,
+    GREATEST(SUM(P.heures_effectuees) - PC.heures_prevues, 0) AS heures_depassees
+FROM Tache T
+         JOIN PlanificationCollaborateur PC ON PC.id_tache = T.id_tache
+         LEFT JOIN PrestationCollaborateur P ON P.id_tache = T.id_tache
+GROUP BY T.id_tache, T.nom_tache, PC.heures_prevues;
+
+-- ======= TRIGGER =======
+-- 🔁 Nettoyage préalable
+DROP TRIGGER IF EXISTS maj_heures_tache;
+DROP TRIGGER IF EXISTS maj_depassement_apres_modif_estimee;
+DROP TRIGGER IF EXISTS maj_heures_apres_modif_prestation;
+DROP TRIGGER IF EXISTS maj_alerte_retard;
+
+DELIMITER $$
+
+-- 🎯 Trigger 1 : mise à jour des heures après INSERT d'une prestation
+CREATE TRIGGER maj_heures_tache
+    AFTER INSERT ON PrestationCollaborateur
+    FOR EACH ROW
+BEGIN
+    DECLARE total_heures DECIMAL(5,2);
+    DECLARE heures_estimees DECIMAL(5,2);
+    DECLARE depassement DECIMAL(5,2);
+
+    SELECT COALESCE(SUM(heures_effectuees), 0)
+    INTO total_heures
+    FROM PrestationCollaborateur
+    WHERE id_tache = NEW.id_tache;
+
+    SELECT heures_estimees
+    INTO heures_estimees
+    FROM Tache
+    WHERE id_tache = NEW.id_tache;
+
+    SET depassement = GREATEST(total_heures - heures_estimees, 0);
+
+    UPDATE Tache
+    SET heures_prestées = total_heures,
+        heures_depassees = depassement
+    WHERE id_tache = NEW.id_tache;
+END$$
+
+-- 🎯 Trigger 2 : mise à jour du dépassement si heures estimées changent
+CREATE TRIGGER maj_depassement_apres_modif_estimee
+    BEFORE UPDATE ON Tache
+    FOR EACH ROW
+BEGIN
+    DECLARE depassement DECIMAL(5,2);
+
+    IF NEW.heures_estimees != OLD.heures_estimees THEN
+        SET depassement = GREATEST(NEW.heures_prestées - NEW.heures_estimees, 0);
+        SET NEW.heures_depassees = depassement;
+    END IF;
+END$$
+
+-- 🎯 Trigger 3 : mise à jour des heures après modification d'une prestation
+CREATE TRIGGER maj_heures_apres_modif_prestation
+    AFTER UPDATE ON PrestationCollaborateur
+    FOR EACH ROW
+BEGIN
+    DECLARE total_heures DECIMAL(5,2);
+    DECLARE heures_estimees DECIMAL(5,2);
+    DECLARE depassement DECIMAL(5,2);
+
+    IF NEW.heures_effectuees != OLD.heures_effectuees THEN
+        SELECT COALESCE(SUM(heures_effectuees), 0)
+        INTO total_heures
+        FROM PrestationCollaborateur
+        WHERE id_tache = NEW.id_tache;
+
+        SELECT heures_estimees
+        INTO heures_estimees
+        FROM Tache
+        WHERE id_tache = NEW.id_tache;
+
+        SET depassement = GREATEST(total_heures - heures_estimees, 0);
+
+        UPDATE Tache
+        SET heures_prestées = total_heures,
+            heures_depassees = depassement
+        WHERE id_tache = NEW.id_tache;
+    END IF;
+END$$
+
+-- 🎯 Trigger 4 : alerte de retard automatique
+CREATE TRIGGER maj_alerte_retard
+    BEFORE UPDATE ON Tache
+    FOR EACH ROW
+BEGIN
+    IF CURDATE() > NEW.date_fin AND NEW.statut != 'terminé' THEN
+        SET NEW.alerte_retard = TRUE;
+    ELSE
+        SET NEW.alerte_retard = FALSE;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+
