@@ -13,10 +13,14 @@ from ..schemas import HonoraireRepartiCreate, ProjectionFacturationCreate, Proje
 # DATABASE DEPENDENCY
 # ============================================
 
-from ..database import SessionLocal
-
 def get_db():
-    """Provides a database session for dependency injection."""
+    """Provides a database session for dependency injection.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 22/06/2025)
+    """
     db = SessionLocal()
     try:
         yield db
@@ -51,16 +55,22 @@ def get_multiplicating_factor(honoraire: float, cout: float):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     if cout == 0:
         raise HTTPException(400, detail="Cost cannot be zero")
     return {"multiplicating_factor": round(honoraire / cout, 2)}
 
+# ============================================
+# ROUTE : Delete Projection Facturation
+# ============================================
 
 @router.delete("/projection_facturation/{id_projection}")
 def delete_projection(id_projection: str, db: Session = Depends(get_db)):
     """Deletes a billing projection entry.
-    Raises 404 if not found.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
     """
     projection = db.query(ProjectionFacturation).filter(
         ProjectionFacturation.id_projection == id_projection
@@ -71,8 +81,19 @@ def delete_projection(id_projection: str, db: Session = Depends(get_db)):
     db.commit()
     return {"message": f"Projection {id_projection} deleted successfully"}
 
+# ============================================
+# ROUTE : Delete Facture
+# ============================================
+
 @router.delete("/factures/{id_facture}")
 def delete_facture(id_facture: str, db: Session = Depends(get_db)):
+    """Deletes a facture if found.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
+    """
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
@@ -86,8 +107,19 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
 
     return {"message": f"Facture {id_facture} deleted successfully"}
 
+# ============================================
+# ROUTE : Delete Planification
+# ============================================
+
 @router.delete("/planifications/{id_planification}")
 def delete_planification(id_planification: str, db: Session = Depends(get_db)):
+    """Deletes a collaborator planning record.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
+    """
     planif = db.query(PlanificationCollaborateur).filter(
         PlanificationCollaborateur.id_planification == id_planification
     ).first()
@@ -97,9 +129,14 @@ def delete_planification(id_planification: str, db: Session = Depends(get_db)):
     db.commit()
     return {"message": f"Planification {id_planification} deleted successfully"}
 
+# ============================================
+# ROUTE : Create Honoraire Reparti
+# ============================================
+
 @router.post("/analytics/honoraire")
 def create_honoraire_reparti(entry: HonoraireRepartiCreate, db: Session = Depends(get_db)):
     """Creates an honoraire repartition for a given project.
+
     Version:
     --------
     specification: Esteban Barracho (v.1 21/06/2025)
@@ -110,10 +147,14 @@ def create_honoraire_reparti(entry: HonoraireRepartiCreate, db: Session = Depend
     db.commit()
     return {"message": f"Honoraire {entry.id_repartition} added for project {entry.id_projet}"}
 
+# ============================================
+# ROUTE : Update Projection Facturation
+# ============================================
 
 @router.put("/projection_facturation/{id_projection}", response_model=ProjectionFacturationOut)
 def update_projection_facturation(id_projection: str, update: ProjectionFacturationCreate, db: Session = Depends(get_db)):
     """Updates a projection entry, including uncertainty status.
+
     Version:
     --------
     specification: Esteban Barracho (v.1 21/06/2025)

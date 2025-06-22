@@ -8,9 +8,9 @@
 
 -- DROP DATABASE PolyBase;
 -- CREATE DATABASE PolyBase;
-drop schema if exists Polybase;
-create schema Polybase;
-USE Polybase;
+drop schema if exists PolyBase;
+create schema PolyBase;
+USE PolyBase;
 
 -- Tables Section
 -- _______________

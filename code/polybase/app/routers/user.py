@@ -3,8 +3,8 @@
 # ============================================
 
 from fastapi import APIRouter, Depends
-from ..auth import get_current_user
-from ..schemas import PersonnelOut
+from app.auth import get_current_user
+from app.schemas import PersonnelOut
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -24,5 +24,4 @@ def get_profile(current_user: PersonnelOut = Depends(get_current_user)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return current_user

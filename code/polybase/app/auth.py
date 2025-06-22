@@ -2,7 +2,7 @@
 # IMPORTS
 # ============================================
 
-from fastapi import Depends, HTTPException, Cookie, Request
+from fastapi import Depends, HTTPException, Cookie
 from sqlalchemy.orm import Session
 from .database import SessionLocal
 from .models import Personnel
@@ -21,7 +21,6 @@ def get_db():
     specification: Esteban Barracho (v.1 19/06/25)
     implement: Esteban Barracho (v.1 19/06/25)
     """
-
     db = SessionLocal()
     try:
         yield db
@@ -46,7 +45,6 @@ def authenticate_user(email: str, db: Session):
     specification: Esteban Barracho (v.1 19/06/25)
     implement: Esteban Barracho (v.1 19/06/25)
     """
-
     user = db.query(Personnel).filter(Personnel.email == email).first()
     return user
 
@@ -71,7 +69,6 @@ def get_current_user(session_id: str = Cookie(None), db: Session = Depends(get_d
     specification: Esteban Barracho (v.1 19/06/25)
     implement: Esteban Barracho (v.1 19/06/25)
     """
-
     if not session_id:
         raise HTTPException(status_code=401, detail="Session non trouvée")
     user = db.query(Personnel).filter(Personnel.id_personnel == session_id).first()

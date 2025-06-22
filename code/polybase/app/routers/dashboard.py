@@ -5,9 +5,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from ..database import SessionLocal
-from ..auth import get_current_user
-from ..models import Tache, PlanificationCollaborateur, ProjectionFacturation
+from app.database import SessionLocal
+from app.auth import get_current_user
+from app.models import Tache, PlanificationCollaborateur, ProjectionFacturation
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -29,7 +29,6 @@ def get_db():
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     db = SessionLocal()
     try:
         yield db
@@ -54,7 +53,6 @@ def taches_en_alerte(db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     en_retard = db.query(Tache).filter(Tache.alerte_retard == True).count()
     return {"taches_retard": en_retard}
 
@@ -76,7 +74,6 @@ def total_depassement_heures(db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     result = db.query(func.sum(Tache.heures_depassees)).scalar()
     return {"heures_depassees_totales": float(result or 0)}
 
@@ -98,7 +95,6 @@ def synthese_facturation(db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     projets = db.query(
         ProjectionFacturation.id_projet,
         func.sum(ProjectionFacturation.montant_projete).label("total_projete"),
@@ -134,7 +130,6 @@ def mes_taches(user=Depends(get_current_user), db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     taches = db.query(Tache).join(PlanificationCollaborateur).filter(
         PlanificationCollaborateur.id_collaborateur == user.id_personnel,
         Tache.statut != "terminé"

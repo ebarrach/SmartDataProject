@@ -44,12 +44,12 @@ specification: Esteban Barracho (v.1 19/06/2025)
 implement: Esteban Barracho (v.1 19/06/2025)
 """
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
 """This object creates the SQLAlchemy engine based on the URL configuration.
 Version:
 --------
 specification: Esteban Barracho (v.1 19/06/2025)
-implement: Esteban Barracho (v.1 19/06/2025)
+implement: Esteban Barracho (v.2 22/06/2025)
 """
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

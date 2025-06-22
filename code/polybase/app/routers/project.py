@@ -4,9 +4,9 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from ..database import SessionLocal
-from ..models import Projet, Phase, Facture
-from ..schemas import ProjetCreate, ProjetOut, PhaseCreate, PhaseOut
+from app.database import SessionLocal
+from app.models import Projet, Phase, Facture
+from app.schemas import ProjetCreate, ProjetOut, PhaseCreate, PhaseOut
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -28,7 +28,6 @@ def get_db():
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     db = SessionLocal()
     try:
         yield db
@@ -47,7 +46,6 @@ def list_projects(db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return db.query(Projet).all()
 
 # ============================================
@@ -63,7 +61,6 @@ def get_project(id_projet: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     project = db.query(Projet).filter(Projet.id_projet == id_projet).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -81,7 +78,6 @@ def create_project(project: ProjetCreate, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     db_project = Projet(**project.dict())
     db.add(db_project)
     db.commit()
@@ -100,7 +96,6 @@ def list_phases(id_projet: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return db.query(Phase).filter(Phase.id_facture == id_projet).all()
 
 # ============================================
@@ -115,17 +110,24 @@ def add_phase(id_projet: str, phase: PhaseCreate, db: Session = Depends(get_db))
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     new_phase = Phase(**phase.dict())
     db.add(new_phase)
     db.commit()
     db.refresh(new_phase)
     return new_phase
 
+# ============================================
+# ROUTE : Delete a project
+# ============================================
+
 @router.delete("/projects/{id_projet}")
 def delete_project(id_projet: str, db: Session = Depends(get_db)):
     """Deletes a project from the database.
     Raises 404 if not found.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
     """
     project = db.query(Projet).filter(Projet.id_projet == id_projet).first()
     if not project:
@@ -134,10 +136,18 @@ def delete_project(id_projet: str, db: Session = Depends(get_db)):
     db.commit()
     return {"message": f"Project {id_projet} deleted successfully"}
 
+# ============================================
+# ROUTE : Delete a phase
+# ============================================
+
 @router.delete("/phases/{id_phase}")
 def delete_phase(id_phase: str, db: Session = Depends(get_db)):
     """Deletes a phase from the database.
     Raises 404 if not found.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
     """
     phase = db.query(Phase).filter(Phase.id_phase == id_phase).first()
     if not phase:
@@ -146,8 +156,19 @@ def delete_phase(id_phase: str, db: Session = Depends(get_db)):
     db.commit()
     return {"message": f"Phase {id_phase} deleted successfully"}
 
+# ============================================
+# ROUTE : Delete a facture
+# ============================================
+
 @router.delete("/factures/{id_facture}")
 def delete_facture(id_facture: str, db: Session = Depends(get_db)):
+    """Deletes a facture from the database.
+    Raises 404 if not found.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 21/06/2025)
+    """
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")

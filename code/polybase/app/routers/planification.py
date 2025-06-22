@@ -4,9 +4,9 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from ..database import SessionLocal
-from ..models import PlanificationCollaborateur
-from ..schemas import PlanificationCreate, PlanificationOut
+from app.database import SessionLocal
+from app.models import PlanificationCollaborateur, Facture
+from app.schemas import PlanificationCreate, PlanificationOut
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -28,7 +28,6 @@ def get_db():
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     db = SessionLocal()
     try:
         yield db
@@ -47,7 +46,6 @@ def list_planifications(db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return db.query(PlanificationCollaborateur).all()
 
 # ============================================
@@ -63,7 +61,6 @@ def get_planification(id_planification: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     plan = db.query(PlanificationCollaborateur).filter(
         PlanificationCollaborateur.id_planification == id_planification
     ).first()
@@ -83,7 +80,6 @@ def create_planification(plan: PlanificationCreate, db: Session = Depends(get_db
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     db_plan = PlanificationCollaborateur(**plan.dict())
     db.add(db_plan)
     db.commit()
@@ -103,7 +99,6 @@ def update_planification(id_planification: str, plan_update: PlanificationCreate
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     plan = db.query(PlanificationCollaborateur).filter(
         PlanificationCollaborateur.id_planification == id_planification
     ).first()
@@ -128,7 +123,6 @@ def delete_planification(id_planification: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     plan = db.query(PlanificationCollaborateur).filter(
         PlanificationCollaborateur.id_planification == id_planification
     ).first()
@@ -138,18 +132,25 @@ def delete_planification(id_planification: str, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Planification successfully deleted"}
 
+# ============================================
+# ROUTE : Delete a facture (temporary fix included here)
+# ============================================
 
 @router.delete("/factures/{id_facture}")
 def delete_facture(id_facture: str, db: Session = Depends(get_db)):
+    """Deletes a facture from the database.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 22/06/2025)
+    """
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
-
     try:
         db.delete(facture)
         db.commit()
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
-
     return {"message": f"Facture {id_facture} deleted successfully"}

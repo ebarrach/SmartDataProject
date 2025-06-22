@@ -78,7 +78,7 @@ def create_client(client: ClientOut = Body(...), db: Session = Depends(get_db)):
     Version:
     --------
     specification: Esteban Barracho (v.1 21/06/2025)
-    implement: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1 19/06/2025)
     """
     if db.query(Client).filter(Client.id_client == client.id_client).first():
         raise HTTPException(status_code=400, detail="Client ID already exists")
@@ -122,8 +122,28 @@ def delete_client(id_client: str, db: Session = Depends(get_db)):
     db.commit()
     return {"message": f"Client {id_client} deleted successfully"}
 
+# ============================================
+# ROUTE : Delete Facture
+# ============================================
+
 @router.delete("/factures/{id_facture}")
 def delete_facture(id_facture: str, db: Session = Depends(get_db)):
+    """Deletes a facture if found.
+
+    Parameters:
+    -----------
+    id_facture (str): ID of the facture to delete.
+    db (Session): Database session.
+
+    Returns:
+    --------
+    dict: Confirmation message or error.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.2 22/06/2025)
+    """
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")

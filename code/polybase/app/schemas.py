@@ -105,6 +105,18 @@ class TacheOut(TacheCreate):
 # SCHEMAS: CLIENT
 # ============================================
 
+class ClientCreate(BaseModel):
+    """Schema for creating a client.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 22/06/2025)
+    implement: Esteban Barracho (v.1 22/06/2025)
+    """
+    id_client: str
+    nom_client: str
+    adresse: str
+    secteur_activite: str
+
 class ClientOut(BaseModel):
     """Schema for returning a client.
     Version:
@@ -124,6 +136,19 @@ class ClientOut(BaseModel):
 # ============================================
 # SCHEMAS: PERSONNEL
 # ============================================
+
+class PersonnelCreate(BaseModel):
+    """Schema for creating personnel.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 22/06/2025)
+    implement: Esteban Barracho (v.1 22/06/2025)
+    """
+    id_personnel: str
+    nom: str
+    prenom: str
+    email: str
+    fonction: str
 
 class PersonnelOut(BaseModel):
     """Schema for returning personnel data.
@@ -282,6 +307,10 @@ class ProjectionFacturationOut(ProjectionFacturationCreate):
     class Config:
         orm_mode = True
 
+# ============================================
+# SCHEMAS: HONORAIRE REPARTI
+# ============================================
+
 class HonoraireRepartiCreate(BaseModel):
     """Schema for creating a repartition of honoraires.
     Version:
@@ -294,6 +323,15 @@ class HonoraireRepartiCreate(BaseModel):
     societe: str
     montant: float
 
+class HonoraireRepartiOut(HonoraireRepartiCreate):
+    """Schema for returning honoraires repartis (ORM-enabled).
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1 22/06/2025)
+    """
+    class Config:
+        orm_mode = True
 
 # ============================================
 # SCHEMAS: IMPORT LOG

@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 from ..database import SessionLocal
 from ..models import Facture
 from ..schemas import FactureOut
-from ..schemas import BaseModel, date
+from pydantic import BaseModel
+from datetime import date
 from typing import Optional
 
 # ============================================
@@ -51,7 +52,6 @@ def get_db():
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     db = SessionLocal()
     try:
         yield db
@@ -70,7 +70,6 @@ def list_factures(db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return db.query(Facture).all()
 
 # ============================================
@@ -86,7 +85,6 @@ def get_facture(id_facture: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
@@ -104,7 +102,6 @@ def create_facture(facture: FactureCreate, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     db_facture = Facture(**facture.dict())
     db.add(db_facture)
     db.commit()
@@ -124,7 +121,6 @@ def update_facture(id_facture: str, facture_update: FactureCreate, db: Session =
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
@@ -145,27 +141,15 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
-    implement: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 22/06/2025)
     """
-
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
-    db.delete(facture)
-    db.commit()
-    return {"message": "Invoice successfully deleted"}
-
-@router.delete("/factures/{id_facture}")
-def delete_facture(id_facture: str, db: Session = Depends(get_db)):
-    facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
-    if not facture:
-        raise HTTPException(status_code=404, detail="Facture not found")
-
     try:
         db.delete(facture)
         db.commit()
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
-
     return {"message": f"Facture {id_facture} deleted successfully"}

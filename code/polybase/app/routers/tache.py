@@ -4,36 +4,15 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from ..database import SessionLocal
-from ..models import Tache, Facture
-from ..schemas import TacheCreate, TacheOut
+from app.database import get_db
+from app.models import Tache, Facture
+from app.schemas import TacheCreate, TacheOut
 
 # ============================================
 # ROUTER INITIALIZATION
 # ============================================
 
 router = APIRouter()
-
-# ============================================
-# DATABASE DEPENDENCY
-# ============================================
-
-def get_db():
-    """Provides a database session for dependency injection.
-    Yields:
-    -------
-    Session: SQLAlchemy session instance.
-    Version:
-    --------
-    specification: Esteban Barracho (v.1 19/06/2025)
-    implement: Esteban Barracho (v.1 19/06/2025)
-    """
-
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 # ============================================
 # ROUTE : List all tasks
@@ -47,7 +26,6 @@ def list_tasks(db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return db.query(Tache).all()
 
 # ============================================
@@ -63,7 +41,6 @@ def get_task(id_tache: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     task = db.query(Tache).filter(Tache.id_tache == id_tache).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -81,7 +58,6 @@ def create_task(task: TacheCreate, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     db_task = Tache(**task.dict())
     db.add(db_task)
     db.commit()
@@ -101,7 +77,6 @@ def update_task(id_tache: str, updated_task: TacheCreate, db: Session = Depends(
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     task = db.query(Tache).filter(Tache.id_tache == id_tache).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -124,7 +99,6 @@ def delete_task(id_tache: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     task = db.query(Tache).filter(Tache.id_tache == id_tache).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -132,18 +106,25 @@ def delete_task(id_tache: str, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Task successfully deleted"}
 
+# ============================================
+# ROUTE : Delete a facture (duplicate cleanup)
+# ============================================
 
 @router.delete("/factures/{id_facture}")
 def delete_facture(id_facture: str, db: Session = Depends(get_db)):
+    """Deletes a facture with error handling.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 22/06/2025)
+    """
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
-
     try:
         db.delete(facture)
         db.commit()
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
-
     return {"message": f"Facture {id_facture} deleted successfully"}
