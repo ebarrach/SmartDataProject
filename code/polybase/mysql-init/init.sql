@@ -6,8 +6,6 @@
 -- * Modifié par Esteban BARRACHO
 -- *********************************************
 
--- DROP DATABASE PolyBase;
--- CREATE DATABASE PolyBase;
 drop schema if exists PolyBase;
 create schema PolyBase;
 USE PolyBase;
@@ -43,21 +41,21 @@ create table Personnel (
                            constraint ID_Personnel_ID primary key (id_personnel)
 );
 
--- TABLE DES COLLABORATEURS (SPÉCIALISATION DU PERSONNEL)
+-- TABLE DES COLLABORATEURS
 create table Collaborateur (
                                id_personnel varchar(10) not null,
                                constraint PK_Collaborateur primary key (id_personnel),
                                constraint FKPer_Col_FK foreign key (id_personnel) references Personnel(id_personnel)
 );
 
--- TABLE DES FACTURES (créée avant Phase pour éviter erreur de FK)
+-- TABLE DES FACTURES
 create table Facture (
                          id_facture varchar(10) not null,
                          date_emission date not null,
                          montant_facture decimal(10,2) not null,
                          transmission_electronique boolean not null,
                          annexe TEXT not null,
-                         statut ENUM('émise', 'payée', 'en attente') not null,
+                         statut ENUM('emise', 'payee', 'en_attente') not null,
                          reference_banque varchar(100) not null,
                          fichier_facture TEXT not null,
                          constraint ID_Facture_ID primary key (id_facture)
@@ -96,17 +94,15 @@ ALTER TABLE Projet
     ADD COLUMN contact_client VARCHAR(100) NULL;
 
 -- TABLE REPARTITION DES HONORAIRE
-
 CREATE TABLE HonoraireReparti (
                                   id_repartition VARCHAR(10) PRIMARY KEY,
                                   id_projet VARCHAR(10) NOT NULL,
-                                  societe VARCHAR(50) NOT NULL, -- 'Poly-Tech', 'Pirnay', etc.
+                                  societe VARCHAR(50) NOT NULL,
                                   montant DECIMAL(10,2) NOT NULL,
                                   FOREIGN KEY (id_projet) REFERENCES Projet(id_projet)
 );
 
-
--- TABLE ASSOCIATIVE GERER (ResponsableProjet ↔ Projet)
+-- TABLE ASSOCIATIVE GERER
 create table Gerer (
                        id_projet varchar(10) not null,
                        id_personnel varchar(10) not null,
@@ -128,13 +124,11 @@ create table Tache (
                        date_debut date not null,
                        date_fin date not null,
                        heures_estimees DECIMAL(5,2),
-                       heures_prestées DECIMAL(5,2),
+                       heures_prestees DECIMAL(5,2),
                        heures_depassees DECIMAL(5,2),
                        constraint ID_Tache_ID primary key (id_tache),
                        foreign key (id_phase) references Phase(id_phase)
 );
-
-
 
 -- TABLE DE PLANIFICATION DES COLLABORATEURS
 create table PlanificationCollaborateur (
@@ -194,7 +188,6 @@ create table ProjectionFacturation (
 ALTER TABLE ProjectionFacturation
     ADD COLUMN est_certain BOOLEAN DEFAULT TRUE;
 
-
 -- TABLE DES LOGS D'IMPORT
 create table ImportLog (
                            id_import varchar(10) not null,
@@ -251,7 +244,7 @@ VALUES
 -- ======= TACHES =======
 INSERT INTO Tache (
     id_tache, id_phase, nom_tache, description, alerte_retard, conges_integres,
-    statut, est_realisable, date_debut, date_fin, heures_estimees, heures_prestées, heures_depassees
+    statut, est_realisable, date_debut, date_fin, heures_estimees, heures_prestees, heures_depassees
 ) VALUES (
              'T001', 'PH001', 'Audit existant', 'Évaluation du système actuel',
              FALSE, TRUE, 'en cours',
@@ -294,7 +287,7 @@ CREATE VIEW VueAnalyseTache AS
 SELECT
     T.id_tache,
     T.nom_tache,
-    SUM(P.heures_effectuees) AS heures_prestées,
+    SUM(P.heures_effectuees) AS heures_prestees,
     PC.heures_prevues AS heures_estimees,
     GREATEST(SUM(P.heures_effectuees) - PC.heures_prevues, 0) AS heures_depassees
 FROM Tache T
@@ -346,7 +339,7 @@ BEGIN
     SET depassement = GREATEST(total_heures - heures_estimees, 0);
 
     UPDATE Tache
-    SET heures_prestées = total_heures,
+    SET heures_prestees = total_heures,
         heures_depassees = depassement
     WHERE id_tache = NEW.id_tache;
 END$$
@@ -358,8 +351,8 @@ CREATE TRIGGER maj_depassement_apres_modif_tache
 BEGIN
     DECLARE depassement DECIMAL(5,2);
 
-    IF NEW.heures_estimees != OLD.heures_estimees OR NEW.heures_prestées != OLD.heures_prestées THEN
-        SET depassement = GREATEST(NEW.heures_prestées - NEW.heures_estimees, 0);
+    IF NEW.heures_estimees != OLD.heures_estimees OR NEW.heures_prestees != OLD.heures_prestees THEN
+        SET depassement = GREATEST(NEW.heures_prestees - NEW.heures_estimees, 0);
         SET NEW.heures_depassees = depassement;
     END IF;
 END$$
@@ -387,7 +380,7 @@ BEGIN
         SET depassement = GREATEST(total_heures - heures_estimees, 0);
 
         UPDATE Tache
-        SET heures_prestées = total_heures,
+        SET heures_prestees = total_heures,
             heures_depassees = depassement
         WHERE id_tache = NEW.id_tache;
     END IF;
@@ -406,8 +399,3 @@ BEGIN
 END$$
 
 DELIMITER ;
-
-
-
-
-

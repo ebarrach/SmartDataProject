@@ -34,7 +34,6 @@ code/
         docker-compose.yml
         mysql-init/
             init.sql
-        polybase_skeleton
         requirements.txt
         static/
             css/

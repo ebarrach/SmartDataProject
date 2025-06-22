@@ -1,6 +1,5 @@
 # ----- Docker Compose Configuration -----
 
-# ----- Services Definition -----
 services:
 
   # ----- MySQL Service -----
@@ -10,7 +9,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: polyroot
-      MYSQL_DATABASE: Relation
+      MYSQL_DATABASE: PolyBase
     ports:
       - "3307:3306"
     volumes:
@@ -32,7 +31,7 @@ services:
       DB_PASSWORD: polyroot
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_NAME: Relation
+      DB_NAME: PolyBase
       HOST: 0.0.0.0
       PORT: 8000
 

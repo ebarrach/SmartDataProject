@@ -8,6 +8,24 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
+
+# ============================================
+# FOURNITURE DE LA SESSION À L’APPLICATION
+# ============================================
+
+def get_db():
+    """Dependency injection for a SQLAlchemy session.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 22/06/2025)
+    implement: Esteban Barracho (v.1 22/06/2025)
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 # ============================================
 # CHARGEMENT DES VARIABLES D’ENVIRONNEMENT
 # ============================================

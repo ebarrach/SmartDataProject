@@ -2,11 +2,17 @@
 # SCRIPT: DEMO INTERACTIF POLYBASE - SQLAlchemy
 # ============================================
 # specification: Esteban Barracho (v.1 21/06/2025)
-# implement: Esteban Barracho (v.2 21/06/2025)
+# implement: Esteban Barracho (v.4 22/06/2025)
 
+import sys
+import os
 from sqlalchemy import create_engine, select, delete
 from sqlalchemy.orm import Session
 from datetime import date
+
+# 📌 Ajout du chemin vers le dossier contenant `app/` pour les imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from app.models import (
     Client, Projet, Facture, Phase, Tache,
     PlanificationCollaborateur, PrestationCollaborateur,
@@ -44,6 +50,8 @@ with Session(engine) as session:
     safe_delete(session, Facture, "id_facture", "F003")
     safe_delete(session, Projet, "id_projet", "P003")
     safe_delete(session, Client, "id_client", "C003")
+    safe_delete(session, Cout, "id_cout", "HR001")
+    safe_delete(session, Cout, "id_cout", "HR002")
     session.commit()
 
     # ⭮️ 0. Vérification/création collaborateur
@@ -60,6 +68,7 @@ with Session(engine) as session:
         adresse="Rue de l'Industrie 45, 1000 Bruxelles",
         secteur_activite="Énergie"
     ))
+    session.commit()
 
     # 2️⃣ Projet
     step("2. Création du projet lié à ce client")
@@ -73,6 +82,7 @@ with Session(engine) as session:
         type_marche="privé",
         id_client="C003"
     ))
+    session.commit()
 
     # 3️⃣ Facture
     step("3. Facture liée au projet")
@@ -82,10 +92,11 @@ with Session(engine) as session:
         montant_facture=8000.00,
         transmission_electronique=True,
         annexe="PDF annexé",
-        statut="émise",
+        statut="emise",
         reference_banque="BE65001234567890",
         fichier_facture="facture_f001.pdf"
     ))
+    session.commit()
 
     # 4️⃣ Phase
     step("4. Phase du projet (étude préliminaire)")
@@ -96,6 +107,7 @@ with Session(engine) as session:
         montant_phase=8000.00,
         id_facture="F003"
     ))
+    session.commit()
 
     # 5️⃣ Tâche
     step("5. Tâche à réaliser dans la phase")
@@ -111,6 +123,7 @@ with Session(engine) as session:
         date_debut=date(2025, 6, 21),
         date_fin=date(2025, 6, 28)
     ))
+    session.commit()
 
     # 6️⃣ Planification
     step("6. Planification du collaborateur P001")
@@ -123,6 +136,7 @@ with Session(engine) as session:
         semaine="2025-W26",
         heures_prevues=8.0
     ))
+    session.commit()
 
     # 7️⃣ Prestation
     step("7. Enregistrement de la prestation réelle")
@@ -137,6 +151,7 @@ with Session(engine) as session:
         taux_horaire=95.00,
         commentaire="Début d'analyse des données collectées"
     ))
+    session.commit()
 
     # 8️⃣ Projection de facturation
     step("8. Projection de facturation")
@@ -149,19 +164,21 @@ with Session(engine) as session:
         alerte_facturation=False,
         id_projet="P003"
     ))
+    session.commit()
 
     # 9️⃣ Mise à jour : est_certain = False
     step("9. Mise à jour de l'indicateur d'incertitude")
     projection = session.get(ProjectionFacturation, "PROJ003")
     if projection:
         projection.est_certain = False
+    session.commit()
 
-    # 1️0️⃣ Répartition des honoraires
+    # 🔟 Répartition des honoraires
     step("10. Répartition des honoraires entre entités")
     session.add_all([
         Cout(id_cout="HR001", type_cout="honoraire", montant=15000.00, nature_cout="externe", date=date.today(), source="Pirnay SA"),
         Cout(id_cout="HR002", type_cout="honoraire", montant=10000.00, nature_cout="interne", date=date.today(), source="Poly-Tech Engineering")
     ])
-
     session.commit()
+
     print("\n🎉 Démonstration complète avec SQLAlchemy terminée.")
