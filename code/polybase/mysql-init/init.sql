@@ -1,5 +1,5 @@
 -- *********************************************
--- * Standard SQL generation corrigée
+-- * Standard SQL generation
 -- *--------------------------------------------
 -- * DB-MAIN version: 11.0.2
 -- * Generator date: Juin 2025

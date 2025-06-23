@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}PolyBase{% endblock %}</title>
-    <link rel="stylesheet" href="../static/css/base.css">
-    <link rel="stylesheet" href="../static/css/base-interactions.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/base-interactions.css">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -14,7 +14,7 @@
         <!-- Partie gauche : logo + nom -->
         <div class="navbar-left">
             <a href="/dashboard" class="logo-link">
-                <img src="../static/img/logo-polybase.png" alt="Logo PolyBase" class="logo-img">
+                <img src="/static/img/logo-polybase.png" alt="Logo PolyBase" class="logo-img">
                 <span class="logo-text">PolyBase</span>
             </a>
         </div>
@@ -35,7 +35,7 @@
     {% block content %}{% endblock %}
 </main>
 
-<script src="../static/js/base.js"></script>
+<script src="/static/js/base.js"></script>
 {% block extra_js %}{% endblock %}
 
 </body>

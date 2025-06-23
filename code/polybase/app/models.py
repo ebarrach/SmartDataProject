@@ -182,7 +182,7 @@ class Tache(Base):
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
-    implement: Esteban Barracho (v.2 22/06/2025)
+    implement: Esteban Barracho (v.3 23/06/2025)
     """
     __tablename__ = "Tache"
     id_tache = Column(String(10), primary_key=True)
@@ -195,6 +195,7 @@ class Tache(Base):
     est_realisable = Column(Boolean)
     date_debut = Column(Date)
     date_fin = Column(Date)
+    heures_depassees = Column(DECIMAL(5, 2))
 
     phase = relationship("Phase", back_populates="taches")
     planifications = relationship("PlanificationCollaborateur", back_populates="tache")

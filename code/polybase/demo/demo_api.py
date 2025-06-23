@@ -118,8 +118,8 @@ with Session(engine) as session:
         description="Analyse des factures et relevés de consommation",
         alerte_retard=False,
         conges_integres=True,
-        statut="en cours",
-        est_realisable=True,
+        statut="en_cours",
+    est_realisable=True,
         date_debut=date(2025, 6, 21),
         date_fin=date(2025, 6, 28)
     ))

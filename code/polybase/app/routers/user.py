@@ -13,12 +13,14 @@ from app.schemas import PersonnelOut
 router = APIRouter()
 
 # ============================================
-# ROUTE : Get current user's profile
+# ROUTE : GET CURRENT USER'S PROFILE
 # ============================================
 
 @router.get("/me", response_model=PersonnelOut)
 def get_profile(current_user: PersonnelOut = Depends(get_current_user)):
-    """Returns the authenticated user's profile based on session.
+    """
+    Returns the authenticated user's profile based on session.
+
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
