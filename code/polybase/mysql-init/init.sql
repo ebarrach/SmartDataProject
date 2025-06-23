@@ -36,6 +36,7 @@ create table Personnel (
                            nom varchar(100) not null,
                            prenom varchar(100) not null,
                            email varchar(100) not null,
+                           password varchar(255) default null,
                            fonction varchar(100) not null,
                            taux_honoraire_standard decimal(8,2) not null,
                            constraint ID_Personnel_ID primary key (id_personnel)
@@ -82,16 +83,14 @@ create table Projet (
                         montant_total_estime decimal(12,2) not null,
                         type_marche varchar(50) not null,
                         id_client varchar(10) not null,
+                        type_projet varchar(50) default null,
+                        region varchar(50) default null,
+                        maitre_ouvrage varchar(100) default null,
+                        architecte varchar(100) default null,
+                        contact_client varchar(100) default null,
                         constraint ID_Projet_ID primary key (id_projet),
                         foreign key (id_client) references Client(id_client)
 );
-
-ALTER TABLE Projet
-    ADD COLUMN type_projet VARCHAR(50) NULL,
-    ADD COLUMN region VARCHAR(50) NULL,
-    ADD COLUMN maitre_ouvrage VARCHAR(100) NULL,
-    ADD COLUMN architecte VARCHAR(100) NULL,
-    ADD COLUMN contact_client VARCHAR(100) NULL;
 
 -- TABLE REPARTITION DES HONORAIRE
 CREATE TABLE HonoraireReparti (
@@ -119,7 +118,7 @@ create table Tache (
                        description TEXT not null,
                        alerte_retard boolean not null,
                        conges_integres boolean not null,
-                       statut ENUM('à faire', 'en cours', 'terminé') not null,
+                       statut ENUM('a_faire', 'en_cours', 'termine') not null,
                        est_realisable boolean not null,
                        date_debut date not null,
                        date_fin date not null,
@@ -180,13 +179,11 @@ create table ProjectionFacturation (
                                        montant_facturable_actuel decimal(10,2) not null,
                                        seuil_minimal decimal(10,2) not null,
                                        alerte_facturation boolean not null,
+                                       est_certain boolean default true,
                                        id_projet varchar(10) not null,
                                        constraint ID_ProjectionFacturation_ID primary key (id_projection),
                                        foreign key (id_projet) references Projet(id_projet)
 );
-
-ALTER TABLE ProjectionFacturation
-    ADD COLUMN est_certain BOOLEAN DEFAULT TRUE;
 
 -- TABLE DES LOGS D'IMPORT
 create table ImportLog (
@@ -206,10 +203,10 @@ VALUES
     ('CL002', 'GreenSys Solutions', 'Chaussée Verte 45, 1300 Wavre', 'Énergies renouvelables');
 
 -- ======= PERSONNEL =======
-INSERT INTO Personnel (id_personnel, type_personnel, nom, prenom, email, fonction, taux_honoraire_standard)
+INSERT INTO Personnel (id_personnel, type_personnel, nom, prenom, email, password, fonction, taux_honoraire_standard)
 VALUES
-    ('P001', 'interne', 'Durand', 'Alice', 'alice.durand@polytech.be', 'Chef de projet', 95.00),
-    ('P002', 'externe', 'Leclercq', 'Marc', 'marc.leclercq@freelance.be', 'Consultant IT', 120.00);
+    ('P001', 'interne', 'Durand', 'Alice', 'alice.durand@polytech.be', '$2b$12$EjkIfNqfFke3wvBOQ7kNzO8N.EbRqt77mb7O5SoedGHsUUn/p5d3C', 'Chef de projet', 95.00),
+    ('P002', 'externe', 'Leclercq', 'Marc', 'marc.leclercq@freelance.be', '$2b$12$EjkIfNqfFke3wvBOQ7kNzO8N.EbRqt77mb7O5SoedGHsUUn/p5d3C', 'Consultant IT', 120.00);
 
 -- ======= RESPONSABLES PROJET =======
 INSERT INTO ResponsableProjet (id_personnel, niveau_hierarchique)
@@ -224,12 +221,19 @@ VALUES
 -- ======= FACTURES =======
 INSERT INTO Facture (id_facture, date_emission, montant_facture, transmission_electronique, annexe, statut, reference_banque, fichier_facture)
 VALUES
-    ('F001', '2025-06-01', 15000.00, TRUE, 'PDF annexé', 'émise', 'BE34001234567890', 'facture_f001.pdf');
+    ('F001', '2025-06-01', 15000.00, TRUE, 'PDF annexe', 'emise', 'BE34001234567890', 'facture_f001.pdf');
 
 -- ======= PROJETS =======
-INSERT INTO Projet (id_projet, nom_projet, statut, date_debut, date_fin, montant_total_estime, type_marche, id_client)
-VALUES
-    ('PRJ001', 'Migration Système ERP', 'en cours', '2025-06-01', '2025-12-31', 25000.00, 'public', 'CL001');
+INSERT INTO Projet (
+    id_projet, nom_projet, statut, date_debut, date_fin,
+    montant_total_estime, type_marche, id_client,
+    type_projet, region, maitre_ouvrage, architecte, contact_client
+)
+VALUES (
+           'PRJ001', 'Migration Système ERP', 'en cours', '2025-06-01', '2025-12-31',
+           25000.00, 'public', 'CL001',
+           'migration', 'Wallonie', 'Poly-Tech SA', 'Atelier ArchiX', 'client@polytech.be'
+       );
 
 -- ======= GERER (association) =======
 INSERT INTO Gerer (id_personnel, id_projet)
@@ -247,7 +251,7 @@ INSERT INTO Tache (
     statut, est_realisable, date_debut, date_fin, heures_estimees, heures_prestees, heures_depassees
 ) VALUES (
              'T001', 'PH001', 'Audit existant', 'Évaluation du système actuel',
-             FALSE, TRUE, 'en cours',
+             FALSE, TRUE, 'en_cours',
              TRUE, '2025-06-01', '2025-06-10',
              35.00, 37.50, 2.50
          );
@@ -391,7 +395,7 @@ CREATE TRIGGER maj_alerte_retard
     BEFORE UPDATE ON Tache
     FOR EACH ROW
 BEGIN
-    IF CURDATE() > NEW.date_fin AND NEW.statut != 'terminé' THEN
+    IF CURDATE() > NEW.date_fin AND NEW.statut != 'termine' THEN
         SET NEW.alerte_retard = TRUE;
     ELSE
         SET NEW.alerte_retard = FALSE;

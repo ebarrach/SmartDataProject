@@ -23,6 +23,7 @@ class Personnel(Base):
     nom = Column(String(100))
     prenom = Column(String(100))
     email = Column(String(100))
+    password = Column(String(255))
     fonction = Column(String(100))
     taux_honoraire_standard = Column(DECIMAL(8, 2))
 
@@ -190,7 +191,7 @@ class Tache(Base):
     description = Column(Text)
     alerte_retard = Column(Boolean)
     conges_integres = Column(Boolean)
-    statut = Column(Enum("à faire", "en cours", "terminé"))
+    statut = Column(Enum("a_faire", "en_cours", "termine"))
     est_realisable = Column(Boolean)
     date_debut = Column(Date)
     date_fin = Column(Date)

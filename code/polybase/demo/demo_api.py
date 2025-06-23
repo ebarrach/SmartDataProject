@@ -75,7 +75,7 @@ with Session(engine) as session:
     session.add(Projet(
         id_projet="P003",
         nom_projet="Audit énergétique Bruxelles",
-        statut="en cours",
+        statut="en_cours",
         date_debut=date(2025, 6, 1),
         date_fin=date(2025, 9, 30),
         montant_total_estime=25000.00,

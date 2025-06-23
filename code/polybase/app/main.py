@@ -103,7 +103,7 @@ def login_user(
     implement: Esteban Barracho (v.1 19/06/2025)
     """
 
-    user = authenticate_user(email=email, db=db)
+    user = authenticate_user(email=email, plain_password=password, db=db)
 
     if user and code == "123456":
         response = RedirectResponse(url="/dashboard", status_code=HTTP_302_FOUND)

@@ -43,6 +43,9 @@ code/
                 documents.css
                 login.css
                 task_detail.css
+            img/
+                avatar-polybase.png
+                login-illustration.png
             js/
                 agenda.js
                 base.js

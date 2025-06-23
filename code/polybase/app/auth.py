@@ -6,6 +6,7 @@ from fastapi import Depends, HTTPException, Cookie
 from sqlalchemy.orm import Session
 from .database import SessionLocal
 from .models import Personnel
+import bcrypt
 
 # ============================================
 # BASE DE DONNÉES - SESSION
@@ -31,21 +32,26 @@ def get_db():
 # AUTHENTIFICATION UTILISATEUR
 # ============================================
 
-def authenticate_user(email: str, db: Session):
-    """This function attempts to authenticate a user via their email.
+def authenticate_user(email: str, plain_password: str, db: Session):
+    """This function attempts to authenticate a user via their email and password.
     Parameter:
     ----------
     email (str): The user's email address.
+    plain_password (str): The password entered by the user.
     db (Session): The active database session.
     Return:
     -------
-    (Personnel | None): Returns the user if found, else None.
+    (Personnel | None): Returns the user if authenticated, else None.
     Version:
     --------
-    specification: Esteban Barracho (v.1 19/06/25)
-    implement: Esteban Barracho (v.1 19/06/25)
+    specification: Esteban Barracho (v.2 23/06/25)
+    implement: Esteban Barracho (v.2 23/06/25)
     """
     user = db.query(Personnel).filter(Personnel.email == email).first()
+    if not user or not user.password:
+        return None
+    if not bcrypt.checkpw(plain_password.encode('utf-8'), user.password.encode('utf-8')):
+        return None
     return user
 
 # ============================================
