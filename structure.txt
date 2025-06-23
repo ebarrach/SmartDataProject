@@ -21,6 +21,7 @@ code/
                 collaborateur.py
                 dashboard.py
                 facture.py
+                finance.py
                 planification.py
                 prestation.py
                 project.py
@@ -38,19 +39,25 @@ code/
         static/
             css/
                 agenda.css
+                base-interactions.css
                 base.css
                 dashboard.css
                 documents.css
+                error.css
+                finance.css
                 login.css
                 task_detail.css
             img/
                 avatar-polybase.png
                 login-illustration.png
+                logo-polybase.png
             js/
                 agenda.js
                 base.js
                 dashboard.js
                 documents.js
+                error.js
+                finance.js
                 login.js
                 task_detail.js
         templates/
@@ -58,6 +65,8 @@ code/
             base.html
             dashboard.html
             documents.html
+            error.html
+            finance.html
             login.html
             task_detail.html
         test.db.py
@@ -99,8 +108,8 @@ method/
             PolyBase.sql
         PolyBase2.ddl
     implementation/
+        Note
         demo/
-            Note
             demo.sql
         prototype/
             agenda.html
@@ -108,6 +117,13 @@ method/
             login.html
             planification.html
             style.css
+        prototype2/
+            preview_agenda.html
+            preview_dashboard.html
+            preview_documents.html
+            preview_error.html
+            preview_finance.html
+            preview_task_detail.html
 planning/
     README.txt
     gantt.xlsx
