@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détail tâche</title>
+    <link rel="stylesheet" href="../../../code/polybase/static/css/base.css">
+    <link rel="stylesheet" href="../../../code/polybase/static/css/task_detail.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f9e9e9; margin: 0; padding: 0; }
+        .navbar {
+            background: #AA3939;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1em 2em;
+        }
+        .navbar-left { display: flex; align-items: center; }
+        .logo-link { display: flex; align-items: center; text-decoration: none; color: white; }
+        .logo-img { width: 40px; height: 40px; margin-right: 12px; border-radius: 5px; }
+        .logo-text { font-size: 1.5em; font-weight: bold; }
+        .navbar-right a {
+            color: white; margin-left: 1em; font-weight: bold; text-decoration: none;
+        }
+
+        .task-detail-header {
+            text-align: center;
+            padding: 2em;
+            background-color: #ffffff;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .task-detail-container {
+            max-width: 800px;
+            margin: 2em auto;
+            background-color: #ffffff;
+            padding: 2.5em;
+            border: 2px solid #AA3939;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(170, 57, 57, 0.1);
+            color: #333;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .task-actions {
+            margin-top: 2em;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 1em;
+            margin-top: 1em;
+            border: 1px solid #C06969;
+            border-radius: 6px;
+            resize: vertical;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: inline-block;
+            margin-top: 1.2em;
+            padding: 0.75em 1.5em;
+            background-color: #AA3939;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #941212;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard" class="logo-link">
+                <img src="../../../code/polybase/static/img/logo-polybase.png" alt="Logo PolyBase" class="logo-img">
+                <span class="logo-text">PolyBase</span>
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a href="/dashboard">Accueil</a>
+            <a href="/tasks">Tâches</a>
+            <a href="/projects">Projets</a>
+            <a href="/agenda">Agenda</a>
+            <a href="/documents">Documents</a>
+            <a href="/logout">Déconnexion</a>
+        </div>
+    </nav>
+</header>
+
+<div class="task-detail-header">
+    <h1>Nom de la tâche</h1>
+</div>
+
+<div class="task-detail-container">
+    <p><strong>Description :</strong> Préparer réunion client</p>
+    <p><strong>Statut :</strong> En cours</p>
+    <p><strong>Projet/Client :</strong> PJ001 - Vinçotte</p>
+    <p><strong>Dates :</strong> 2025-06-21 → 2025-06-24</p>
+
+    <div class="task-actions">
+        <textarea placeholder="Ajouter un commentaire..."></textarea>
+        <button>✅ Marquer comme terminé</button>
+        <button>💾 Enregistrer</button>
+    </div>
+</div>
+
+</body>
+</html>

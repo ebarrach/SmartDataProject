@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de bord</title>
+    <link rel="stylesheet" href="../../../code/polybase/static/css/base.css">
+    <link rel="stylesheet" href="../../../code/polybase/static/css/dashboard.css">
+    <style>
+        /* Ajout inline pour test rapide */
+        body { font-family: Arial, sans-serif; background: #f9e9e9; margin: 0; padding: 0; }
+        .navbar {
+            background: #AA3939;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1em 2em;
+        }
+        .navbar-left { display: flex; align-items: center; }
+        .logo-link { display: flex; align-items: center; text-decoration: none; color: white; }
+        .logo-img { width: 40px; height: 40px; margin-right: 12px; border-radius: 5px; }
+        .logo-text { font-size: 1.5em; font-weight: bold; }
+        .navbar-right a {
+            color: white; margin-left: 1em; font-weight: bold; text-decoration: none;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            padding: 2em;
+            background-color: #ffffff;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2em;
+            margin: 2em;
+        }
+        .card {
+            background: white;
+            padding: 1.5em;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .card h3 { color: #AA3939; }
+        .stat-value { font-size: 2em; font-weight: bold; }
+        .full-width { grid-column: 1 / -1; }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard" class="logo-link">
+                <img src="../../../code/polybase/static/img/logo-polybase.png" alt="Logo PolyBase" class="logo-img">
+                <span class="logo-text">PolyBase</span>
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a href="/dashboard">Accueil</a>
+            <a href="/tasks">Tâches</a>
+            <a href="/projects">Projets</a>
+            <a href="/agenda">Agenda</a>
+            <a href="/documents">Documents</a>
+            <a href="/logout">Déconnexion</a>
+        </div>
+    </nav>
+</header>
+
+<div class="dashboard-header">
+    <h1>Tableau de bord</h1>
+    <p>Bienvenue, Esteban Barracho (Administrateur)</p>
+</div>
+
+<div class="dashboard-content">
+    <div class="stats-grid">
+        <div class="card">
+            <h3>Tâches en retard</h3>
+            <p class="stat-value">4</p>
+        </div>
+        <div class="card">
+            <h3>Heures dépassées</h3>
+            <p class="stat-value">17.5</p>
+        </div>
+        <div class="card">
+            <h3>État facturation</h3>
+            <div>
+                <p><strong>PJ001</strong> : 3 000 € / 5 000 €</p>
+                <p><strong>PJ002</strong> : 2 000 € / 2 200 €</p>
+            </div>
+        </div>
+        <div class="card full-width">
+            <h3>Mes tâches en cours</h3>
+            <ul>
+                <li>Audit sécurité (du 01/06 au 10/06)</li>
+                <li>Correction rapport client (du 11/06 au 13/06)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

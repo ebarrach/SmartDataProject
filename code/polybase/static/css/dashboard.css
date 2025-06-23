@@ -1,16 +1,41 @@
-/* ----- Conteneur des cartes de statistiques ----- */
-.stats {
-    display: flex;
-    gap: 1em;
-    padding: 2em;
+/* ================================
+   STATS ET CARDS DASHBOARD
+   ================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2em;
+    margin-top: 2em;
 }
 
-/* ----- Style de chaque carte individuelle ----- */
 .card {
-    background-color: white;
-    border-left: 6px solid #AA3939;
-    padding: 1em;
-    border-radius: 5px;
-    flex: 1;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    background-color: #fff;
+    padding: 1.5em;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #AA3939;
+    font-size: 1.2em;
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #444;
+}
+
+.facturation-list p {
+    margin: 0.3em 0;
+}
+
+.full-width {
+    grid-column: 1 / -1;
 }

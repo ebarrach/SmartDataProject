@@ -1,34 +1,91 @@
-/* ----- Conteneur principal du détail de la tâche ----- */
-.task-detail-container {
-    max-width: 600px;
-    margin: 2em auto;
-    background-color: white;
+/* ================================
+   PAGE : DÉTAIL DE LA TÂCHE
+   ================================ */
+
+/* ----- En-tête de la tâche ----- */
+.task-detail-header {
+    text-align: center;
     padding: 2em;
-    border: 2px solid #941212;
-    border-radius: 8px;
+    background-color: #ffffff;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
-/* ----- Zone de saisie de commentaire ----- */
+.task-detail-header h1 {
+    color: #AA3939;
+    font-size: 2em;
+    margin: 0;
+}
+
+/* ----- Conteneur principal ----- */
+.task-detail-container {
+    max-width: 800px;
+    margin: 2em auto;
+    background-color: #ffffff;
+    padding: 2.5em;
+    border: 2px solid #AA3939;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(170, 57, 57, 0.1);
+    color: #333;
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+/* ----- Bloc des actions ----- */
+.task-actions {
+    margin-top: 2em;
+}
+
+/* ----- Zone de commentaire ----- */
 textarea {
     width: 100%;
-    margin-top: 1em;
+    height: 100px;
     padding: 1em;
+    margin-top: 1em;
     border: 1px solid #C06969;
-    border-radius: 4px;
+    border-radius: 6px;
+    resize: vertical;
+    font-size: 1em;
+    box-sizing: border-box;
 }
 
-/* ----- Boutons d'action (terminer / enregistrer) ----- */
+/* ----- Boutons ----- */
 button {
-    margin-top: 1em;
-    padding: 0.5em 1em;
+    display: inline-block;
+    margin-top: 1.2em;
+    padding: 0.75em 1.5em;
     background-color: #AA3939;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-/* ----- Effet au survol des boutons ----- */
 button:hover {
     background-color: #941212;
+    transform: translateY(-1px);
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 768px) {
+    .task-detail-container {
+        padding: 1.5em;
+        margin: 1em;
+    }
+
+    .task-detail-header h1 {
+        font-size: 1.5em;
+    }
+
+    textarea {
+        font-size: 0.95em;
+    }
+
+    button {
+        width: 100%;
+        font-size: 1em;
+    }
 }

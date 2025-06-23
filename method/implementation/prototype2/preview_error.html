@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Erreur 404 - PolyBase</title>
+    <link rel="stylesheet" href="../../../code/polybase/static/css/base.css">
+    <link rel="stylesheet" href="../../../code/polybase/static/css/error.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f9e9e9; margin: 0; padding: 0; }
+        .navbar {
+            background: #AA3939;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1em 2em;
+        }
+        .navbar-left { display: flex; align-items: center; }
+        .logo-link { display: flex; align-items: center; text-decoration: none; color: white; }
+        .logo-img { width: 40px; height: 40px; margin-right: 12px; border-radius: 5px; }
+        .logo-text { font-size: 1.5em; font-weight: bold; }
+        .navbar-right a {
+            color: white; margin-left: 1em; font-weight: bold; text-decoration: none;
+        }
+
+        .error-container {
+            max-width: 700px;
+            margin: 4em auto;
+            padding: 3em;
+            background-color: #ffffff;
+            border: 2px solid #AA3939;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(170, 57, 57, 0.1);
+        }
+
+        .error-code {
+            font-size: 5em;
+            color: #AA3939;
+            margin-bottom: 0.2em;
+        }
+
+        .error-message {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 1em;
+        }
+
+        .error-hint {
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 2em;
+        }
+
+        .button {
+            background-color: #AA3939;
+            color: white;
+            padding: 0.75em 1.5em;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s ease;
+        }
+
+        .button:hover {
+            background-color: #941212;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard" class="logo-link">
+                <img src="../../../code/polybase/static/img/logo-polybase.png" alt="Logo PolyBase" class="logo-img">
+                <span class="logo-text">PolyBase</span>
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a href="/dashboard">Accueil</a>
+            <a href="/tasks">Tâches</a>
+            <a href="/projects">Projets</a>
+            <a href="/agenda">Agenda</a>
+            <a href="/documents">Documents</a>
+            <a href="/logout">Déconnexion</a>
+        </div>
+    </nav>
+</header>
+
+<div class="error-container">
+    <div class="error-code">404</div>
+    <div class="error-message">Page non trouvée</div>
+    <div class="error-hint">La page demandée est introuvable ou a été supprimée.</div>
+    <a href="/dashboard" class="button">Retour au tableau de bord</a>
+</div>
+
+</body>
+</html>

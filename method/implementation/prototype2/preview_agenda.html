@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Agenda</title>
+    <link rel="stylesheet" href="../../../code/polybase/static/css/base.css">
+    <link rel="stylesheet" href="../../../code/polybase/static/css/agenda.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f9e9e9; margin: 0; padding: 0; }
+        .navbar {
+            background: #AA3939;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1em 2em;
+        }
+        .navbar-left { display: flex; align-items: center; }
+        .logo-link { display: flex; align-items: center; text-decoration: none; color: white; }
+        .logo-img { width: 40px; height: 40px; margin-right: 12px; border-radius: 5px; }
+        .logo-text { font-size: 1.5em; font-weight: bold; }
+        .navbar-right a {
+            color: white; margin-left: 1em; font-weight: bold; text-decoration: none;
+        }
+
+        .agenda-header {
+            text-align: center;
+            padding: 2em;
+            background-color: #ffffff;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .agenda-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5em;
+            padding: 2em;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .calendar-sidebar,
+        .task-sidebar {
+            flex: 1 1 220px;
+            background-color: #D6A3A3;
+            padding: 1.5em;
+            border-radius: 10px;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .calendar-main {
+            flex: 2 1 500px;
+            background-color: white;
+            border: 2px solid #AA3939;
+            padding: 1.5em;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .task-sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 1em 0 0 0;
+        }
+
+        .task-sidebar li {
+            background-color: white;
+            color: #AA3939;
+            padding: 0.7em 1em;
+            border-radius: 6px;
+            margin-bottom: 0.75em;
+            font-weight: bold;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard" class="logo-link">
+                <img src="../../../code/polybase/static/img/logo-polybase.png" alt="Logo PolyBase" class="logo-img">
+                <span class="logo-text">PolyBase</span>
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a href="/dashboard">Accueil</a>
+            <a href="/tasks">Tâches</a>
+            <a href="/projects">Projets</a>
+            <a href="/agenda">Agenda</a>
+            <a href="/documents">Documents</a>
+            <a href="/logout">Déconnexion</a>
+        </div>
+    </nav>
+</header>
+
+<div class="agenda-header">
+    <h1>Mon agenda</h1>
+</div>
+
+<div class="agenda-layout">
+    <div class="calendar-sidebar">
+        <h3>Mois</h3>
+        <div>📅 Calendrier ici</div>
+    </div>
+
+    <div class="calendar-main">
+        <h3>Semaine en cours</h3>
+        <div>Lun – Ven (avec créneaux)</div>
+    </div>
+
+    <div class="task-sidebar">
+        <h3>Mes tâches</h3>
+        <ul>
+            <li>Réunion de coordination</li>
+            <li>Planification des phases</li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

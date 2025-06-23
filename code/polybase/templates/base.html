@@ -1,42 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <!-- Métadonnées et titre de la page -->
     <meta charset="UTF-8">
     <title>{% block title %}PolyBase{% endblock %}</title>
-
-    <!-- Feuille de style principale -->
     <link rel="stylesheet" href="../static/css/base.css">
-
-    <!-- Bloc pour ajouter des styles supplémentaires -->
+    <link rel="stylesheet" href="../static/css/base-interactions.css">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-<!-- En-tête et barre de navigation -->
 <header>
     <nav class="navbar">
-        <a href="/dashboard">Tableau de bord</a>
-        <a href="/projects">Projets</a>
-        <a href="/tasks">Tâches</a>
-        <a href="/agenda">Agenda</a>
-        <a href="/documents">Documents</a>
-        <div class="profile">
-            <span id="user-email">user@polytech.be</span>
+        <!-- Partie gauche : logo + nom -->
+        <div class="navbar-left">
+            <a href="/dashboard" class="logo-link">
+                <img src="../static/img/logo-polybase.png" alt="Logo PolyBase" class="logo-img">
+                <span class="logo-text">PolyBase</span>
+            </a>
+        </div>
+
+        <!-- Partie droite : liens -->
+        <div class="navbar-right">
+            <a href="/dashboard">Accueil</a>
+            <a href="/tasks">Tâches</a>
+            <a href="/projects">Projets</a>
+            <a href="/agenda">Agenda</a>
+            <a href="/documents">Documents</a>
             <a href="/logout">Déconnexion</a>
         </div>
     </nav>
 </header>
 
-<!-- Contenu principal de la page -->
 <main>
     {% block content %}{% endblock %}
 </main>
 
-<!-- Script JS principal -->
 <script src="../static/js/base.js"></script>
-
-<!-- Bloc pour ajouter des scripts spécifiques -->
 {% block extra_js %}{% endblock %}
 
 </body>

@@ -1,19 +1,59 @@
-/* ----- Conteneur principal des documents ----- */
-.documents-container {
+/* ============================
+   STYLES POUR LA PAGE DOCUMENTS
+   ============================ */
+
+/* En-tête de la page */
+.documents-header {
+    text-align: center;
     padding: 2em;
+    background-color: #ffffff;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
-/* ----- Liste des documents ----- */
+.documents-header h1 {
+    color: #AA3939;
+    margin: 0;
+    font-size: 2em;
+}
+
+/* Conteneur principal des documents */
+.documents-content {
+    padding: 2em;
+    max-width: 800px;
+    margin: auto;
+}
+
+/* Liste des documents */
 #document-list {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
-/* ----- Style individuel pour chaque document ----- */
+/* Élément individuel */
 #document-list li {
     background-color: #D6A3A3;
-    padding: 0.5em;
-    margin-bottom: 0.5em;
+    padding: 0.75em 1em;
+    margin-bottom: 0.75em;
     border-left: 5px solid #AA3939;
-    border-radius: 4px;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+#document-list li:hover {
+    background-color: #c98b8b;
+}
+
+/* Liens */
+#document-list li a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    display: block;
+}
+
+#document-list li a:hover {
+    text-decoration: underline;
 }

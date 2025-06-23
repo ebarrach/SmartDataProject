@@ -230,7 +230,7 @@ INSERT INTO Projet (
     type_projet, region, maitre_ouvrage, architecte, contact_client
 )
 VALUES (
-           'PRJ001', 'Migration Système ERP', 'en cours', '2025-06-01', '2025-12-31',
+           'PRJ001', 'Migration Système ERP', 'en_cours', '2025-06-01', '2025-12-31',
            25000.00, 'public', 'CL001',
            'migration', 'Wallonie', 'Poly-Tech SA', 'Atelier ArchiX', 'client@polytech.be'
        );

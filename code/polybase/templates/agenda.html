@@ -3,36 +3,37 @@
 {% block title %}Agenda{% endblock %}
 
 {% block extra_css %}
-<!-- Styles spécifiques à la page agenda -->
 <link rel="stylesheet" href="../static/css/agenda.css">
 {% endblock %}
 
 {% block content %}
-<!-- Titre principal -->
-<h2>Mon agenda</h2>
+<!-- En-tête de la page -->
+<div class="agenda-header">
+    <h1>Mon agenda</h1>
+</div>
 
 <!-- Conteneur principal de l'agenda -->
 <div class="agenda-layout">
 
-    <!-- Colonne latérale gauche : mini calendrier -->
+    <!-- Colonne gauche : mini calendrier -->
     <div class="calendar-sidebar">
         <h3>Mois</h3>
         <div id="mini-calendar"></div>
     </div>
 
-    <!-- Colonne centrale : vue hebdomadaire -->
+    <!-- Colonne centrale : planning hebdomadaire -->
     <div class="calendar-main">
         <h3>Semaine en cours</h3>
         <div id="weekly-view">
-            <!-- Colonnes jour/heure -->
+            <!-- Colonnes dynamiques JS -->
         </div>
     </div>
 
-    <!-- Colonne droite : liste des tâches -->
+    <!-- Colonne droite : tâches -->
     <div class="task-sidebar">
         <h3>Mes tâches</h3>
         <ul id="task-list">
-            <!-- Tâches dynamiques -->
+            <!-- Tâches dynamiques JS -->
         </ul>
     </div>
 
@@ -40,6 +41,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Script JS lié à l'agenda -->
 <script src="../static/js/agenda.js"></script>
 {% endblock %}

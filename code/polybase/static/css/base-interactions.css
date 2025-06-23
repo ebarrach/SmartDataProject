@@ -1,0 +1,113 @@
+/* ================================
+   BASE INTERACTIVE STYLES - POLYBASE
+   ================================ */
+
+/* ----- Boutons standards ----- */
+button {
+    background-color: #AA3939;
+    color: white;
+    border: none;
+    padding: 0.75em 1.5em;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #941212;
+    transform: translateY(-1px);
+}
+
+/* ----- Liens actifs ----- */
+a {
+    color: #AA3939;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #941212;
+}
+
+/* ----- Champs de formulaire ----- */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+    border: 1px solid #C06969;
+    border-radius: 5px;
+    padding: 0.75em;
+    font-size: 1em;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #AA3939;
+    box-shadow: 0 0 5px rgba(170, 57, 57, 0.3);
+    outline: none;
+}
+
+/* ----- Cartes ou blocs d’information ----- */
+.card {
+    background-color: white;
+    border: 1px solid #e2c4c4;
+    border-radius: 10px;
+    padding: 1.5em;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* ----- Badge ou étiquette stylisée ----- */
+.badge {
+    display: inline-block;
+    padding: 0.3em 0.6em;
+    background-color: #AA3939;
+    color: white;
+    border-radius: 999px;
+    font-size: 0.85em;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+/* ----- Transitions globales ----- */
+.transition-fast {
+    transition: all 0.2s ease;
+}
+
+.transition-slow {
+    transition: all 0.5s ease;
+}
+
+/* ----- Alertes (infos, erreurs, succès) ----- */
+.alert {
+    padding: 1em;
+    border-radius: 6px;
+    margin-top: 1em;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.alert-info {
+    background-color: #f0f0f0;
+    color: #444;
+}
+
+.alert-success {
+    background-color: #d3e9d3;
+    color: #225c22;
+}
+
+.alert-error {
+    background-color: #f5d2d2;
+    color: #941212;
+}

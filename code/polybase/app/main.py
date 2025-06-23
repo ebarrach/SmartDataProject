@@ -194,3 +194,43 @@ def startup_message():
     """
 
     print("✅ API disponible sur http://localhost:8000")
+
+
+# ============================================
+# HANDLERS D’ERREURS GÉNÉRIQUES
+# ============================================
+
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.exceptions import RequestValidationError
+
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """This handler renders a custom HTML error page for HTTP exceptions.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 23/06/2025)
+    implement: Esteban Barracho (v.1 23/06/2025)
+    """
+    return templates.TemplateResponse("error.html", {
+        "request": request,
+        "code": exc.status_code,
+        "message": exc.detail or "Une erreur est survenue",
+        "hint": "Veuillez vérifier l’adresse ou contacter l’administrateur."
+    }, status_code=exc.status_code)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """This handler renders a custom HTML page for form or path validation errors.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 23/06/2025)
+    implement: Esteban Barracho (v.1 23/06/2025)
+    """
+    return templates.TemplateResponse("error.html", {
+        "request": request,
+        "code": 422,
+        "message": "Erreur de validation",
+        "hint": "Vérifie les champs saisis ou l’URL appelée."
+    }, status_code=422)
+

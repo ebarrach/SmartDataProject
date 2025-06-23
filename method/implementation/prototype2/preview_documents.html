@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Documents</title>
+    <link rel="stylesheet" href="../../../code/polybase/static/css/base.css">
+    <link rel="stylesheet" href="../../../code/polybase/static/css/documents.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f9e9e9; margin: 0; padding: 0; }
+        .navbar {
+            background: #AA3939;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1em 2em;
+        }
+        .navbar-left { display: flex; align-items: center; }
+        .logo-link { display: flex; align-items: center; text-decoration: none; color: white; }
+        .logo-img { width: 40px; height: 40px; margin-right: 12px; border-radius: 5px; }
+        .logo-text { font-size: 1.5em; font-weight: bold; }
+        .navbar-right a {
+            color: white; margin-left: 1em; font-weight: bold; text-decoration: none;
+        }
+
+        .documents-header {
+            text-align: center;
+            padding: 2em;
+            background-color: #ffffff;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .documents-content {
+            padding: 2em;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        #document-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #document-list li {
+            background-color: #D6A3A3;
+            padding: 0.75em 1em;
+            margin-bottom: 0.75em;
+            border-left: 5px solid #AA3939;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+
+        #document-list li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            display: block;
+        }
+
+        #document-list li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="/dashboard" class="logo-link">
+                <img src="../../../code/polybase/static/img/logo-polybase.png" alt="Logo PolyBase" class="logo-img">
+                <span class="logo-text">PolyBase</span>
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a href="/dashboard">Accueil</a>
+            <a href="/tasks">Tâches</a>
+            <a href="/projects">Projets</a>
+            <a href="/agenda">Agenda</a>
+            <a href="/documents">Documents</a>
+            <a href="/logout">Déconnexion</a>
+        </div>
+    </nav>
+</header>
+
+<div class="documents-header">
+    <h1>Mes documents</h1>
+</div>
+
+<div class="documents-content">
+    <ul id="document-list">
+        <li><a href="#">Planning Phase 1</a></li>
+        <li><a href="#">Rapport d’Audit</a></li>
+        <li><a href="#">Contrat client signé</a></li>
+    </ul>
+</div>
+
+</body>
+</html>

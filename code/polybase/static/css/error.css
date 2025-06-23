@@ -1,0 +1,47 @@
+/* ================================
+   PAGE D’ERREUR GÉNÉRIQUE - POLYBASE
+   ================================ */
+
+.error-container {
+    max-width: 700px;
+    margin: 4em auto;
+    padding: 3em;
+    background-color: #ffffff;
+    border: 2px solid #AA3939;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(170, 57, 57, 0.1);
+}
+
+.error-code {
+    font-size: 5em;
+    color: #AA3939;
+    margin-bottom: 0.2em;
+}
+
+.error-message {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 1em;
+}
+
+.error-hint {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 2em;
+}
+
+.button {
+    background-color: #AA3939;
+    color: white;
+    padding: 0.75em 1.5em;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s ease;
+}
+
+.button:hover {
+    background-color: #941212;
+}
