@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - PolyBase</title>
+    <link rel="stylesheet" href="../../../code/polybase/static/css/login.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9e9e9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border-top: 1px solid #AA3939;
+            border-bottom: 1px solid #AA3939;
+            max-width: 1100px;
+            width: 95vw;
+            height: 700px;
+        }
+
+        .left-panel {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2em;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            border: 3px solid #AA3939;
+            border-radius: 8px;
+            padding: 2.5em;
+            box-shadow: 0 0 12px rgba(170, 57, 57, 0.1);
+            text-align: center;
+        }
+
+        .profile-icon {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 1em auto;
+            border: 3px solid #AA3939;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .profile-icon img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        h2 {
+            margin-top: 0.5em;
+            font-size: 1.6em;
+            color: #333;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            margin-top: 1.2em;
+            padding: 0.75em;
+            border: 1px solid #C06969;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 1.2em;
+            padding: 0.75em;
+            width: 100%;
+            font-weight: bold;
+            color: white;
+            background-color: #AA3939;
+            border: 1px solid #AA3939;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #941212;
+        }
+
+        .forgot {
+            display: block;
+            margin-top: 1em;
+            text-align: right;
+            color: #AA3939;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .forgot:hover {
+            text-decoration: underline;
+        }
+
+        .right-panel {
+            flex: 1;
+            background-color: #fff0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2em;
+        }
+
+        .login-image {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgba(170, 57, 57, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .right-panel {
+                display: none;
+            }
+
+            .login-container {
+                padding: 2em;
+            }
+
+            input, button {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Formulaire -->
+    <div class="left-panel">
+        <div class="login-container">
+            <div class="profile-icon">
+                <img src="../../../code/polybase/static/img/avatar-polybase.png" alt="Avatar utilisateur">
+            </div>
+            <h2>Connexion à PolyBase</h2>
+            <form action="/login" method="post" id="login-form">
+                <input type="email" name="email" placeholder="Adresse email" required>
+                <input type="password" name="password" placeholder="Mot de passe" required>
+                <input type="text" name="code" placeholder="Code 2FA" required>
+                <button type="submit">Se connecter</button>
+            </form>
+            <a class="forgot" href="mailto:admin@polytech.be?subject=Demande accès PolyBase">Demander l’accès</a>
+        </div>
+    </div>
+
+    <!-- Illustration -->
+    <div class="right-panel">
+        <img src="../../../code/polybase/static/img/login-illustration.png" alt="Illustration PolyBase" class="login-image">
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("login-form");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const response = await fetch("/login", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                const html = await response.text();
+                document.documentElement.innerHTML = html;
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
