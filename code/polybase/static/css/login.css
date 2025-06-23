@@ -1,31 +1,174 @@
-/* ----- Conteneur du formulaire de connexion ----- */
-.login-container {
-    max-width: 400px;
-    margin: 5em auto;
-    padding: 2em;
-    background-color: white;
-    border: 2px solid #AA3939;
-    border-radius: 8px;
+/* ================================
+   STRUCTURE DE BASE DE LA PAGE
+   ================================ */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #D6A3A3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* ----- Champs de saisie et bouton ----- */
-input, button {
+/* ================================
+   CONTENEUR GLOBAL (DEUX COLONNES)
+   ================================ */
+.container {
+    display: flex;
+    max-width: 1200px;
+    width: 95vw;
+    height: 700px;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    border-top: 1px solid #AA3939;
+    border-bottom: 1px solid #AA3939;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* ================================
+   PANNEAU GAUCHE : FORMULAIRE
+   ================================ */
+.left-panel {
+    flex: 1;
+    padding: 2.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Conteneur du formulaire */
+.login-container {
+    max-width: 440px;
+    width: 100%;
+    background-color: white;
+    border: 3px solid #AA3939;
+    border-radius: 8px;
+    padding: 3em 2.5em;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(170, 57, 57, 0.1);
+}
+
+
+/* ================================
+   AVATAR IMAGE CIRCULAIRE
+   ================================ */
+.profile-icon {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 1em auto;
+    border: 3px solid #AA3939;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+.profile-icon img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+/* ================================
+   TITRE ET CHAMPS DU FORMULAIRE
+   ================================ */
+h2 {
+    font-size: 1.8em;
+    margin-bottom: 1em;
+    color: #333;
+}
+
+input {
     display: block;
     width: 100%;
-    margin-top: 1em;
-    padding: 0.5em;
+    margin-top: 1.2em;
+    padding: 0.75em;
     border: 1px solid #C06969;
     border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
 }
 
-/* ----- Style du bouton principal ----- */
+/* ================================
+   BOUTON DE CONNEXION
+   ================================ */
 button {
+    display: inline-block;
+    width: 100%;
+    margin-top: 1.2em;
+    padding: 0.75em;
     background-color: #AA3939;
     color: white;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    border: 1px solid #AA3939;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
-/* ----- Effet au survol du bouton ----- */
 button:hover {
     background-color: #941212;
+}
+
+/* ================================
+   LIEN DEMANDE D'ACCÈS
+   ================================ */
+.forgot {
+    display: block;
+    margin-top: 1.2em;
+    font-size: 14px;
+    color: #AA3939;
+    text-align: right;
+    text-decoration: none;
+}
+.forgot:hover {
+    text-decoration: underline;
+}
+
+/* ================================
+   PANNEAU DROIT : ILLUSTRATION
+   ================================ */
+.right-panel {
+    flex: 1;
+    background-color: #fff0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2em;
+}
+
+.login-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(170, 57, 57, 0.2);
+}
+
+/* ================================
+   RESPONSIVE MOBILE
+   ================================ */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+        border-radius: 0;
+    }
+
+    .right-panel {
+        display: none;
+    }
+
+    .login-container {
+        padding: 2em;
+    }
+
+    input, button {
+        font-size: 15px;
+    }
 }

@@ -1,6 +1,6 @@
 // ----- Script de gestion du formulaire de connexion -----
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector("form");
+    const form = document.getElementById("login-form");
 
     // Interception de la soumission du formulaire
     form.addEventListener("submit", async (e) => {
