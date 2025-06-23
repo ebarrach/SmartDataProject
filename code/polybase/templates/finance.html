@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau financier{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="../static/css/finance.css">
+{% endblock %}
+
+{% block content %}
+<div class="finance-header">
+  <h1>Visualisation financière</h1>
+  <p>Suivi des projets, dépassements, alertes et budgets.</p>
+</div>
+
+<div class="charts-grid">
+  <div class="chart-card" id="card-depassements">
+    <h3>Dépassements par projet</h3>
+    <canvas id="chartDepassements"></canvas>
+  </div>
+
+  <div class="chart-card" id="card-alertes">
+    <h3>Alertes de retard</h3>
+    <canvas id="chartAlertes"></canvas>
+  </div>
+
+  <div class="chart-card" id="card-budgets">
+    <h3>Budgets vs Coûts</h3>
+    <canvas id="chartBudgets"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../static/js/finance.js"></script>
+{% endblock %}

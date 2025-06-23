@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tableau financier</title>
+  <link rel="stylesheet" href="../../../code/polybase/static/css/base.css">
+  <link rel="stylesheet" href="../../../code/polybase/static/css/finance.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <a href="/dashboard" class="logo-link">
+        <img src="../../../code/polybase/static/img/logo-polybase.png" alt="Logo PolyBase" class="logo-img">
+        <span class="logo-text">PolyBase</span>
+      </a>
+    </div>
+    <div class="navbar-right">
+      <a href="/dashboard">Accueil</a>
+      <a href="/tasks">Tâches</a>
+      <a href="/projects">Projets</a>
+      <a href="/agenda">Agenda</a>
+      <a href="/documents">Documents</a>
+      <a href="/finance">Finances</a>
+      <a href="/logout">Déconnexion</a>
+    </div>
+  </nav>
+</header>
+
+<div class="finance-header">
+  <h1>Visualisation financière</h1>
+  <p>Suivi des projets, dépassements, alertes et budgets</p>
+</div>
+
+<div class="charts-grid">
+  <div class="chart-card">
+    <h3>Dépassements par projet</h3>
+    <canvas id="chartDepassements"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3>Alertes de retard</h3>
+    <canvas id="chartAlertes"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3>Budgets vs Coûts</h3>
+    <canvas id="chartBudgets"></canvas>
+  </div>
+</div>
+
+<script>
+  // === Données simulées ===
+  const projets = ["PJ001", "PJ002", "PJ003"];
+  const depassements = [4, 2, 7];
+  const alertes = [1, 0, 2]; // ex: PJ001 → 1 alerte, PJ002 → 0
+  const budgets = [5000, 3000, 4000];
+  const couts =    [4600, 2900, 4300];
+
+  // === Couleurs adaptatives ===
+  const couleursBudget = projets.map((_, i) =>
+          couts[i] <= budgets[i] ? "rgba(102,180,102,0.8)" : "rgba(214,80,80,0.8)"
+  );
+
+  const couleursAlertes = alertes.map(a =>
+          a === 0 ? "#B8E9B8" : a === 1 ? "#F5CCCC" : "#AA3939"
+  );
+
+  const couleursDepassements = depassements.map(h =>
+          h <= 2 ? "#F5CCCC" : "#AA3939"
+  );
+
+  // === Dépassements ===
+  new Chart(document.getElementById("chartDepassements"), {
+    type: "bar",
+    data: {
+      labels: projets,
+      datasets: [{
+        label: "Heures dépassées",
+        data: depassements,
+        backgroundColor: couleursDepassements
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: "Heures dépassées par projet" },
+        legend: { display: true }
+      },
+      scales: {
+        y: { beginAtZero: true, title: { display: true, text: "Heures" } },
+        x: { title: { display: true, text: "Projets" } }
+      }
+    }
+  });
+
+  // === Alertes ===
+  new Chart(document.getElementById("chartAlertes"), {
+    type: "doughnut",
+    data: {
+      labels: projets,
+      datasets: [{
+        label: "Alertes",
+        data: alertes,
+        backgroundColor: couleursAlertes
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: "Alertes de tâches en retard" },
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+
+  // === Budgets vs Coûts ===
+  new Chart(document.getElementById("chartBudgets"), {
+    type: "bar",
+    data: {
+      labels: projets,
+      datasets: [
+        {
+          label: "Budget alloué (€)",
+          data: budgets,
+          backgroundColor: "rgba(102,180,102,0.6)" // vert doux
+        },
+        {
+          label: "Coûts actuels (€)",
+          data: couts,
+          backgroundColor: couleursBudget
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: "Budgets vs Coûts par projet" },
+        legend: { position: 'bottom' }
+      },
+      scales: {
+        y: { beginAtZero: true, title: { display: true, text: "Montant (€)" } },
+        x: { title: { display: true, text: "Projets" } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

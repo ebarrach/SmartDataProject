@@ -1,0 +1,75 @@
+/* ================================
+   STYLE PAGE FINANCE - POLYBASE
+   ================================ */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fdf6f6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.finance-header {
+    text-align: center;
+    padding: 2em;
+    background-color: #ffffff;
+    border-bottom: 2px solid #AA3939;
+    margin-bottom: 2em;
+}
+
+.finance-header h1 {
+    margin: 0;
+    color: #AA3939;
+    font-size: 2.5em;
+}
+
+.finance-header p {
+    margin-top: 0.5em;
+    font-size: 1.1em;
+    color: #666;
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2em;
+    padding: 0 2em 4em 2em;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.chart-card {
+    background-color: #ffffff;
+    border: 2px solid #D6A3A3;
+    border-radius: 12px;
+    padding: 1.5em;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.chart-card:hover {
+    transform: translateY(-4px);
+}
+
+.chart-card h3 {
+    text-align: center;
+    color: #AA3939;
+    margin-bottom: 1em;
+}
+
+canvas {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+/* Ajout visuel facultatif pour encadrer les cas positifs/négatifs */
+.chart-card.positive {
+    border-color: #66B466;
+    background-color: #f0fdf2;
+}
+
+.chart-card.negative {
+    border-color: #E06A6A;
+    background-color: #fff5f5;
+}
