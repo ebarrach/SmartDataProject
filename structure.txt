@@ -123,6 +123,7 @@ method/
             preview_documents.html
             preview_error.html
             preview_finance.html
+            preview_login.html
             preview_task_detail.html
 planning/
     README.txt

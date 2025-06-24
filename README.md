@@ -53,8 +53,7 @@ docker compose down
 #### ♻️ Full rebuild (with volume wipe)
 
 ```bash
-docker compose down -v
-docker compose up --build
+docker-compose down -v && docker-compose up --build
 ```
 
 #### 🧪 Check if API is running

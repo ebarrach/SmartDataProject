@@ -1,12 +1,6 @@
-from sqlalchemy import create_engine, text
+import bcrypt
 
-engine = create_engine("mysql+pymysql://root:polyroot@localhost:3307/Relation")
+hash = b"$2b$12$S1l8Qb0/6wg6dqd2Fu1.U.T6MhTcK7RbfwMbqxnJ5/7xZP1lyJq02"
+motdepasse = b"polybase123"
 
-with engine.connect() as conn:
-    with open("init.sql", "r", encoding="utf-8") as file:
-        sql_code = file.read()
-    for statement in sql_code.split(";"):
-        if statement.strip():
-            conn.execute(text(statement))
-    print("✅ Schéma et données injectés.")
-
+print(bcrypt.checkpw(motdepasse, hash))

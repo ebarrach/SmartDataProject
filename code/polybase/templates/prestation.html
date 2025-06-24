@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Prestations{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/prestation.css">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Prestations collaborateurs</h1>
+    <p>Liste des prestations enregistrées</p>
+</div>
+<div class="dashboard-content">
+    <div class="stats-grid">
+        <div class="card full-width">
+            <h3>Prestations</h3>
+            <table class="data-table" id="prestation-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Tâche</th>
+                        <th>Collaborateur</th>
+                        <th>Heures</th>
+                        <th>Mode</th>
+                        <th>Facture</th>
+                        <th>Taux horaire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS dynamique -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/prestation.js"></script>
+{% endblock %}

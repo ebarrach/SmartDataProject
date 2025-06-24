@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Projets{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/projects.css">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Liste des projets</h1>
+    <p>Vue de tous les projets en base</p>
+</div>
+<div class="dashboard-content">
+    <div class="stats-grid">
+        <div class="card full-width">
+            <h3>Projets enregistrés</h3>
+            <table class="data-table" id="projects-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Statut</th>
+                        <th>Début</th>
+                        <th>Fin</th>
+                        <th>Montant estimé</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS dynamique -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/projects.js"></script>
+{% endblock %}

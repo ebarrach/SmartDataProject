@@ -11,19 +11,26 @@
 
 <header>
     <nav class="navbar">
-        <!-- Partie gauche : logo + nom -->
         <div class="navbar-left">
             <a href="/dashboard" class="logo-link">
                 <img src="/static/img/logo-polybase.png" alt="Logo PolyBase" class="logo-img">
                 <span class="logo-text">PolyBase</span>
             </a>
         </div>
-
-        <!-- Partie droite : liens -->
         <div class="navbar-right">
             <a href="/dashboard">Accueil</a>
             <a href="/tasks">Tâches</a>
             <a href="/projects">Projets</a>
+            <a href="/clients">Clients</a>
+            <a href="/factures">Factures</a>
+            <a href="/planifications">Planifications</a>
+            <a href="/prestation">Prestations</a>
+            <a href="/finance">Finance</a>
+            {#
+            {% if user.fonction == "Administrateur des finances" %}
+            <a href="/finance">Finance</a>
+            {% endif %}
+            #}
             <a href="/agenda">Agenda</a>
             <a href="/documents">Documents</a>
             <a href="/logout">Déconnexion</a>

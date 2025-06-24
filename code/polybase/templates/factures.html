@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Factures{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/factures.css">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Liste des factures</h1>
+    <p>Historique de facturation</p>
+</div>
+<div class="dashboard-content">
+    <div class="stats-grid">
+        <div class="card full-width">
+            <h3>Factures</h3>
+            <table class="data-table" id="factures-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Montant</th>
+                        <th>Statut</th>
+                        <th>Banque</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS dynamique -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/factures.js"></script>
+{% endblock %}

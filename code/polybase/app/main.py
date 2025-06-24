@@ -18,6 +18,8 @@ from app.routers import (
 from app.auth import authenticate_user, get_current_user, get_db
 from app.routers import collaborateur
 from app.routers import finance
+from app.models import Client, Projet
+from app.models import Facture, PlanificationCollaborateur, PrestationCollaborateur
 
 # ============================================
 # INITIALISATION DE L'APPLICATION FASTAPI
@@ -184,6 +186,83 @@ def task_list_page(request: Request, user=Depends(get_current_user)):
 
     return templates.TemplateResponse("task_detail.html", {"request": request, "user": user})
 
+
+@app.get("/clients", response_class=HTMLResponse)
+def clients_page(request: Request, user=Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Renders the clients page with a list of clients.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.1 24/06/2025)
+    """
+    clients = db.query(Client).all()
+    return templates.TemplateResponse("clients.html", {"request": request, "user": user, "clients": clients})
+
+@app.get("/projects", response_class=HTMLResponse)
+def projects_page(request: Request, user=Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Renders the projects page with a list of projects.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.1 24/06/2025)
+    """
+    projects = db.query(Projet).all()
+    return templates.TemplateResponse("projects.html", {"request": request, "user": user, "projects": projects})
+
+@app.get("/factures", response_class=HTMLResponse)
+def factures_page(request: Request, user=Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Renders the factures page with a list of invoices.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.1 24/06/2025)
+    """
+    factures = db.query(Facture).all()
+    return templates.TemplateResponse("factures.html", {"request": request, "user": user, "factures": factures})
+
+@app.get("/planifications", response_class=HTMLResponse)
+def planifications_page(request: Request, user=Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Renders the planifications page with a list of planifications.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.1 24/06/2025)
+    """
+    planifications = db.query(PlanificationCollaborateur).all()
+    return templates.TemplateResponse("planifications.html", {"request": request, "user": user, "planifications": planifications})
+
+@app.get("/prestation", response_class=HTMLResponse)
+def prestation_page(request: Request, user=Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Renders the prestations page with a list of prestations.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.1 24/06/2025)
+    """
+    prestations = db.query(PrestationCollaborateur).all()
+    return templates.TemplateResponse("prestation.html", {"request": request, "user": user, "prestations": prestations})
+
+@app.get("/finance", response_class=HTMLResponse)
+def finance_page(request: Request, user=Depends(get_current_user)):
+    """
+    Renders the finance dashboard page.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.1 24/06/2025)
+    """
+    return templates.TemplateResponse("finance.html", {"request": request, "user": user})
 # ============================================
 # ÉVÉNEMENT DE DÉMARRAGE
 # ============================================

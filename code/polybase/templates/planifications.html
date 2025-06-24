@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Planifications{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/planifications.css">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Planifications collaborateurs</h1>
+    <p>Liste des planifications enregistrées</p>
+</div>
+<div class="dashboard-content">
+    <div class="stats-grid">
+        <div class="card full-width">
+            <h3>Planifications</h3>
+            <table class="data-table" id="planifications-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tâche</th>
+                        <th>Collaborateur</th>
+                        <th>Heures prévues</th>
+                        <th>Semaine</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS dynamique -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/planifications.js"></script>
+{% endblock %}
