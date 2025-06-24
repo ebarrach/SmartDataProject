@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Offres{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="../static/css/offre.css">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Indicateurs des Offres</h1>
+    <p>Visualisation dynamique du nombre d’offres, des offres gagnées et perdues.</p>
+</div>
+
+<div class="dashboard-content">
+    <div class="stats-grid">
+        <!-- Nombre total d'offres -->
+        <div class="card">
+            <h3>Nombre total d'offres</h3>
+            <p id="offres-total" class="stat-value">–</p>
+        </div>
+
+        <!-- Offres gagnées -->
+        <div class="card">
+            <h3>Offres gagnées</h3>
+            <p id="offres-gagnees" class="stat-value">–</p>
+        </div>
+
+        <!-- Offres perdues -->
+        <div class="card">
+            <h3>Offres perdues</h3>
+            <p id="offres-perdues" class="stat-value">–</p>
+        </div>
+
+        <!-- Détail par entité et type -->
+        <div class="card full-width">
+            <h3>Détail des offres par entité et type</h3>
+            <table class="data-table" id="offres-table">
+                <thead>
+                    <tr>
+                        <th>Année</th>
+                        <th>Entité</th>
+                        <th>Type de marché</th>
+                        <th>Indicateur</th>
+                        <th>Nombre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS dynamique -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="../static/js/offre.js"></script>
+{% endblock %}

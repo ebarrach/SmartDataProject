@@ -1,0 +1,66 @@
+/* ================================
+   STATS ET CARDS OFFRES
+   ================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2em;
+    margin-top: 2em;
+}
+
+.card {
+    background-color: #fff;
+    padding: 1.5em;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(170, 57, 57, 0.08);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #AA3939;
+    font-size: 1.2em;
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #444;
+    margin: 0.2em 0;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+/* ================================
+   TABLE OFFRES
+   ================================ */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+    background: #fafbfa;
+}
+
+.data-table th, .data-table td {
+    border-bottom: 1px solid #ececec;
+    padding: 0.8em 0.6em;
+    text-align: left;
+}
+
+.data-table th {
+    background: #f7f5f5;
+    color: #AA3939;
+    font-weight: 600;
+    font-size: 1em;
+}
+
+.data-table tr:hover {
+    background: #fbecec;
+    transition: background 0.2s;
+}

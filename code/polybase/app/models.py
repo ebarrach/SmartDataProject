@@ -329,3 +329,23 @@ class HonoraireReparti(Base):
     montant = Column(DECIMAL(10, 2))
 
     projet = relationship("Projet", back_populates="honoraires")
+
+# ============================================
+# TABLE : OFFRE
+# ============================================
+
+class Offre(Base):
+    """ORM model for the 'Offre' table.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.1 24/06/2025)
+    """
+    __tablename__ = "Offre"
+    id_offre = Column(String(16), primary_key=True)
+    annee = Column(Integer, nullable=False)
+    entite = Column(String(16), nullable=False)
+    type_marche = Column(String(16), nullable=False)
+    nombre = Column(Integer, nullable=False)
+    indicateur = Column(String(32))
+

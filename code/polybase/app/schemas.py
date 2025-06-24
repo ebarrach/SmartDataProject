@@ -354,3 +354,32 @@ class ImportLogOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+# ============================================
+# SCHEMAS: OFFRE
+# ============================================
+
+class OffreCreate(BaseModel):
+    """Schema for creating an 'Offre' entry.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.1 24/06/2025)
+    """
+    id_offre: str
+    annee: int
+    entite: str
+    type_marche: str
+    nombre: int
+    indicateur: Optional[str] = None
+
+class OffreOut(OffreCreate):
+    """Schema for returning an 'Offre' entry (ORM-enabled).
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.1 24/06/2025)
+    """
+    class Config:
+        orm_mode = True

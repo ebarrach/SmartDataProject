@@ -22,6 +22,7 @@ code/
                 dashboard.py
                 facture.py
                 finance.py
+                offre.py
                 planification.py
                 prestation.py
                 project.py
@@ -41,11 +42,17 @@ code/
                 agenda.css
                 base-interactions.css
                 base.css
+                clients.css
                 dashboard.css
                 documents.css
                 error.css
+                facture.css
                 finance.css
                 login.css
+                offre.css
+                planifications.css
+                prestation.css
+                projects.css
                 task_detail.css
             img/
                 avatar-polybase.png
@@ -54,20 +61,32 @@ code/
             js/
                 agenda.js
                 base.js
+                clients.js
                 dashboard.js
                 documents.js
                 error.js
+                facture.js
                 finance.js
                 login.js
+                offre.js
+                planifications.js
+                prestation.js
+                projects.js
                 task_detail.js
         templates/
             agenda.html
             base.html
+            clients.html
             dashboard.html
             documents.html
             error.html
+            factures.html
             finance.html
             login.html
+            offre.html
+            planifications.html
+            prestation.html
+            projects.html
             task_detail.html
         test.db.py
     screenshots/

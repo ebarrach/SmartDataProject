@@ -196,6 +196,18 @@ create table ImportLog (
                            constraint ID_ImportLog_ID primary key (id_import)
 );
 
+-- TABLE OFFRE
+CREATE TABLE Offre (
+  id_offre VARCHAR(16) PRIMARY KEY,
+  annee INT NOT NULL,
+  entite VARCHAR(16) NOT NULL,       -- POLY-TECH, PIRNAY, COMMUNE
+  type_marche VARCHAR(16) NOT NULL,  -- public, privé, commun
+  nombre INT NOT NULL,
+  indicateur VARCHAR(32)             -- 'offres_gagnées', 'offres_perdues', etc.
+);
+
+-- INSERT
+
 -- ======= CLIENTS =======
 INSERT INTO Client (id_client, nom_client, adresse, secteur_activite)
 VALUES
@@ -285,6 +297,17 @@ VALUES
 INSERT INTO ImportLog (id_import, source, type_donnee, date_import, statut, message_log)
 VALUES
     ('IMP001', 'Excel v2025', 'Personnel', '2025-06-01', 'succès', 'Import initial sans erreurs.');
+
+
+-- ==== Honoraires gagnés au 06/06/2025 ====
+INSERT INTO HonoraireReparti (id_repartition, id_projet, societe, montant) VALUES
+('HR2025PT1', 'PRJ001', 'Poly-Tech', 426312.55),
+('HR2025PR1', 'PRJ001', 'Pirnay', 1931892.42);
+
+-- ==== Honoraires gagnés cumulés années précédentes (exemple fictif) ====
+INSERT INTO HonoraireReparti (id_repartition, id_projet, societe, montant) VALUES
+('HR2024PT1', 'PRJ001', 'Poly-Tech', 3434756.85),
+('HR2024PR1', 'PRJ001', 'Pirnay', 3082328.84);
 
 -- ======= VUE =======
 CREATE VIEW VueAnalyseTache AS
