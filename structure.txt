@@ -74,6 +74,7 @@ code/
                 projects.js
                 task_detail.js
         templates/
+            Note
             agenda.html
             base.html
             clients.html

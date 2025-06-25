@@ -217,8 +217,8 @@ VALUES
 -- ======= PERSONNEL =======
 INSERT INTO Personnel (id_personnel, type_personnel, nom, prenom, email, password, fonction, taux_honoraire_standard)
 VALUES
-    ('P001', 'interne', 'Durand', 'Alice', 'alice.durand@polytech.be', '$2b$12$EjkIfNqfFke3wvBOQ7kNzO8N.EbRqt77mb7O5SoedGHsUUn/p5d3C', 'Chef de projet', 95.00),
-    ('P002', 'externe', 'Leclercq', 'Marc', 'marc.leclercq@freelance.be', '$2b$12$EjkIfNqfFke3wvBOQ7kNzO8N.EbRqt77mb7O5SoedGHsUUn/p5d3C', 'Consultant IT', 120.00);
+    ('P001', 'interne', 'Durand', 'Alice', 'alice.durand@polytech.be', '$2b$12$S1l8Qb0/6wg6dqd2Fu1.U.T6MhTcK7RbfwMbqxnJ5/7xZP1lyJq02', 'Chef de projet', 95.00),
+    ('P002', 'externe', 'Leclercq', 'Marc', 'marc.leclercq@freelance.be', '$2b$12$S1l8Qb0/6wg6dqd2Fu1.U.T6MhTcK7RbfwMbqxnJ5/7xZP1lyJq02', 'Consultant IT', 120.00);
 
 -- ======= RESPONSABLES PROJET =======
 INSERT INTO ResponsableProjet (id_personnel, niveau_hierarchique)
