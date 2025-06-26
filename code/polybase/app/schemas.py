@@ -258,21 +258,35 @@ class PrestationOut(PrestationCreate):
 # ============================================
 # SCHEMAS: COST
 # ============================================
-
-class CoutOut(BaseModel):
-    """Schema for returning cost data.
+class CoutCreate(BaseModel):
+    """Schema for creating a cost.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
-    implement: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 26/06/2025)
     """
-
     id_cout: str
     type_cout: str
     montant: float
     nature_cout: str
     date: date
     source: str
+    id_projet: Optional[str] = None
+
+class CoutOut(BaseModel):
+    """Schema for returning cost data.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 26/06/2025)
+    """
+    id_cout: str
+    type_cout: str
+    montant: float
+    nature_cout: str
+    date: date
+    source: str
+    id_projet: Optional[str] = None
 
     class Config:
         orm_mode = True
@@ -337,21 +351,35 @@ class HonoraireRepartiOut(HonoraireRepartiCreate):
 # SCHEMAS: IMPORT LOG
 # ============================================
 
-class ImportLogOut(BaseModel):
-    """Schema for returning import log information.
+class ImportLogCreate(BaseModel):
+    """Schema for creating an import log.
     Version:
     --------
-    specification: Esteban Barracho (v.1 19/06/2025)
-    implement: Esteban Barracho (v.1 19/06/2025)
+    specification: Esteban Barracho (v.2 26/06/2025)
+    implement: Esteban Barracho (v.2 26/06/2025)
     """
-
     id_import: str
     source: str
     type_donnee: str
     date_import: date
     statut: str
     message_log: str
+    id_projet: Optional[str] = None
 
+class ImportLogOut(BaseModel):
+    """Schema for returning import log information.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 26/06/2025)
+    """
+    id_import: str
+    source: str
+    type_donnee: str
+    date_import: date
+    statut: str
+    message_log: str
+    id_projet: Optional[str] = None
     class Config:
         orm_mode = True
 
@@ -365,7 +393,7 @@ class OffreCreate(BaseModel):
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
-    implement: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.2 26/06/2025)
     """
     id_offre: str
     annee: int
@@ -373,6 +401,7 @@ class OffreCreate(BaseModel):
     type_marche: str
     nombre: int
     indicateur: Optional[str] = None
+    id_client: Optional[str] = None
 
 class OffreOut(OffreCreate):
     """Schema for returning an 'Offre' entry (ORM-enabled).

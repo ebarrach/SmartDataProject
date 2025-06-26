@@ -168,7 +168,9 @@ create table Cout (
                       nature_cout ENUM('interne', 'externe', 'logiciel', 'matériel', 'sous-traitant') not null,
                       date date not null,
                       source varchar(50) not null,
-                      constraint ID_Cout_ID primary key (id_cout)
+                      id_projet varchar(10),
+                      constraint ID_Cout_ID primary key (id_cout),
+                      foreign key (id_projet) references Projet(id_projet)
 );
 
 -- TABLE DES PROJECTIONS DE FACTURATION
@@ -193,19 +195,22 @@ create table ImportLog (
                            date_import date not null,
                            statut varchar(20) not null,
                            message_log TEXT not null,
-                           constraint ID_ImportLog_ID primary key (id_import)
+                           id_projet varchar(10),
+                           constraint ID_ImportLog_ID primary key (id_import),
+                           foreign key (id_projet) references Projet(id_projet)
 );
 
 -- TABLE OFFRE
 CREATE TABLE Offre (
-  id_offre VARCHAR(16) PRIMARY KEY,
-  annee INT NOT NULL,
-  entite VARCHAR(16) NOT NULL,       -- POLY-TECH, PIRNAY, COMMUNE
-  type_marche VARCHAR(16) NOT NULL,  -- public, privé, commun
-  nombre INT NOT NULL,
-  indicateur VARCHAR(32)             -- 'offres_gagnées', 'offres_perdues', etc.
+                       id_offre VARCHAR(16) PRIMARY KEY,
+                       annee INT NOT NULL,
+                       entite VARCHAR(16) NOT NULL,
+                       type_marche VARCHAR(16) NOT NULL,
+                       nombre INT NOT NULL,
+                       indicateur VARCHAR(32),
+                       id_client varchar(10),
+                       foreign key (id_client) references Client(id_client)
 );
-
 -- INSERT
 
 -- ======= CLIENTS =======
@@ -284,9 +289,9 @@ INSERT INTO PrestationCollaborateur (
          );
 
 -- ======= COUTS =======
-INSERT INTO Cout (id_cout, type_cout, montant, nature_cout, date, source)
+INSERT INTO Cout (id_cout, type_cout, montant, nature_cout, date, source, id_projet)
 VALUES
-    ('C001', 'Location serveur', 500.00, 'interne', '2025-06-01', 'DataCenter Local');
+    ('C001', 'Location serveur', 500.00, 'interne', '2025-06-01', 'DataCenter Local', 'PRJ001');
 
 -- ======= PROJECTION FACTURATION =======
 INSERT INTO ProjectionFacturation (id_projection, mois, montant_projete, montant_facturable_actuel, seuil_minimal, alerte_facturation, id_projet)
@@ -294,9 +299,9 @@ VALUES
     ('PF001', '2025-06', 20000.00, 15000.00, 18000.00, FALSE, 'PRJ001');
 
 -- ======= IMPORT LOGS =======
-INSERT INTO ImportLog (id_import, source, type_donnee, date_import, statut, message_log)
+INSERT INTO ImportLog (id_import, source, type_donnee, date_import, statut, message_log, id_projet)
 VALUES
-    ('IMP001', 'Excel v2025', 'Personnel', '2025-06-01', 'succès', 'Import initial sans erreurs.');
+    ('IMP001', 'Excel v2025', 'Personnel', '2025-06-01', 'succès', 'Import initial sans erreurs.', 'PRJ001');
 
 
 -- ==== Honoraires gagnés au 06/06/2025 ====
@@ -309,6 +314,10 @@ INSERT INTO HonoraireReparti (id_repartition, id_projet, societe, montant) VALUE
 ('HR2024PT1', 'PRJ001', 'Poly-Tech', 3434756.85),
 ('HR2024PR1', 'PRJ001', 'Pirnay', 3082328.84);
 
+-- ======= OFFRE =======
+INSERT INTO Offre (id_offre, annee, entite, type_marche, nombre, indicateur, id_client)
+VALUES
+    ('OFF001', 2025, 'POLY-TECH', 'public', 1, 'offres_gagnées', 'CL001');
 -- ======= VUE =======
 CREATE VIEW VueAnalyseTache AS
 SELECT

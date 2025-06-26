@@ -176,8 +176,10 @@ with Session(engine) as session:
     # 🔟 Répartition des honoraires
     step("10. Répartition des honoraires entre entités")
     session.add_all([
-        Cout(id_cout="HR001", type_cout="honoraire", montant=15000.00, nature_cout="externe", date=date.today(), source="Pirnay SA"),
-        Cout(id_cout="HR002", type_cout="honoraire", montant=10000.00, nature_cout="interne", date=date.today(), source="Poly-Tech Engineering")
+        Cout(id_cout="HR001", type_cout="honoraire", montant=15000.00, nature_cout="externe", date=date.today(),
+             source="Pirnay SA", id_projet="P003"),
+        Cout(id_cout="HR002", type_cout="honoraire", montant=10000.00, nature_cout="interne", date=date.today(),
+             source="Poly-Tech Engineering", id_projet="P003")
     ])
     session.commit()
 

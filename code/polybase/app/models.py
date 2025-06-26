@@ -259,7 +259,7 @@ class Cout(Base):
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
-    implement: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 26/06/2025)
     """
     __tablename__ = "Cout"
     id_cout = Column(String(10), primary_key=True)
@@ -268,6 +268,8 @@ class Cout(Base):
     nature_cout = Column(Enum("interne", "externe", "logiciel", "matériel", "sous-traitant"))
     date = Column(Date)
     source = Column(String(50))
+    id_projet = Column(String(10), ForeignKey("Projet.id_projet"), nullable=True)
+    projet = relationship("Projet")
 
 # ============================================
 # TABLE : PROJECTION FACTURATION
@@ -301,7 +303,7 @@ class ImportLog(Base):
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
-    implement: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.2 26/06/2025)
     """
     __tablename__ = "ImportLog"
     id_import = Column(String(10), primary_key=True)
@@ -310,6 +312,8 @@ class ImportLog(Base):
     date_import = Column(Date)
     statut = Column(String(20))
     message_log = Column(Text)
+    id_projet = Column(String(10), ForeignKey("Projet.id_projet"), nullable=True)
+    projet = relationship("Projet")
 
 # ============================================
 # TABLE : HONORAIRE REPARTI
@@ -339,7 +343,7 @@ class Offre(Base):
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
-    implement: Esteban Barracho (v.1 24/06/2025)
+    implement: Esteban Barracho (v.2 26/06/2025)
     """
     __tablename__ = "Offre"
     id_offre = Column(String(16), primary_key=True)
@@ -348,4 +352,6 @@ class Offre(Base):
     type_marche = Column(String(16), nullable=False)
     nombre = Column(Integer, nullable=False)
     indicateur = Column(String(32))
+    id_client = Column(String(10), ForeignKey("Client.id_client"), nullable=True)
+    client = relationship("Client")
 
