@@ -13,12 +13,18 @@ USE PolyBase;
 -- Tables Section
 -- _______________
 
+SET NAMES 'utf8mb4';
+SET character_set_client = utf8mb4;
+SET character_set_connection = utf8mb4;
+SET character_set_results = utf8mb4;
+SET collation_connection = utf8mb4_unicode_ci;
+
 -- TABLE DES RESPONSABLES DE PROJET
 create table ResponsableProjet (
                                    id_personnel varchar(10) not null,
                                    niveau_hierarchique varchar(50) not null,
                                    constraint FKPer_Res_ID primary key (id_personnel)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES CLIENTS
 create table Client (
@@ -27,7 +33,7 @@ create table Client (
                         adresse TEXT not null,
                         secteur_activite varchar(100) not null,
                         constraint ID_Client_ID primary key (id_client)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DU PERSONNEL
 create table Personnel (
@@ -40,14 +46,14 @@ create table Personnel (
                            fonction varchar(100) not null,
                            taux_honoraire_standard decimal(8,2) not null,
                            constraint ID_Personnel_ID primary key (id_personnel)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES COLLABORATEURS
 create table Collaborateur (
                                id_personnel varchar(10) not null,
                                constraint PK_Collaborateur primary key (id_personnel),
                                constraint FKPer_Col_FK foreign key (id_personnel) references Personnel(id_personnel)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES FACTURES
 create table Facture (
@@ -60,7 +66,7 @@ create table Facture (
                          reference_banque varchar(100) not null,
                          fichier_facture TEXT not null,
                          constraint ID_Facture_ID primary key (id_facture)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES PHASES DE PROJET
 create table Phase (
@@ -71,7 +77,7 @@ create table Phase (
                        id_facture varchar(10),
                        constraint ID_Phase_ID primary key (id_phase),
                        foreign key (id_facture) references Facture(id_facture)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES PROJETS
 create table Projet (
@@ -90,7 +96,7 @@ create table Projet (
                         contact_client varchar(100) default null,
                         constraint ID_Projet_ID primary key (id_projet),
                         foreign key (id_client) references Client(id_client)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE REPARTITION DES HONORAIRE
 CREATE TABLE HonoraireReparti (
@@ -99,7 +105,7 @@ CREATE TABLE HonoraireReparti (
                                   societe VARCHAR(50) NOT NULL,
                                   montant DECIMAL(10,2) NOT NULL,
                                   FOREIGN KEY (id_projet) REFERENCES Projet(id_projet)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE ASSOCIATIVE GERER
 create table Gerer (
@@ -108,7 +114,7 @@ create table Gerer (
                        constraint ID_Gerer_ID primary key (id_personnel, id_projet),
                        foreign key (id_personnel) references ResponsableProjet(id_personnel),
                        foreign key (id_projet) references Projet(id_projet)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES TÂCHES
 create table Tache (
@@ -127,7 +133,7 @@ create table Tache (
                        heures_depassees DECIMAL(5,2),
                        constraint ID_Tache_ID primary key (id_tache),
                        foreign key (id_phase) references Phase(id_phase)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DE PLANIFICATION DES COLLABORATEURS
 create table PlanificationCollaborateur (
@@ -141,7 +147,7 @@ create table PlanificationCollaborateur (
                                             constraint ID_PlanificationCollaborateur_ID primary key (id_planification),
                                             foreign key (id_tache) references Tache(id_tache),
                                             foreign key (id_collaborateur) references Collaborateur(id_personnel)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES PRESTATIONS DES COLLABORATEURS
 create table PrestationCollaborateur (
@@ -158,7 +164,7 @@ create table PrestationCollaborateur (
                                          foreign key (id_tache) references Tache(id_tache),
                                          foreign key (id_collaborateur) references Collaborateur(id_personnel),
                                          foreign key (facture_associee) references Facture(id_facture)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES COÛTS
 create table Cout (
@@ -171,7 +177,7 @@ create table Cout (
                       id_projet varchar(10),
                       constraint ID_Cout_ID primary key (id_cout),
                       foreign key (id_projet) references Projet(id_projet)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES PROJECTIONS DE FACTURATION
 create table ProjectionFacturation (
@@ -185,7 +191,7 @@ create table ProjectionFacturation (
                                        id_projet varchar(10) not null,
                                        constraint ID_ProjectionFacturation_ID primary key (id_projection),
                                        foreign key (id_projet) references Projet(id_projet)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES LOGS D'IMPORT
 create table ImportLog (
@@ -198,7 +204,7 @@ create table ImportLog (
                            id_projet varchar(10),
                            constraint ID_ImportLog_ID primary key (id_import),
                            foreign key (id_projet) references Projet(id_projet)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE OFFRE
 CREATE TABLE Offre (
@@ -210,7 +216,7 @@ CREATE TABLE Offre (
                        indicateur VARCHAR(32),
                        id_client varchar(10),
                        foreign key (id_client) references Client(id_client)
-);
+)DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 -- INSERT
 
 -- ======= CLIENTS =======
@@ -318,6 +324,13 @@ INSERT INTO HonoraireReparti (id_repartition, id_projet, societe, montant) VALUE
 INSERT INTO Offre (id_offre, annee, entite, type_marche, nombre, indicateur, id_client)
 VALUES
     ('OFF001', 2025, 'POLY-TECH', 'public', 1, 'offres_gagnées', 'CL001');
+
+-- Compte administrateur provisoire
+INSERT INTO Personnel (id_personnel, type_personnel, nom, prenom, email, password, fonction, taux_honoraire_standard)
+VALUES ('ADMIN1', 'interne', 'Super', 'Admin', 'admin@polybase.local',
+'$2b$12$ejEmsLAepn0dkygqIfgX8.hXr8G8AIwozn6yzVRPdQ2PbqCrHBwKe', 'admin', 0.00);
+
+
 -- ======= VUE =======
 CREATE VIEW VueAnalyseTache AS
 SELECT
