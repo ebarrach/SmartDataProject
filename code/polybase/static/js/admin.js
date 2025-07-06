@@ -332,6 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- Edition d'une ligne (formulaire update dynamique) ---
     function startEditRow(row) {
+        formInsert.style.display = "none";
         // Structure identique à renderInsertForm, mais préremplie et sans l'ID
         let html = `<form id="update-form"><h3>Modifier cette entrée</h3>`;
         tableStructure.forEach(col => {
@@ -362,8 +363,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         html += `<div class="validation-error" id="form-update-error"></div>
             <button type="submit" class="update-btn action-btn">Mettre à jour</button>
-            <button type="button" onclick="document.getElementById('form-update').style.display='none';" class="delete-btn action-btn">Annuler</button>
-        </form>`;
+            <button type="button" onclick="
+            document.getElementById('form-update').style.display='none';
+            document.getElementById('form-insert').style.display='block';
+        " class="delete-btn action-btn">Annuler</button>
+    </form>`;
         formUpdate.innerHTML = html;
         formUpdate.style.display = "block";
         document.getElementById('update-form').onsubmit = function (e) {
@@ -395,6 +399,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (res.ok) {
                     loadTableData();
                     formUpdate.style.display = "none";
+                    formInsert.style.display = "block";
                 } else {
                     res.text().then(t => document.getElementById('form-update-error').innerHTML = t);
                 }
@@ -413,7 +418,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (res.ok) {
                 loadTableData();
             } else {
-                res.text().then(alert);
+                res.text().then(t => {
+                    try {
+                        const json = JSON.parse(t);
+                        alert(json.detail || "Erreur inconnue");
+                    } catch (e) {
+                        alert("Erreur : suppression impossible.\n" + t.slice(0, 300));
+                    }
+                });
             }
         });
     }

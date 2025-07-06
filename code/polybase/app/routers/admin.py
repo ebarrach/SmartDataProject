@@ -228,3 +228,69 @@ def search_global(
                     })
     results.sort(key=lambda r: (r["score"], r["table"], r["col"]))
     return results
+
+# ============================================
+# MISE À JOUR D'UNE ENTRÉE (PUT)
+# ============================================
+@router.put("/table/{table}/{id}")
+def update_row(table: str, id: str, row: dict, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    check_admin(user)
+    inspector = inspect(db.get_bind())
+    if table not in inspector.get_table_names():
+        raise HTTPException(404, detail="Table inconnue")
+
+    pk = inspector.get_pk_constraint(table)
+    id_field = pk['constrained_columns'][0] if pk['constrained_columns'] else None
+    if not id_field:
+        raise HTTPException(400, detail="Impossible de déterminer la clé primaire.")
+
+    columns = {c["name"]: c for c in inspector.get_columns(table)}  # ✅ Important
+
+    updates = []
+    values = {}
+    for k, v in row.items():
+        if k == id_field:
+            continue
+        if k in columns:
+            updates.append(f"`{k}` = :{k}")
+            values[k] = v
+    values["id"] = id
+    sql = text(f"UPDATE `{table}` SET {', '.join(updates)} WHERE `{id_field}` = :id")
+    try:
+        db.execute(sql, values)
+        db.commit()
+        return {"status": "ok"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(400, detail=f"Erreur lors de la mise à jour : {e}")
+
+
+# ============================================
+# SUPPRESSION D'UNE ENTRÉE (DELETE)
+# ============================================
+@router.delete("/table/{table}/{id}")
+def delete_row(table: str, id: str, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    check_admin(user)
+    inspector = inspect(db.get_bind())
+    if table not in inspector.get_table_names():
+        raise HTTPException(404, detail="Table inconnue")
+    pk = inspector.get_pk_constraint(table)
+    id_field = pk['constrained_columns'][0] if pk['constrained_columns'] else None
+
+    if not id_field:
+        raise HTTPException(400, detail="Impossible de déterminer la clé primaire.")
+
+    print(f"🧹 Suppression dans {table} sur {id_field} = {id}")  # DEBUG
+
+    sql = text(f"DELETE FROM `{table}` WHERE `{id_field}` = :id")
+    try:
+        result = db.execute(sql, {"id": id})
+        db.commit()
+        if result.rowcount == 0:
+            raise HTTPException(404, detail="Aucune ligne supprimée")
+        return {"status": "ok"}
+    except Exception as e:
+        db.rollback()
+        print(f"❌ Erreur DELETE {table}({id}): {e}")  # 👈 ajouté ici
+        raise HTTPException(400, detail=f"Erreur lors de la suppression : {e}")
+

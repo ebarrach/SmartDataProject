@@ -52,7 +52,7 @@ create table Personnel (
 create table Collaborateur (
                                id_personnel varchar(10) not null,
                                constraint PK_Collaborateur primary key (id_personnel),
-                               constraint FKPer_Col_FK foreign key (id_personnel) references Personnel(id_personnel)
+                               constraint FKPer_Col_FK foreign key (id_personnel) references Personnel(id_personnel) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES FACTURES
@@ -76,7 +76,7 @@ create table Phase (
                        montant_phase decimal(10,2) not null,
                        id_facture varchar(10),
                        constraint ID_Phase_ID primary key (id_phase),
-                       foreign key (id_facture) references Facture(id_facture)
+                       foreign key (id_facture) references Facture(id_facture) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES PROJETS
@@ -95,7 +95,7 @@ create table Projet (
                         architecte varchar(100) default null,
                         contact_client varchar(100) default null,
                         constraint ID_Projet_ID primary key (id_projet),
-                        foreign key (id_client) references Client(id_client)
+                        foreign key (id_client) references Client(id_client) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE REPARTITION DES HONORAIRE
@@ -104,7 +104,7 @@ CREATE TABLE HonoraireReparti (
                                   id_projet VARCHAR(10) NOT NULL,
                                   societe VARCHAR(50) NOT NULL,
                                   montant DECIMAL(10,2) NOT NULL,
-                                  FOREIGN KEY (id_projet) REFERENCES Projet(id_projet)
+                                  FOREIGN KEY (id_projet) REFERENCES Projet(id_projet) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE ASSOCIATIVE GERER
@@ -112,8 +112,8 @@ create table Gerer (
                        id_projet varchar(10) not null,
                        id_personnel varchar(10) not null,
                        constraint ID_Gerer_ID primary key (id_personnel, id_projet),
-                       foreign key (id_personnel) references ResponsableProjet(id_personnel),
-                       foreign key (id_projet) references Projet(id_projet)
+                       foreign key (id_personnel) references ResponsableProjet(id_personnel) ON DELETE CASCADE,
+                       foreign key (id_projet) references Projet(id_projet) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES TÂCHES
@@ -132,7 +132,7 @@ create table Tache (
                        heures_prestees DECIMAL(5,2),
                        heures_depassees DECIMAL(5,2),
                        constraint ID_Tache_ID primary key (id_tache),
-                       foreign key (id_phase) references Phase(id_phase)
+                       foreign key (id_phase) references Phase(id_phase) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DE PLANIFICATION DES COLLABORATEURS
@@ -145,8 +145,8 @@ create table PlanificationCollaborateur (
                                             semaine varchar(10) not null,
                                             heures_prevues decimal(5,2) not null,
                                             constraint ID_PlanificationCollaborateur_ID primary key (id_planification),
-                                            foreign key (id_tache) references Tache(id_tache),
-                                            foreign key (id_collaborateur) references Collaborateur(id_personnel)
+                                            foreign key (id_tache) references Tache(id_tache) ON DELETE CASCADE,
+                                            foreign key (id_collaborateur) references Collaborateur(id_personnel) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES PRESTATIONS DES COLLABORATEURS
@@ -161,9 +161,9 @@ create table PrestationCollaborateur (
                                          taux_horaire decimal(8,2) not null,
                                          commentaire TEXT not null,
                                          constraint ID_PrestationCollaborateur_ID primary key (id_prestation),
-                                         foreign key (id_tache) references Tache(id_tache),
-                                         foreign key (id_collaborateur) references Collaborateur(id_personnel),
-                                         foreign key (facture_associee) references Facture(id_facture)
+                                         foreign key (id_tache) references Tache(id_tache) ON DELETE CASCADE,
+                                         foreign key (id_collaborateur) references Collaborateur(id_personnel) ON DELETE CASCADE,
+                                         foreign key (facture_associee) references Facture(id_facture) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES COÛTS
@@ -176,7 +176,7 @@ create table Cout (
                       source varchar(50) not null,
                       id_projet varchar(10),
                       constraint ID_Cout_ID primary key (id_cout),
-                      foreign key (id_projet) references Projet(id_projet)
+                      foreign key (id_projet) references Projet(id_projet) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES PROJECTIONS DE FACTURATION
@@ -190,7 +190,7 @@ create table ProjectionFacturation (
                                        est_certain boolean default true,
                                        id_projet varchar(10) not null,
                                        constraint ID_ProjectionFacturation_ID primary key (id_projection),
-                                       foreign key (id_projet) references Projet(id_projet)
+                                       foreign key (id_projet) references Projet(id_projet) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE DES LOGS D'IMPORT
@@ -203,7 +203,7 @@ create table ImportLog (
                            message_log TEXT not null,
                            id_projet varchar(10),
                            constraint ID_ImportLog_ID primary key (id_import),
-                           foreign key (id_projet) references Projet(id_projet)
+                           foreign key (id_projet) references Projet(id_projet) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TABLE OFFRE
@@ -215,7 +215,7 @@ CREATE TABLE Offre (
                        nombre INT NOT NULL,
                        indicateur VARCHAR(32),
                        id_client varchar(10),
-                       foreign key (id_client) references Client(id_client)
+                       foreign key (id_client) references Client(id_client) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 -- INSERT
 

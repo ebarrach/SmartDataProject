@@ -16,6 +16,7 @@ code/
             main.py
             models.py
             routers/
+                admin.py
                 analytics.py
                 client.py
                 collaborateur.py
@@ -39,6 +40,7 @@ code/
         requirements.txt
         static/
             css/
+                admin.css
                 agenda.css
                 base-interactions.css
                 base.css
@@ -59,6 +61,7 @@ code/
                 login-illustration.png
                 logo-polybase.png
             js/
+                admin.js
                 agenda.js
                 base.js
                 clients.js
@@ -75,6 +78,7 @@ code/
                 task_detail.js
         templates/
             Note
+            admin.html
             agenda.html
             base.html
             clients.html
@@ -124,6 +128,7 @@ method/
                 README.txt
     design/
         13-06-2025 – BDConceptuelle/
+            .~l4E86.tmp
             PolyBase.lun
             PolyBase.sql
         PolyBase2.ddl
