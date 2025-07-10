@@ -2,7 +2,7 @@
 # SCRIPT: DEMO INTERACTIF POLYBASE - SQLAlchemy
 # ============================================
 # specification: Esteban Barracho (v.1 21/06/2025)
-# implement: Esteban Barracho (v.4 22/06/2025)
+# implement: Esteban Barracho (v.2 22/06/2025)
 
 import sys
 import os

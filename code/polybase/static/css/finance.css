@@ -1,6 +1,7 @@
-/* ================================
-   STYLE PAGE FINANCE - POLYBASE
-   ================================ */
+/* ==============================================
+   Spécification : Esteban Barracho (v.1 22/06/2025)
+   Mise à jour : 22/06/2025
+   ============================================== */
 
 body {
     font-family: Arial, sans-serif;
@@ -63,7 +64,7 @@ canvas {
     height: 300px !important;
 }
 
-/* Ajout visuel facultatif pour encadrer les cas positifs/négatifs */
+/* ----- Ajout visuel facultatif pour encadrer les cas positifs/négatifs ----- */
 .chart-card.positive {
     border-color: #66B466;
     background-color: #f0fdf2;

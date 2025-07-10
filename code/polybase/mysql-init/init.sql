@@ -358,7 +358,7 @@ WHERE PC.facture_associee IS NULL;
 
 
 -- ======= TRIGGER =======
--- 🔁 Nettoyage préalable
+-- Nettoyage préalable
 DROP TRIGGER IF EXISTS maj_heures_tache;
 DROP TRIGGER IF EXISTS maj_depassement_apres_modif_estimee;
 DROP TRIGGER IF EXISTS maj_heures_apres_modif_prestation;
@@ -366,7 +366,7 @@ DROP TRIGGER IF EXISTS maj_alerte_retard;
 
 DELIMITER $$
 
--- 🎯 Trigger 1 : mise à jour des heures après INSERT d'une prestation
+-- Trigger 1 : mise à jour des heures après INSERT d'une prestation
 CREATE TRIGGER maj_heures_tache
     AFTER INSERT ON PrestationCollaborateur
     FOR EACH ROW
@@ -393,7 +393,7 @@ BEGIN
     WHERE id_tache = NEW.id_tache;
 END$$
 
--- 🎯 Trigger 2 : mise à jour du dépassement si heures estimées ou prestées changent
+-- Trigger 2 : mise à jour du dépassement si heures estimées ou prestées changent
 CREATE TRIGGER maj_depassement_apres_modif_tache
     BEFORE UPDATE ON Tache
     FOR EACH ROW
@@ -406,7 +406,7 @@ BEGIN
     END IF;
 END$$
 
--- 🎯 Trigger 3 : mise à jour des heures après modification d'une prestation
+-- Trigger 3 : mise à jour des heures après modification d'une prestation
 CREATE TRIGGER maj_heures_apres_modif_prestation
     AFTER UPDATE ON PrestationCollaborateur
     FOR EACH ROW
@@ -435,7 +435,7 @@ BEGIN
     END IF;
 END$$
 
--- 🎯 Trigger 4 : alerte de retard automatique
+-- Trigger 4 : alerte de retard automatique
 CREATE TRIGGER maj_alerte_retard
     BEFORE UPDATE ON Tache
     FOR EACH ROW

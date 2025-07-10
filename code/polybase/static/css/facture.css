@@ -1,6 +1,8 @@
-/* ================================
-   STATS ET CARDS FACTURES
-   ================================ */
+/* ==============================================
+   Spécification : Esteban Barracho (v.1 22/06/2025)
+   Mise à jour : 22/06/2025
+   ============================================== */
+
 .stats-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -26,9 +28,7 @@
     font-size: 1.2em;
 }
 
-/* ================================
-   TABLE FACTURES
-   ================================ */
+/* ----- table factures ----- */
 .data-table {
     width: 100%;
     border-collapse: collapse;

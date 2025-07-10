@@ -1,3 +1,7 @@
+// =============================================
+// specification: Esteban Barracho (v.1 21/06/2025)
+// implement: Esteban Barracho (v.1 21/06/2025)
+// =============================================
 document.addEventListener("DOMContentLoaded", () => {
     // ----- Génération de la vue hebdomadaire -----
     const days = ["Lun", "Mar", "Mer", "Jeu", "Ven"];

@@ -10,7 +10,7 @@ from app.schemas import OffreCreate, OffreOut
 from typing import List
 
 # ============================================
-# ROUTER : OFFRE
+# ROUTER INITIALIZATION
 # ============================================
 
 router = APIRouter(

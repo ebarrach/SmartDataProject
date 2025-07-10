@@ -1,16 +1,22 @@
+# ============================================
+# IMPORTS
+# ============================================
+
 import string
 import random
 import bcrypt
 import Levenshtein
-from fastapi import APIRouter, Depends, Request, HTTPException, status
+from fastapi import APIRouter, Depends, Request, HTTPException, status, Query
 from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
 from app.database import get_db
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from app.auth import get_current_user
-from fastapi import APIRouter, Depends, Request, HTTPException, status, Query
 
+# ============================================
+# ROUTER INITIALIZATION
+# ============================================
 
 router = APIRouter(prefix="/admin")
 templates = Jinja2Templates(directory="templates")
@@ -48,6 +54,20 @@ def generate_id(prefix, length=3):
 # ACCÈS ADMIN
 # ============================================
 def check_admin(user):
+    """Verifies whether the authenticated user has administrative privileges.
+    Parameters:
+    -----------
+    user: The current authenticated user object.
+
+    Raises:
+    -------
+    HTTPException: If the user is not an administrator.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 26/06/2025)
+    """
     if not getattr(user, "fonction", None) or user.fonction.lower() != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -55,11 +75,28 @@ def check_admin(user):
         )
 
 
+
 # ============================================
 # PAGE HTML ADMIN
 # ============================================
 @router.get("", response_class=JSONResponse)
+@router.get("", response_class=JSONResponse)
 async def admin_page(request: Request, user=Depends(get_current_user)):
+    """Renders the admin page for users with administrative privileges.
+    Parameters:
+    -----------
+    request (Request): FastAPI request instance.
+    user: Authenticated user from session.
+
+    Returns:
+    --------
+    TemplateResponse: Rendered admin.html template.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 26/06/2025)
+    """
     check_admin(user)
     return templates.TemplateResponse("admin.html", {"request": request, "user": user})
 
@@ -69,6 +106,21 @@ async def admin_page(request: Request, user=Depends(get_current_user)):
 # ============================================
 @router.get("/tables")
 def get_tables(db: Session = Depends(get_db), user=Depends(get_current_user)):
+    """Returns a list of all non-view tables in the database schema.
+    Parameters:
+    -----------
+    db (Session): Database session.
+    user: Authenticated admin user.
+
+    Returns:
+    --------
+    list[str]: Names of all tables excluding views.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 26/06/2025)
+    """
     check_admin(user)
     inspector = inspect(db.get_bind())
     tables = [t for t in inspector.get_table_names() if not t.startswith('Vue')]
@@ -80,6 +132,22 @@ def get_tables(db: Session = Depends(get_db), user=Depends(get_current_user)):
 # ============================================
 @router.get("/table/{table}/structure")
 def get_table_structure(table: str, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    """Retrieves the structure of a specific table, including types, nullability, and examples.
+    Parameters:
+    -----------
+    table (str): Name of the table to inspect.
+    db (Session): Database session.
+    user: Authenticated admin user.
+
+    Returns:
+    --------
+    list[dict]: Column metadata including example values.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1.2 09/07/2025)
+    """
     check_admin(user)
     inspector = inspect(db.get_bind())
     cols = []
@@ -114,6 +182,23 @@ def get_table_structure(table: str, db: Session = Depends(get_db), user=Depends(
 # ============================================
 @router.get("/table/{table}")
 def get_table_data(table: str, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    """Retrieves all records from the specified table (max 200 rows by design).
+    Parameters:
+    -----------
+    table (str): Table name.
+    db (Session): Active SQLAlchemy session.
+    user: Authenticated admin user.
+
+    Returns:
+    --------
+    list[dict]: List of records from the table.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 26/06/2025)
+    """
+
     check_admin(user)
     result = db.execute(text(f"SELECT * FROM `{table}`"))
     data = [dict(row) for row in result.mappings()]
@@ -124,12 +209,25 @@ def get_table_data(table: str, db: Session = Depends(get_db), user=Depends(get_c
 # INSERTION SÉCURISÉE
 # ============================================
 @router.post("/table/{table}")
-def insert_row(
-        table: str,
-        row: dict,
-        db: Session = Depends(get_db),
-        user=Depends(get_current_user)
-):
+def insert_row(table: str, row: dict, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    """Inserts a new row securely into the specified table with optional ID generation.
+    Parameters:
+    -----------
+    table (str): Table name to insert into.
+    row (dict): Dictionary of values to insert.
+    db (Session): Active database session.
+    user: Authenticated admin user.
+
+    Returns:
+    --------
+    dict: Confirmation message and generated ID if applicable.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 27/06/2025)
+    """
+
     check_admin(user)
     inspector = inspect(db.get_bind())
     if table not in inspector.get_table_names():
@@ -193,14 +291,22 @@ def insert_row(
 # RECHERCHE GLOBALE LEVENSHTEIN SUR TOUTES LES TABLES
 # ============================================
 @router.get("/search_global")
-def search_global(
-    query: str = Query(..., min_length=1),
-    db: Session = Depends(get_db),
-    user=Depends(get_current_user)
-):
-    """
-    Recherche fuzzy Levenshtein dans toutes les tables métiers, retourne
-    table, id, colonne, valeur trouvée, score de distance.
+def search_global(query: str = Query(..., min_length=1),db: Session = Depends(get_db),user=Depends(get_current_user)):
+    """Performs a fuzzy Levenshtein search across all business tables.
+    Parameters:
+    -----------
+    query (str): Search string (minimum 1 character).
+    db (Session): Active database session.
+    user: Authenticated admin user.
+
+    Returns:
+    --------
+    list[dict]: Matching values with distance scores and metadata.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 27/06/2025)
     """
     check_admin(user)
     inspector = inspect(db.get_bind())
@@ -233,7 +339,26 @@ def search_global(
 # MISE À JOUR D'UNE ENTRÉE (PUT)
 # ============================================
 @router.put("/table/{table}/{id}")
+@router.put("/table/{table}/{id}")
 def update_row(table: str, id: str, row: dict, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    """Updates a record in a table based on its primary key.
+    Parameters:
+    -----------
+    table (str): Table name to update.
+    id (str): Identifier of the row to update.
+    row (dict): Fields and values to modify.
+    db (Session): Active database session.
+    user: Authenticated admin user.
+
+    Returns:
+    --------
+    dict: Confirmation of update operation.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 27/06/2025)
+    """
     check_admin(user)
     inspector = inspect(db.get_bind())
     if table not in inspector.get_table_names():
@@ -244,7 +369,7 @@ def update_row(table: str, id: str, row: dict, db: Session = Depends(get_db), us
     if not id_field:
         raise HTTPException(400, detail="Impossible de déterminer la clé primaire.")
 
-    columns = {c["name"]: c for c in inspector.get_columns(table)}  # ✅ Important
+    columns = {c["name"]: c for c in inspector.get_columns(table)}
 
     updates = []
     values = {}
@@ -270,6 +395,23 @@ def update_row(table: str, id: str, row: dict, db: Session = Depends(get_db), us
 # ============================================
 @router.delete("/table/{table}/{id}")
 def delete_row(table: str, id: str, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    """Deletes a row from a specified table based on primary key.
+    Parameters:
+    -----------
+    table (str): Table name.
+    id (str): Identifier of the row to delete.
+    db (Session): Active database session.
+    user: Authenticated admin user.
+
+    Returns:
+    --------
+    dict: Confirmation message of successful deletion.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 27/06/2025)
+    """
     check_admin(user)
     inspector = inspect(db.get_bind())
     if table not in inspector.get_table_names():
@@ -291,6 +433,6 @@ def delete_row(table: str, id: str, db: Session = Depends(get_db), user=Depends(
         return {"status": "ok"}
     except Exception as e:
         db.rollback()
-        print(f"❌ Erreur DELETE {table}({id}): {e}")  # 👈 ajouté ici
+        print(f"❌ Erreur DELETE {table}({id}): {e}")
         raise HTTPException(400, detail=f"Erreur lors de la suppression : {e}")
 

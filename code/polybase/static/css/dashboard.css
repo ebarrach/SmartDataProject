@@ -1,6 +1,8 @@
-/* ================================
-   STATS ET CARDS DASHBOARD
-   ================================ */
+/* ==============================================
+   Spécification : Esteban Barracho (v.1 22/06/2025)
+   Mise à jour : 22/06/2025
+   ============================================== */
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));

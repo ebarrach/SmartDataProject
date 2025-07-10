@@ -1,6 +1,5 @@
 /* ==============================================
-   PolyBase Admin - Style dashboard CONTRASTÉ
-   Spécification : Esteban Barracho (v.4 26/06/2025)
+   Spécification : Esteban Barracho (v.1 26/06/2025)
    Mise à jour : 06/07/2025
    ============================================== */
 
@@ -14,7 +13,7 @@
     box-shadow: 0 6px 32px rgba(170, 57, 57, 0.14);
 }
 
-/* Titres */
+/* ----- Titres ----- */
 #admin-container h1 {
     margin-bottom: 1.2em;
     color: #8a2323;
@@ -31,7 +30,7 @@
     letter-spacing: 0.01em;
 }
 
-/* Ruban/top-line boutons & select */
+/* ----- Ruban/top-line boutons & select ----- */
 #admin-container > div:first-child {
     display: flex;
     flex-wrap: wrap;
@@ -95,7 +94,7 @@
     color: #220000;
 }
 
-/* Boutons d'action */
+/* ----- Boutons d'action ----- */
 .action-btn {
     border: none;
     padding: 8px 22px;
@@ -113,7 +112,7 @@
     letter-spacing: 0.04em;
 }
 
-/* Modifier */
+/* ----- Modifier ----- */
 .update-btn {
     background: #1e2d53;
     color: #fff;
@@ -129,7 +128,7 @@
     transform: translateY(-1px) scale(1.055);
 }
 
-/* Supprimer */
+/* ----- Supprimer ----- */
 .delete-btn {
     background: #7c1919;
     color: #fff;
@@ -145,7 +144,7 @@
     transform: translateY(-1px) scale(1.07);
 }
 
-/* Tableau style "carte" */
+/* ----- Tableau style "carte" ----- */
 #table-wrapper {
     overflow-x: auto;
     margin-top: 0;
@@ -202,7 +201,7 @@
     100% { background: #fff; }
 }
 
-/* Formulaires insert/update */
+/* ----- Formulaires insert/update ----- */
 #form-insert,
 #form-update {
     margin: 0;
@@ -289,7 +288,7 @@ select:required:invalid {
     background: #ffeaea;
 }
 
-/* Bouton de recherche SVG */
+/* ----- Bouton de recherche SVG ----- */
 #search-btn {
     background: #b06464;
     border: 2px solid #922727;
@@ -317,7 +316,7 @@ select:required:invalid {
     outline-offset: 2px;
 }
 
-/* Conteneur horizontal des formulaires + tableau */
+/* ----- Conteneur horizontal des formulaires + tableau ----- */
 #admin-content-flex {
     display: flex;
     justify-content: flex-start;

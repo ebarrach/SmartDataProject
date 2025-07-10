@@ -1,8 +1,9 @@
-/* ============================
-   STYLES POUR LA PAGE DOCUMENTS
-   ============================ */
+/* ==============================================
+   Spécification : Esteban Barracho (v.1 22/06/2025)
+   Mise à jour : 22/06/2025
+   ============================================== */
 
-/* En-tête de la page */
+/* ----- En-tête de la page ----- */
 .documents-header {
     text-align: center;
     padding: 2em;
@@ -17,21 +18,21 @@
     font-size: 2em;
 }
 
-/* Conteneur principal des documents */
+/* ----- Conteneur principal des documents ----- */
 .documents-content {
     padding: 2em;
     max-width: 800px;
     margin: auto;
 }
 
-/* Liste des documents */
+/* ----- Liste des documents ----- */
 #document-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-/* Élément individuel */
+/* ----- Élément individuel ----- */
 #document-list li {
     background-color: #D6A3A3;
     padding: 0.75em 1em;
@@ -46,7 +47,7 @@
     background-color: #c98b8b;
 }
 
-/* Liens */
+/* ----- Liens ----- */
 #document-list li a {
     text-decoration: none;
     color: #fff;

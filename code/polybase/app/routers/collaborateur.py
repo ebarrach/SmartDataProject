@@ -1,8 +1,5 @@
 # ============================================
-# MODULE : Collaborateur
-# ============================================
-# specification: Esteban Barracho (v.1 21/06/2025)
-# implement: Esteban Barracho (v.2 22/06/2025)
+# IMPORTS
 # ============================================
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -11,6 +8,11 @@ from ..database import SessionLocal
 from ..models import Collaborateur
 from pydantic import BaseModel
 
+
+# ============================================
+# ROUTER INITIALIZATION
+# ============================================
+
 router = APIRouter()
 
 # ============================================
@@ -18,7 +20,15 @@ router = APIRouter()
 # ============================================
 
 def get_db():
-    """Yields a database session using SQLAlchemy."""
+    """Provides a database session for dependency injection.
+    Yields:
+    -------
+    Session: SQLAlchemy session instance.
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 19/06/2025)
+    implement: Esteban Barracho (v.1 19/06/2025)
+    """
     db = SessionLocal()
     try:
         yield db
@@ -38,6 +48,22 @@ class CollaborateurIn(BaseModel):
 
 @router.post("/collaborateurs")
 def create_collaborateur(collaborateur: CollaborateurIn, db: Session = Depends(get_db)):
+    """Creates a new collaborator entry in the database if it does not already exist.
+
+    Parameters:
+    -----------
+    collaborateur (CollaborateurIn): Input schema containing the personnel ID.
+    db (Session): SQLAlchemy session dependency.
+
+    Returns:
+    --------
+    dict: Success message indicating creation or existence.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 21/06/2025)
+    implement: Esteban Barracho (v.1.2 22/06/2025)
+    """
     existing = db.query(Collaborateur).filter(Collaborateur.id_personnel == collaborateur.id_personnel).first()
     if existing:
         return {"message": "Collaborateur already exists"}
@@ -45,3 +71,4 @@ def create_collaborateur(collaborateur: CollaborateurIn, db: Session = Depends(g
     db.add(nouveau)
     db.commit()
     return {"message": f"Collaborateur {collaborateur.id_personnel} created"}
+

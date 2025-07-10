@@ -159,9 +159,27 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
 
 @router.delete("/clients/{id_client}")
 def delete_client(id_client: str, db: Session = Depends(get_db)):
+    """
+    Deletes a client entry from the database based on its identifier.
+
+    Parameters:
+    -----------
+    id_client (str): Unique identifier of the client to delete.
+    db (Session): Database session provided by dependency injection.
+
+    Returns:
+    --------
+    dict: Confirmation message upon successful deletion.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 09/07/2025)
+    """
     client = db.query(Client).filter(Client.id_client == id_client).first()
     if not client:
         raise HTTPException(status_code=404, detail="Client not found")
     db.delete(client)
     db.commit()
     return {"message": f"Client {id_client} deleted successfully"}
+

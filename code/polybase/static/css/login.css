@@ -1,6 +1,7 @@
-/* ================================
-   STRUCTURE DE BASE DE LA PAGE
-   ================================ */
+/* ==============================================
+   Spécification : Esteban Barracho (v.1 22/06/2025)
+   Mise à jour : 22/06/2025
+   ============================================== */
 body, html {
     height: 100%;
     margin: 0;
@@ -11,9 +12,7 @@ body, html {
     align-items: center;
 }
 
-/* ================================
-   CONTENEUR GLOBAL (DEUX COLONNES)
-   ================================ */
+/* ----- conteneur global (2 collonnes) ----- */
 .container {
     display: flex;
     max-width: 1200px;
@@ -27,9 +26,7 @@ body, html {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* ================================
-   PANNEAU GAUCHE : FORMULAIRE
-   ================================ */
+/* ----- panneau gauche : formulaire ----- */
 .left-panel {
     flex: 1;
     padding: 2.5em;
@@ -38,7 +35,7 @@ body, html {
     align-items: center;
 }
 
-/* Conteneur du formulaire */
+/* ----- Conteneur du formulaire ----- */
 .login-container {
     max-width: 440px;
     width: 100%;
@@ -51,9 +48,7 @@ body, html {
 }
 
 
-/* ================================
-   AVATAR IMAGE CIRCULAIRE
-   ================================ */
+/* ----- avatar image circulaire ----- */
 .profile-icon {
     width: 110px;
     height: 110px;
@@ -74,9 +69,7 @@ body, html {
     border-radius: 50%;
     display: block;
 }
-/* ================================
-   TITRE ET CHAMPS DU FORMULAIRE
-   ================================ */
+/* ----- tire et champs du formulaire ----- */
 h2 {
     font-size: 1.8em;
     margin-bottom: 1em;
@@ -94,9 +87,7 @@ input {
     box-sizing: border-box;
 }
 
-/* ================================
-   BOUTON DE CONNEXION
-   ================================ */
+/* ----- bouton de connexion ----- */
 button {
     display: inline-block;
     width: 100%;

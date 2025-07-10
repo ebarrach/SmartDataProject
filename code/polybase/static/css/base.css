@@ -1,6 +1,7 @@
-/* ================================
-   RUBAN POLYBASE
-   ================================ */
+/* ==============================================
+   Spécification : Esteban Barracho (v.1 22/06/2025)
+   Mise à jour : 22/06/2025
+   ============================================== */
 
 .navbar {
     background-color: #AA3939;
@@ -13,7 +14,7 @@
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* Logo + texte */
+/* ----- Logo + texte ----- */
 .navbar-left {
     display: flex;
     align-items: center;
@@ -38,7 +39,7 @@
     font-weight: bold;
 }
 
-/* Liens à droite */
+/* ----- Liens à droite ----- */
 .navbar-right {
     display: flex;
     align-items: center;
@@ -58,7 +59,7 @@
     transform: translateY(-1px);
 }
 
-/* Responsive */
+/* ----- Responsive ----- */
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;

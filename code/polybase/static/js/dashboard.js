@@ -1,3 +1,7 @@
+// =============================================
+// specification: Esteban Barracho (v.1 21/06/2025)
+// implement: Esteban Barracho (v.1 21/06/2025)
+// =============================================
 // ----- Chargement des données du tableau de bord -----
 window.onload = async () => {
     try {

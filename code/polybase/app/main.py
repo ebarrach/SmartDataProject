@@ -8,20 +8,19 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_302_FOUND
-import os
 
+from app.auth import authenticate_user, get_current_user, get_db
+from app.models import Client, Projet
+from app.models import Facture, PlanificationCollaborateur, PrestationCollaborateur
+from app.routers import admin
+from app.routers import collaborateur
+from app.routers import finance
+from app.routers import offre
 from app.routers import (
     user, analytics, client, project, tache,
     facture, dashboard, planification, prestation
 )
 
-from app.auth import authenticate_user, get_current_user, get_db
-from app.routers import collaborateur
-from app.routers import finance
-from app.models import Client, Projet
-from app.models import Facture, PlanificationCollaborateur, PrestationCollaborateur
-from app.routers import offre
-from app.routers import admin
 # ============================================
 # INITIALISATION DE L'APPLICATION FASTAPI
 # ============================================

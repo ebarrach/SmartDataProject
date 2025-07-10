@@ -1,3 +1,7 @@
+// =============================================
+// specification: Esteban Barracho (v.1 21/06/2025)
+// implement: Esteban Barracho (v.1 21/06/2025)
+// =============================================
 // ----- Script de gestion de la page Détail Tâche -----
 document.addEventListener("DOMContentLoaded", () => {
     const btnComplete = document.getElementById("mark-complete");

@@ -1,3 +1,7 @@
+// =============================================
+// specification: Esteban Barracho (v.1 21/06/2025)
+// implement: Esteban Barracho (v.1 21/06/2025)
+// =============================================
 // ----- Script de gestion du formulaire de connexion -----
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("login-form");
