@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Tache, Facture
 from app.schemas import TacheCreate, TacheOut
+from app.auth import get_current_user
+
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -128,3 +130,20 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
     return {"message": f"Facture {id_facture} deleted successfully"}
+
+# ============================================
+# ROUTE : Récupérer les tâches pour l’agenda
+# ============================================
+
+@router.get("/tasks/agenda")
+def get_agenda_tasks(user=Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Retourne une liste simplifiée de tâches à afficher dans la colonne agenda.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 11/07/2025)
+    implement: Esteban Barracho (v.1 11/07/2025)
+    """
+    tasks = db.query(Tache).filter(Tache.statut.in_(["planifiée", "à faire"])).all()
+    return [{"id": t.id_tache, "nom_tache": t.nom_tache} for t in tasks]

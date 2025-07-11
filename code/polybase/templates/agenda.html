@@ -10,6 +10,13 @@
 <!-- En-tête de la page -->
 <div class="agenda-header">
     <h1>Mon agenda</h1>
+
+    <!-- Connexion Outlook -->
+    {% if not request.cookies.get("outlook_token") %}
+        <a class="btn-connect-outlook" href="/outlook/connect">🔗 Connecter mon compte Outlook</a>
+    {% else %}
+        <span class="connected-msg">📡 Outlook connecté</span>
+    {% endif %}
 </div>
 
 <!-- Conteneur principal de l'agenda -->

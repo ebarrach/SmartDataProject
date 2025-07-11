@@ -1,3 +1,8 @@
+# ============================================
+# DEPENDANCES POLYBASE - BACKEND FASTAPI
+# specification: Esteban Barracho (v.2 11/07/2025)
+# ============================================
+
 # ----- FastAPI Framework -----
 fastapi~=0.115.13
 uvicorn[standard]~=0.29.0
@@ -9,7 +14,7 @@ SQLAlchemy~=2.0.41
 pymysql~=1.1.0
 cryptography~=42.0.0
 
-# ----- Data Validation & Environment -----
+# ----- Data Validation & Configuration -----
 pydantic~=2.11.7
 python-dotenv~=1.0.1
 
@@ -17,9 +22,15 @@ python-dotenv~=1.0.1
 python-jose[cryptography]~=3.3.0
 passlib[bcrypt]~=1.7.4
 
-# ----- Fuzzy Matching / Recherche avancée -----
+# ----- Recherche & Matching -----
 python-Levenshtein~=0.25.1
 
-# ----- Testing (optional) -----
+# ----- Tests (optionnels) -----
 httpx~=0.27.0
 pytest~=8.2.1
+
+# ----- Synchronisation Outlook & Adaptation DeepSeek -----
+msal~=1.27.0
+pandas~=2.2.2
+openpyxl~=3.1.2
+requests~=2.32.3

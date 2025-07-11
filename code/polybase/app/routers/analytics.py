@@ -55,6 +55,7 @@ def get_multiplicating_factor(honoraire: float, cout: float):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert isinstance(honoraire, (int, float)) and isinstance(cout, (int, float)), "Entrées numériques attendues"
     if cout == 0:
         raise HTTPException(400, detail="Cost cannot be zero")
     return {"multiplicating_factor": round(honoraire / cout, 2)}
@@ -72,6 +73,7 @@ def delete_projection(id_projection: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 21/06/2025)
     implement: Esteban Barracho (v.1 21/06/2025)
     """
+
     projection = db.query(ProjectionFacturation).filter(
         ProjectionFacturation.id_projection == id_projection
     ).first()
@@ -79,6 +81,9 @@ def delete_projection(id_projection: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Projection not found")
     db.delete(projection)
     db.commit()
+    assert isinstance(id_projection, str), "ID de projection doit être une chaîne"
+    assert projection.id_projection == id_projection, "Projection ID incohérent"
+
     return {"message": f"Projection {id_projection} deleted successfully"}
 
 # ============================================

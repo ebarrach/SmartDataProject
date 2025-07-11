@@ -8,7 +8,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_302_FOUND
-
+import app.utils.outlook_sync as outlook_sync
+import app.utils.deepseek_adapter as deepseek
 from app.auth import authenticate_user, get_current_user, get_db
 from app.models import Client, Projet
 from app.models import Facture, PlanificationCollaborateur, PrestationCollaborateur
@@ -20,6 +21,7 @@ from app.routers import (
     user, analytics, client, project, tache,
     facture, dashboard, planification, prestation
 )
+from app.routers import outlook
 
 # ============================================
 # INITIALISATION DE L'APPLICATION FASTAPI
@@ -66,12 +68,12 @@ app.include_router(facture.router)
 app.include_router(dashboard.router)
 app.include_router(planification.router)
 app.include_router(prestation.router)
-
 app.include_router(collaborateur.router)
-
 app.include_router(finance.router)
 app.include_router(offre.router)
 app.include_router(admin.router)
+
+app.include_router(outlook.router)
 
 """These instructions include routers for each domain (user, tache, etc.).
 Version:
@@ -79,6 +81,22 @@ Version:
 specification: Esteban Barracho (v.1 19/06/2025)
 implement: Esteban Barracho (v.1.3 24/06/2025)
 """
+
+# ============================================
+# ÉVÉNEMENT DE DÉMARRAGE
+# ============================================
+
+@app.on_event("startup")
+def startup_event():
+    """Événements de démarrage au lancement du serveur API.
+    Version:
+    --------
+    specification: Esteban Barracho (v.2 11/07/2025)
+    implement: Esteban Barracho (v.2 11/07/2025)
+    """
+    print("✅ API disponible sur http://localhost:8000")
+    outlook_sync.synchronize_outlook()
+    deepseek.prepare_adaptation()
 
 # ============================================
 # ROUTES PUBLIQUES (HTML)
@@ -92,7 +110,6 @@ def home(request: Request):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return templates.TemplateResponse("login.html", {"request": request})
 
 
@@ -110,9 +127,7 @@ def login_user(
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     user = authenticate_user(email=email, plain_password=password, db=db)
-
     if user and code == "123456":
         response = RedirectResponse(url="/dashboard", status_code=HTTP_302_FOUND)
         response.set_cookie(key="session_id", value=user.id_personnel)
@@ -132,7 +147,6 @@ def logout():
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     response = RedirectResponse(url="/")
     response.delete_cookie("session_id")
     return response
@@ -149,7 +163,6 @@ def dashboard_page(request: Request, user=Depends(get_current_user)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return templates.TemplateResponse("dashboard.html", {"request": request, "user": user})
 
 
@@ -161,7 +174,6 @@ def agenda_page(request: Request, user=Depends(get_current_user)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return templates.TemplateResponse("agenda.html", {"request": request, "user": user})
 
 
@@ -173,7 +185,6 @@ def documents_page(request: Request, user=Depends(get_current_user)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return templates.TemplateResponse("documents.html", {"request": request, "user": user})
 
 
@@ -185,15 +196,12 @@ def task_list_page(request: Request, user=Depends(get_current_user)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
-
     return templates.TemplateResponse("task_detail.html", {"request": request, "user": user})
 
 
 @app.get("/clients", response_class=HTMLResponse)
 def clients_page(request: Request, user=Depends(get_current_user), db: Session = Depends(get_db)):
-    """
-    Renders the clients page with a list of clients.
-
+    """Renders the clients page with a list of clients.
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
@@ -202,11 +210,10 @@ def clients_page(request: Request, user=Depends(get_current_user), db: Session =
     clients = db.query(Client).all()
     return templates.TemplateResponse("clients.html", {"request": request, "user": user, "clients": clients})
 
+
 @app.get("/projects", response_class=HTMLResponse)
 def projects_page(request: Request, user=Depends(get_current_user), db: Session = Depends(get_db)):
-    """
-    Renders the projects page with a list of projects.
-
+    """Renders the projects page with a list of projects.
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
@@ -215,11 +222,10 @@ def projects_page(request: Request, user=Depends(get_current_user), db: Session 
     projects = db.query(Projet).all()
     return templates.TemplateResponse("projects.html", {"request": request, "user": user, "projects": projects})
 
+
 @app.get("/factures", response_class=HTMLResponse)
 def factures_page(request: Request, user=Depends(get_current_user), db: Session = Depends(get_db)):
-    """
-    Renders the factures page with a list of invoices.
-
+    """Renders the factures page with a list of invoices.
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
@@ -228,11 +234,10 @@ def factures_page(request: Request, user=Depends(get_current_user), db: Session 
     factures = db.query(Facture).all()
     return templates.TemplateResponse("factures.html", {"request": request, "user": user, "factures": factures})
 
+
 @app.get("/planifications", response_class=HTMLResponse)
 def planifications_page(request: Request, user=Depends(get_current_user), db: Session = Depends(get_db)):
-    """
-    Renders the planifications page with a list of planifications.
-
+    """Renders the planifications page with a list of planifications.
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
@@ -241,11 +246,10 @@ def planifications_page(request: Request, user=Depends(get_current_user), db: Se
     planifications = db.query(PlanificationCollaborateur).all()
     return templates.TemplateResponse("planifications.html", {"request": request, "user": user, "planifications": planifications})
 
+
 @app.get("/prestation", response_class=HTMLResponse)
 def prestation_page(request: Request, user=Depends(get_current_user), db: Session = Depends(get_db)):
-    """
-    Renders the prestations page with a list of prestations.
-
+    """Renders the prestations page with a list of prestations.
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
@@ -254,32 +258,16 @@ def prestation_page(request: Request, user=Depends(get_current_user), db: Sessio
     prestations = db.query(PrestationCollaborateur).all()
     return templates.TemplateResponse("prestation.html", {"request": request, "user": user, "prestations": prestations})
 
+
 @app.get("/finance", response_class=HTMLResponse)
 def finance_page(request: Request, user=Depends(get_current_user)):
-    """
-    Renders the finance dashboard page.
-
+    """Renders the finance dashboard page.
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
     implement: Esteban Barracho (v.1 24/06/2025)
     """
     return templates.TemplateResponse("finance.html", {"request": request, "user": user})
-# ============================================
-# ÉVÉNEMENT DE DÉMARRAGE
-# ============================================
-
-@app.on_event("startup")
-def startup_message():
-    """This event is triggered when the API server starts.
-    Version:
-    --------
-    specification: Esteban Barracho (v.1 19/06/2025)
-    implement: Esteban Barracho (v.1 19/06/2025)
-    """
-
-    print("✅ API disponible sur http://localhost:8000")
-
 
 # ============================================
 # HANDLERS D’ERREURS GÉNÉRIQUES
@@ -318,4 +306,3 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         "message": "Erreur de validation",
         "hint": "Vérifie les champs saisis ou l’URL appelée."
     }, status_code=422)
-

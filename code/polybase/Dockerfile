@@ -12,6 +12,9 @@ WORKDIR /app
 # ----- Copy Application Source -----
 COPY . /app
 
+# ----- Copy Environment Variables -----
+COPY .env /app/.env
+
 # ----- Install Python Dependencies -----
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt

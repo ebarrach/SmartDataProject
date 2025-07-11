@@ -251,6 +251,7 @@ def insert_row(table: str, row: dict, db: Session = Depends(get_db), user=Depend
         raise HTTPException(404, detail="Table inconnue")
 
     columns = {c["name"]: c for c in inspector.get_columns(table)}
+    assert isinstance(columns, dict) and len(columns) > 0, f"Structure de la table `{table}` vide ou invalide"
     insert_row = {}
 
     # Forcer la détection de l'ID principal même si inspect échoue
@@ -266,6 +267,7 @@ def insert_row(table: str, row: dict, db: Session = Depends(get_db), user=Depend
         # Vérifie unicité et regénère si existe déjà (boucle protection)
         for _ in range(10):
             new_id = generate_id(prefix)
+            assert new_id.startswith(prefix), f"ID généré ne commence pas par le préfixe {prefix}"
             exists = db.execute(text(f"SELECT 1 FROM `{table}` WHERE `{id_field}` = :id"), {"id": new_id}).first()
             if not exists:
                 insert_row[id_field] = new_id
@@ -300,6 +302,8 @@ def insert_row(table: str, row: dict, db: Session = Depends(get_db), user=Depend
     try:
         db.execute(sql, insert_row)
         db.commit()
+        assert db.execute(text(f"SELECT 1 FROM `{table}` WHERE `{id_field}` = :id"),
+                          {"id": insert_row.get(id_field)}).first(), "Échec de l'insertion, l’ID n’existe pas en base"
     except Exception as e:
         db.rollback()
         raise HTTPException(400, detail=f"Erreur lors de l’insertion : {e}")
@@ -384,6 +388,7 @@ def update_row(table: str, id: str, row: dict, db: Session = Depends(get_db), us
         raise HTTPException(404, detail="Table inconnue")
 
     pk = inspector.get_pk_constraint(table)
+    assert "constrained_columns" in pk, f"Clé primaire introuvable pour la table `{table}`"
     id_field = pk['constrained_columns'][0] if pk['constrained_columns'] else None
     if not id_field:
         raise HTTPException(400, detail="Impossible de déterminer la clé primaire.")
@@ -468,6 +473,7 @@ def detect_foreign_keys(table: str, db: Session):
     """
     inspector = inspect(db.get_bind())
     fk_map = {}
+    assert isinstance(fks, list), "Les clés étrangères doivent être une liste"
     for fk in inspector.get_foreign_keys(table):
         if fk.get("constrained_columns") and fk.get("referred_table"):
             for col in fk["constrained_columns"]:
