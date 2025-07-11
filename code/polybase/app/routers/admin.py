@@ -132,7 +132,9 @@ def get_tables(db: Session = Depends(get_db), user=Depends(get_current_user)):
 # ============================================
 @router.get("/table/{table}/structure")
 def get_table_structure(table: str, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    """Retrieves the structure of a specific table, including types, nullability, and examples.
+    """Retrieves the structure of a specific table, including types, nullability, and examples,
+    and detects foreign key relationships for dynamic dropdowns.
+
     Parameters:
     -----------
     table (str): Name of the table to inspect.
@@ -141,15 +143,21 @@ def get_table_structure(table: str, db: Session = Depends(get_db), user=Depends(
 
     Returns:
     --------
-    list[dict]: Column metadata including example values.
+    list[dict]: Column metadata including foreign key target if applicable.
 
     Version:
     --------
-    specification: Esteban Barracho (v.1 26/06/2025)
-    implement: Esteban Barracho (v.1.2 09/07/2025)
+    specification: Esteban Barracho (v.1.3 11/07/2025)
+    implement: Esteban Barracho (v.1.3 11/07/2025)
     """
     check_admin(user)
     inspector = inspect(db.get_bind())
+    fk_map = {}
+    for fk in inspector.get_foreign_keys(table):
+        if fk.get("constrained_columns") and fk.get("referred_table"):
+            for col in fk["constrained_columns"]:
+                fk_map[col] = fk["referred_table"]
+
     cols = []
     for c in inspector.get_columns(table):
         ex = "Exemple : "
@@ -166,6 +174,7 @@ def get_table_structure(table: str, db: Session = Depends(get_db), user=Depends(
             ex += "0 ou 1"
         else:
             ex += tpe
+
         cols.append({
             "name": c["name"],
             "type": str(c["type"]),
@@ -173,8 +182,10 @@ def get_table_structure(table: str, db: Session = Depends(get_db), user=Depends(
             "maxLength": c.get("length", None),
             "precision": c.get("precision", None),
             "example": ex,
+            "foreign_table": fk_map.get(c["name"])  # clé étrangère si détectée
         })
     return cols
+
 
 
 # ============================================
@@ -196,12 +207,18 @@ def get_table_data(table: str, db: Session = Depends(get_db), user=Depends(get_c
     Version:
     --------
     specification: Esteban Barracho (v.1 26/06/2025)
-    implement: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.2 11/07/2025)
     """
 
     check_admin(user)
-    result = db.execute(text(f"SELECT * FROM `{table}`"))
+    if table == "Personnel":
+        result = db.execute(text("SELECT * FROM Personnel WHERE fonction != 'admin'"))
+    else:
+        result = db.execute(text(f"SELECT * FROM `{table}`"))
     data = [dict(row) for row in result.mappings()]
+    for row in data:
+        if table == "Personnel" and "password" in row:
+            row["password"] = "********"
     return data
 
 
@@ -232,16 +249,19 @@ def insert_row(table: str, row: dict, db: Session = Depends(get_db), user=Depend
     inspector = inspect(db.get_bind())
     if table not in inspector.get_table_names():
         raise HTTPException(404, detail="Table inconnue")
+
     columns = {c["name"]: c for c in inspector.get_columns(table)}
     insert_row = {}
 
-    # GÉNÈRE L'ID SI NÉCESSAIRE (clé primaire métier)
-    id_field = None
+    # Forcer la détection de l'ID principal même si inspect échoue
+    id_field = next((name for name, col in columns.items() if name.startswith("id_") and col.get("primary_key")), None)
+    if not id_field:
+        for fallback in ["id_" + table.lower(), f"id_{table}"]:
+            if fallback in columns:
+                id_field = fallback
+                break
+
     prefix = table_prefixes.get(table)
-    for cname, cinfo in columns.items():
-        if cname.startswith('id_') and cinfo.get("primary_key", False):
-            id_field = cname
-            break
     if id_field and prefix:
         # Vérifie unicité et regénère si existe déjà (boucle protection)
         for _ in range(10):
@@ -251,32 +271,31 @@ def insert_row(table: str, row: dict, db: Session = Depends(get_db), user=Depend
                 insert_row[id_field] = new_id
                 break
         else:
-            raise HTTPException(500, detail="Impossible de générer un nouvel identifiant unique.")
+            raise HTTPException(500, detail="Impossible de générer un identifiant unique.")
 
     # INJECTION DES AUTRES CHAMPS (hors ID et password)
     for k, v in row.items():
         if k == id_field:
             continue  # Ne jamais prendre l'id fourni par le client !
         if k not in columns:
-            raise HTTPException(400, detail=f"Colonne interdite: {k}")
+            raise HTTPException(400, detail=f"Colonne inconnue: {k}")
         c = columns[k]
         if not c["nullable"] and (v is None or v == ""):
-            raise HTTPException(400, detail=f"Champ obligatoire manquant: {k}")
+            raise HTTPException(400, detail=f"Champ requis manquant: {k}")
         typ = str(c["type"]).upper()
-        if ("INT" in typ or "DECIMAL" in typ) and v not in (None, "") and not str(v).replace(".", "", 1).isdigit():
-            raise HTTPException(400, detail=f"Le champ {k} doit être numérique.")
+        if "INT" in typ or "DECIMAL" in typ:
+            if v not in (None, "") and not str(v).replace(".", "", 1).isdigit():
+                raise HTTPException(400, detail=f"Le champ {k} doit être numérique.")
         if c.get("length") and v and len(str(v)) > c["length"]:
-            raise HTTPException(400, detail=f"Le champ {k} dépasse la longueur max {c['length']}.")
+            raise HTTPException(400, detail=f"Le champ {k} dépasse la longueur maximale ({c['length']})")
         # Hashage automatique pour le mot de passe
         if k == "password" and v:
-            hashed = bcrypt.hashpw(v.encode("utf-8"), bcrypt.gensalt()).decode()
-            insert_row[k] = hashed
+            insert_row[k] = bcrypt.hashpw(v.encode(), bcrypt.gensalt()).decode()
         else:
             insert_row[k] = v if v not in ("", None) else None
-
     # CONSTRUCTION ET EXECUTION SQL
-    keys = ", ".join([f"`{k}`" for k in insert_row.keys()])
-    vals = ", ".join([f":{k}" for k in insert_row.keys()])
+    keys = ", ".join([f"`{k}`" for k in insert_row])
+    vals = ", ".join([f":{k}" for k in insert_row])
     sql = text(f"INSERT INTO `{table}` ({keys}) VALUES ({vals})")
     try:
         db.execute(sql, insert_row)
@@ -285,7 +304,8 @@ def insert_row(table: str, row: dict, db: Session = Depends(get_db), user=Depend
         db.rollback()
         raise HTTPException(400, detail=f"Erreur lors de l’insertion : {e}")
     # Retourne l'identifiant généré (pour liaison côté client)
-    return {"status": "ok", "id": insert_row.get(id_field, None)}
+    return {"status": "ok", "id": insert_row.get(id_field)}
+
 
 # ============================================
 # RECHERCHE GLOBALE LEVENSHTEIN SUR TOUTES LES TABLES
@@ -338,7 +358,6 @@ def search_global(query: str = Query(..., min_length=1),db: Session = Depends(ge
 # ============================================
 # MISE À JOUR D'UNE ENTRÉE (PUT)
 # ============================================
-@router.put("/table/{table}/{id}")
 @router.put("/table/{table}/{id}")
 def update_row(table: str, id: str, row: dict, db: Session = Depends(get_db), user=Depends(get_current_user)):
     """Updates a record in a table based on its primary key.
@@ -410,7 +429,7 @@ def delete_row(table: str, id: str, db: Session = Depends(get_db), user=Depends(
     Version:
     --------
     specification: Esteban Barracho (v.1 26/06/2025)
-    implement: Esteban Barracho (v.1 27/06/2025)
+    implement: Esteban Barracho (v.2 11/07/2025)
     """
     check_admin(user)
     inspector = inspect(db.get_bind())
@@ -421,9 +440,10 @@ def delete_row(table: str, id: str, db: Session = Depends(get_db), user=Depends(
 
     if not id_field:
         raise HTTPException(400, detail="Impossible de déterminer la clé primaire.")
-
-    print(f"🧹 Suppression dans {table} sur {id_field} = {id}")  # DEBUG
-
+    if table == "Personnel":
+        fonction = db.execute(text("SELECT fonction FROM Personnel WHERE id_personnel = :id"), {"id": id}).scalar()
+        if fonction == "admin":
+            raise HTTPException(403, detail="Impossible de supprimer un administrateur via l’interface.")
     sql = text(f"DELETE FROM `{table}` WHERE `{id_field}` = :id")
     try:
         result = db.execute(sql, {"id": id})
@@ -436,3 +456,20 @@ def delete_row(table: str, id: str, db: Session = Depends(get_db), user=Depends(
         print(f"❌ Erreur DELETE {table}({id}): {e}")
         raise HTTPException(400, detail=f"Erreur lors de la suppression : {e}")
 
+
+def detect_foreign_keys(table: str, db: Session):
+    """Détecte les relations de type clé étrangère sur la table.
+    Retourne un dictionnaire {colonne: table_cible}.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1.1 11/07/2025)
+    """
+    inspector = inspect(db.get_bind())
+    fk_map = {}
+    for fk in inspector.get_foreign_keys(table):
+        if fk.get("constrained_columns") and fk.get("referred_table"):
+            for col in fk["constrained_columns"]:
+                fk_map[col] = fk["referred_table"]
+    return fk_map

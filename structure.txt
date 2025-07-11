@@ -32,8 +32,6 @@ code/
             schemas.py
             utils/
                 outlook_sync.py
-        demo/
-            demo_api.py
         docker-compose.yml
         mysql-init/
             init.sql
@@ -56,6 +54,9 @@ code/
                 prestation.css
                 projects.css
                 task_detail.css
+            docs/
+                doc1.pdf
+                rapport_audit.pdf
             img/
                 avatar-polybase.png
                 login-illustration.png
@@ -93,7 +94,6 @@ code/
             prestation.html
             projects.html
             task_detail.html
-        test.db.py
     screenshots/
         bookmarks_polybase.png
 doc/
@@ -136,6 +136,7 @@ method/
         Note
         demo/
             demo.sql
+            demo_api.py
         prototype/
             agenda.html
             login.css
@@ -150,6 +151,7 @@ method/
             preview_finance.html
             preview_login.html
             preview_task_detail.html
+        test.db.py
 planning/
     README.txt
     gantt.xlsx

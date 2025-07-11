@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from datetime import date
 
 # 📌 Ajout du chemin vers le dossier contenant `app/` pour les imports
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "code", "polybase")))
 
 from app.models import (
     Client, Projet, Facture, Phase, Tache,

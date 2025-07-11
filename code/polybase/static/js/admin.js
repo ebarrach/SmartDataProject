@@ -1,6 +1,6 @@
 // =============================================
 // specification: Esteban Barracho (v.1 26/06/2025)
-// implement: Esteban Barracho (v.3.4 07/07/2025)
+// implement: Esteban Barracho (v.3.9 11/07/2025)
 // =============================================
 document.addEventListener("DOMContentLoaded", () => {
     const tableSelect = document.getElementById('table-select');
@@ -16,46 +16,73 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById('search-input');
 
     const ENUM_LABELS = {
-        statut: {
-            'a_faire': 'À faire',
-            'en_cours': 'En cours',
-            'termine': 'Terminé'
+        Tache: {
+            statut: {
+                'a_faire': 'À faire',
+                'en_cours': 'En cours',
+                'termine': 'Terminé'
+            }
         },
-        nature_cout: {
-            'interne': 'Interne',
-            'externe': 'Externe',
-            'logiciel': 'Logiciel',
-            'matériel': 'Matériel',
-            'sous-traitant': 'Sous-traitant'
+        Cout: {
+            nature_cout: {
+                'interne': 'Interne',
+                'externe': 'Externe',
+                'logiciel': 'Logiciel',
+                'matériel': 'Matériel',
+                'sous-traitant': 'Sous-traitant'
+            }
         },
-        mode_facturation: {
-            'horaire': 'Horaire',
-            'forfaitaire': 'Forfaitaire'
+        PrestationCollaborateur: {
+            mode_facturation: {
+                'horaire': 'Horaire',
+                'forfaitaire': 'Forfaitaire'
+            }
         },
-        statut_facture: {
-            'emise': 'Émise',
-            'payee': 'Payée',
-            'en_attente': 'En attente'
+        Facture: {
+            statut: {
+                'emise': 'Émise',
+                'payee': 'Payée',
+                'en_attente': 'En attente'
+            }
         },
-        type_personnel: {
-            'interne': 'Interne',
-            'externe': 'Externe'
+        Personnel: {
+            type_personnel: {
+                'interne': 'Interne',
+                'externe': 'Externe'
+            }
         }
     };
 
-    function getEnumLabel(colName, value) {
-        return (ENUM_LABELS[colName] && ENUM_LABELS[colName][value]) || value;
+    function getEnumLabel(table, colName, value) {
+        const enumCols = ENUM_LABELS[table] || {};
+        return (enumCols[colName] && enumCols[colName][value]) || value;
     }
 
-    function sanitizeInput(col, value) {
-        if (col.type.toLowerCase().includes("boolean")) {
-            return value === "true" || value === "1" || value === "on" ? true : false;
+    function sanitizeInput(col, valueRaw) {
+        const type = col.type.toLowerCase();
+        if (type === "boolean") {
+            return valueRaw === true || valueRaw === "on";
         }
-        return value;
+        if (type.includes("decimal") || type.includes("numeric")) {
+            const parsed = parseFloat(String(valueRaw).replace(',', '.'));
+            return isNaN(parsed) ? null : parsed;
+        }
+        if (type.includes("int")) {
+            const parsed = parseInt(valueRaw, 10);
+            return isNaN(parsed) ? null : parsed;
+        }
+        if (type.includes("date")) {
+            return valueRaw || null;
+        }
+        return valueRaw === "" ? null : valueRaw;
     }
 
     function isDateField(col) {
         return col.type.toLowerCase().includes("date");
+    }
+
+    function isBooleanField(col) {
+        return col.type.toLowerCase() === "boolean";
     }
 
     let tableData = [];
@@ -85,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         filteredData = null;
         loadAll();
     });
+
     reloadBtn.onclick = () => {
         filteredData = null;
         loadTableData();
@@ -94,57 +122,10 @@ document.addEventListener("DOMContentLoaded", () => {
         tableName = tableSelect.value;
         currentTable.textContent = tableName;
         filteredData = null;
-        loadTableData();
         loadTableStructure();
+        loadTableData();
         formUpdate.style.display = "none";
     }
-
-    searchForm.onsubmit = function (e) {
-        e.preventDefault();
-        const val = searchInput.value.trim();
-        if (!val) {
-            filteredData = null;
-            renderTable();
-            return;
-        }
-        fetch(`/admin/search_global?query=${encodeURIComponent(val)}`)
-            .then(res => res.json())
-            .then(results => {
-                if (!results.length) {
-                    dataTable.innerHTML = "<tr><td>Aucun résultat dans aucune table</td></tr>";
-                    return;
-                }
-                let html = `<thead><tr><th>Table</th><th>Colonne</th><th>Valeur trouvée</th><th>Identifiant</th><th>Score</th><th>Action</th></tr></thead><tbody>`;
-                results.forEach(r => {
-                    html += `<tr>
-                        <td>${r.table}</td>
-                        <td>${r.col}</td>
-                        <td>${getEnumLabel(r.col, r.value)}</td>
-                        <td>${r.id || ""}</td>
-                        <td>${r.score}</td>
-                        <td>${r.id && r.table ? `<button class="action-btn update-btn" data-table="${r.table}" data-id="${r.id}">Voir & éditer</button>` : ""}</td>
-                    </tr>`;
-                });
-                html += "</tbody>";
-                dataTable.innerHTML = html;
-                document.querySelectorAll('.update-btn').forEach(btn => {
-                    btn.onclick = () => {
-                        tableSelect.value = btn.dataset.table;
-                        loadAll();
-                        setTimeout(() => {
-                            fetch(`/admin/table/${btn.dataset.table}`)
-                                .then(res => res.json())
-                                .then(data => {
-                                    let row = data.find(x => {
-                                        return String(x[Object.keys(x).find(k => k.startsWith("id_"))]) == btn.dataset.id;
-                                    });
-                                    if (row) startEditRow(row);
-                                });
-                        }, 700);
-                    };
-                });
-            });
-    };
 
     function loadTableData() {
         fetch(`/admin/table/${tableName}`)
@@ -174,9 +155,10 @@ document.addEventListener("DOMContentLoaded", () => {
         let ths = cols.map(c => `<th>${c}</th>`).join("") + "<th>Actions</th>";
         let trs = rows.map((row, i) => {
             let isHighlighted = highlightValue && Object.values(row).some(field => (field + "").toLowerCase().includes(highlightValue));
-            let tds = cols.map(c =>
-                `<td>${getEnumLabel(c, row[c]) != null ? getEnumLabel(c, row[c]) : ""}</td>`
-            ).join("");
+            let tds = cols.map(c => {
+                if (c === "password") return "<td>********</td>";
+                return `<td>${getEnumLabel(tableName, c, row[c]) != null ? getEnumLabel(tableName, c, row[c]) : ""}</td>`;
+            }).join("");
             return `<tr${isHighlighted ? ' class="highlight-row"' : ''}>
                 ${tds}
                 <td>
@@ -205,82 +187,179 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderInsertForm() {
-        if (!tableStructure.length) {
-            formInsert.innerHTML = "";
-            return;
-        }
-        let html = `<form id="insert-form"><h3>Ajouter une entrée</h3>`;
-        tableStructure.forEach(col => {
-            if (/^id_/.test(col.name)) return;
-            html += `<label>${col.name}${col.nullable ? "" : ' <span class="red-star">*</span>'}<br>`;
-            if (ENUM_LABELS[col.name]) {
-                html += `<select name="${col.name}" ${col.nullable ? "" : "required"}>`;
-                html += `<option value="">-- Sélectionner --</option>`;
-                Object.entries(ENUM_LABELS[col.name]).forEach(([val, label]) => {
-                    html += `<option value="${val}">${label}</option>`;
-                });
-                html += `</select>`;
-            } else {
-                html += `<input type="${isDateField(col) ? 'date' : 'text'}" name="${col.name}" ${col.nullable ? "" : "required"}>`;
-            }
-            html += `</label>`;
-        });
-        html += `<div class="validation-error" id="form-error"></div>
-                 <button type="submit">Insérer</button></form>`;
-        formInsert.innerHTML = html;
-        document.getElementById('insert-form').onsubmit = onInsert;
+    if (!tableStructure.length) {
+        formInsert.innerHTML = "";
+        return;
     }
 
+    const enumCols = ENUM_LABELS[tableName] || {};
+    let html = `<form id="insert-form"><h3>Ajouter une entrée</h3>`;
+    let foreignKeyPromises = [];
+
+    tableStructure.forEach(col => {
+        if (/^id_/.test(col.name)) return;
+        html += `<label>${col.name}${col.nullable ? "" : ' <span class="red-star">*</span>'}<br>`;
+
+        if (enumCols[col.name]) {
+            html += `<select name="${col.name}" ${col.nullable ? "" : "required"}>`;
+            html += `<option value="">-- Sélectionner --</option>`;
+            Object.entries(enumCols[col.name]).forEach(([val, label]) => {
+                html += `<option value="${val}">${label}</option>`;
+            });
+            html += `</select>`;
+        } else if (/^id_/.test(col.name)) {
+            const refTable = col.name.replace(/^id_/, "");
+            const selectId = `select-${col.name}`;
+            html += `<select name="${col.name}" id="${selectId}" ${col.nullable ? "" : "required"}>`;
+            html += `<option value="">-- Chargement... --</option>`;
+            html += `</select>`;
+            // Stocke la promesse pour récupérer les données référencées
+            foreignKeyPromises.push(
+                fetch(`/admin/table/${refTable}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const select = document.getElementById(selectId);
+                        if (!select) return;
+                        select.innerHTML = `<option value="">-- Sélectionner --</option>`;
+                        if (!data.length) {
+                            select.innerHTML = `<option value="" disabled>(aucune donnée)</option>`;
+                            return;
+                        }
+                        const idKey = Object.keys(data[0]).find(k => /^id_/.test(k));
+                        const labelKey = Object.keys(data[0]).find(k => k !== idKey) || idKey;
+                        data.forEach(row => {
+                            select.innerHTML += `<option value="${row[idKey]}">${row[labelKey]}</option>`;
+                        });
+                    }).catch(() => {
+                        const select = document.getElementById(selectId);
+                        if (select) select.innerHTML = `<option value="" disabled>(erreur de chargement)</option>`;
+                    })
+            );
+        } else if (isBooleanField(col)) {
+            html += `<input type="checkbox" name="${col.name}">`;
+        } else {
+            const typeInput = col.name === "password" ? "password" : isDateField(col) ? "date" : "text";
+            html += `<input type="${typeInput}" name="${col.name}" ${col.nullable ? "" : "required"}>`;
+        }
+
+        html += `</label>`;
+    });
+
+    html += `<div class="validation-error" id="form-error"></div>
+             <button type="submit">Insérer</button></form>`;
+    formInsert.innerHTML = html;
+
+    // Attache le handler après le rendu
+    document.getElementById('insert-form').onsubmit = onInsert;
+
+    // Lance tous les fetch de relation
+    Promise.all(foreignKeyPromises);
+    }
+
+
     function startEditRow(row) {
-        formInsert.style.display = "none";
-        let html = `<form id="update-form"><h3>Modifier cette entrée</h3>`;
+    formInsert.style.display = "none";
+    const enumCols = ENUM_LABELS[tableName] || {};
+    let html = `<form id="update-form"><h3>Modifier cette entrée</h3>`;
+    let foreignKeyPromises = [];
+
+    tableStructure.forEach(col => {
+        if (/^id_/.test(col.name)) return;
+
+        html += `<label>${col.name}${col.nullable ? "" : ' <span class="red-star">*</span>'}<br>`;
+
+        if (enumCols[col.name]) {
+            html += `<select name="${col.name}" ${col.nullable ? "" : "required"}>`;
+            html += `<option value="">-- Sélectionner --</option>`;
+            Object.entries(enumCols[col.name]).forEach(([val, label]) => {
+                const selected = row[col.name] == val ? "selected" : "";
+                html += `<option value="${val}" ${selected}>${label}</option>`;
+            });
+            html += `</select>`;
+        } else if (/^id_/.test(col.name)) {
+            const refTable = col.name.replace(/^id_/, "");
+            const selectId = `update-${col.name}`;
+            html += `<select name="${col.name}" id="${selectId}" ${col.nullable ? "" : "required"}>`;
+            html += `<option value="">-- Chargement... --</option>`;
+            html += `</select>`;
+
+            foreignKeyPromises.push(
+                fetch(`/admin/table/${refTable}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const select = document.getElementById(selectId);
+                        if (!select) return;
+                        select.innerHTML = `<option value="">-- Sélectionner --</option>`;
+                        if (!data.length) {
+                            select.innerHTML = `<option value="" disabled>(aucune donnée)</option>`;
+                            return;
+                        }
+                        const idKey = Object.keys(data[0]).find(k => /^id_/.test(k));
+                        const labelKey = Object.keys(data[0]).find(k => k !== idKey) || idKey;
+                        data.forEach(rowRef => {
+                            const selected = row[col.name] == rowRef[idKey] ? "selected" : "";
+                            select.innerHTML += `<option value="${rowRef[idKey]}" ${selected}>${rowRef[labelKey]}</option>`;
+                        });
+                    }).catch(() => {
+                        const select = document.getElementById(selectId);
+                        if (select) select.innerHTML = `<option value="" disabled>(erreur de chargement)</option>`;
+                    })
+            );
+        } else if (isBooleanField(col)) {
+            const checked = row[col.name] ? "checked" : "";
+            html += `<input type="checkbox" name="${col.name}" ${checked}>`;
+        } else {
+            const typeInput = col.name === "password" ? "password" : isDateField(col) ? "date" : "text";
+            const val = row[col.name] != null ? row[col.name] : "";
+            html += `<input type="${typeInput}" name="${col.name}" value="${val}" ${col.nullable ? "" : "required"}>`;
+        }
+
+        html += `</label>`;
+    });
+
+    html += `<div class="validation-error" id="form-update-error"></div>
+             <button type="submit" class="update-btn action-btn">Mettre à jour</button>
+             <button type="button" onclick="
+                 document.getElementById('form-update').style.display='none';
+                 document.getElementById('form-insert').style.display='block';
+             " class="delete-btn action-btn">Annuler</button>
+    </form>`;
+
+    formUpdate.innerHTML = html;
+    formUpdate.style.display = "block";
+
+    // Attache le handler après chargement
+    document.getElementById('update-form').onsubmit = function (e) {
+        e.preventDefault();
+        let obj = {};
         tableStructure.forEach(col => {
             if (/^id_/.test(col.name)) return;
-            html += `<label>${col.name}${col.nullable ? "" : ' <span class="red-star">*</span>'}<br>`;
-            if (ENUM_LABELS[col.name]) {
-                html += `<select name="${col.name}" ${col.nullable ? "" : "required"}>`;
-                html += `<option value="">-- Sélectionner --</option>`;
-                Object.entries(ENUM_LABELS[col.name]).forEach(([val, label]) => {
-                    html += `<option value="${val}"${row[col.name] == val ? " selected" : ""}>${label}</option>`;
-                });
-                html += `</select>`;
+            const input = this[col.name];
+            if (isBooleanField(col)) {
+                obj[col.name] = input.checked;
             } else {
-                html += `<input type="${isDateField(col) ? 'date' : 'text'}" name="${col.name}" value="${row[col.name] != null ? row[col.name] : ''}" ${col.nullable ? "" : "required"}>`;
+                obj[col.name] = sanitizeInput(col, input.value.trim());
             }
-            html += `</label>`;
         });
-        html += `<div class="validation-error" id="form-update-error"></div>
-            <button type="submit" class="update-btn action-btn">Mettre à jour</button>
-            <button type="button" onclick="
-            document.getElementById('form-update').style.display='none';
-            document.getElementById('form-insert').style.display='block';
-        " class="delete-btn action-btn">Annuler</button>
-    </form>`;
-        formUpdate.innerHTML = html;
-        formUpdate.style.display = "block";
-        document.getElementById('update-form').onsubmit = function (e) {
-            e.preventDefault();
-            let obj = {};
-            tableStructure.forEach(col => {
-                if (/^id_/.test(col.name)) return;
-                obj[col.name] = sanitizeInput(col, this[col.name].value.trim()) || null;
-            });
-            const id = getRowId(row);
-            fetch(`/admin/table/${tableName}/${id}`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(obj)
-            }).then(res => {
-                if (res.ok) {
-                    loadTableData();
-                    formUpdate.style.display = "none";
-                    formInsert.style.display = "block";
-                } else {
-                    res.text().then(t => document.getElementById('form-update-error').innerHTML = t);
-                }
-            });
-        };
+        const id = getRowId(row);
+        fetch(`/admin/table/${tableName}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(obj)
+        }).then(res => {
+            if (res.ok) {
+                loadTableData();
+                formUpdate.style.display = "none";
+                formInsert.style.display = "block";
+            } else {
+                res.text().then(t => document.getElementById('form-update-error').innerHTML = t);
+            }
+        });
+    };
+
+    Promise.all(foreignKeyPromises);
     }
+
 
     function getRowId(row) {
         return Object.keys(row).find(k => /^id_/.test(k)) ? row[Object.keys(row).find(k => /^id_/.test(k))] : null;
@@ -292,7 +371,12 @@ document.addEventListener("DOMContentLoaded", () => {
         let obj = {};
         tableStructure.forEach(col => {
             if (/^id_/.test(col.name)) return;
-            obj[col.name] = sanitizeInput(col, form[col.name].value.trim()) || null;
+            const input = form[col.name];
+            if (isBooleanField(col)) {
+                obj[col.name] = input.checked;
+            } else {
+                obj[col.name] = sanitizeInput(col, input.value.trim());
+            }
         });
         fetch(`/admin/table/${tableName}`, {
             method: 'POST',
