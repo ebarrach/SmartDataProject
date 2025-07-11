@@ -1,6 +1,6 @@
 // =============================================
 // specification: Esteban Barracho (v.1 26/06/2025)
-// implement: Esteban Barracho (v.3.9 11/07/2025)
+// implement: Esteban Barracho (v.4.0 11/07/2025)
 // =============================================
 document.addEventListener("DOMContentLoaded", () => {
     const tableSelect = document.getElementById('table-select');
@@ -16,41 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById('search-input');
 
     const ENUM_LABELS = {
-        Tache: {
-            statut: {
-                'a_faire': 'À faire',
-                'en_cours': 'En cours',
-                'termine': 'Terminé'
-            }
-        },
-        Cout: {
-            nature_cout: {
-                'interne': 'Interne',
-                'externe': 'Externe',
-                'logiciel': 'Logiciel',
-                'matériel': 'Matériel',
-                'sous-traitant': 'Sous-traitant'
-            }
-        },
-        PrestationCollaborateur: {
-            mode_facturation: {
-                'horaire': 'Horaire',
-                'forfaitaire': 'Forfaitaire'
-            }
-        },
-        Facture: {
-            statut: {
-                'emise': 'Émise',
-                'payee': 'Payée',
-                'en_attente': 'En attente'
-            }
-        },
-        Personnel: {
-            type_personnel: {
-                'interne': 'Interne',
-                'externe': 'Externe'
-            }
-        }
+        Tache: { statut: { 'a_faire': 'À faire', 'en_cours': 'En cours', 'termine': 'Terminé' } },
+        Cout: { nature_cout: { 'interne': 'Interne', 'externe': 'Externe', 'logiciel': 'Logiciel', 'matériel': 'Matériel', 'sous-traitant': 'Sous-traitant' } },
+        PrestationCollaborateur: { mode_facturation: { 'horaire': 'Horaire', 'forfaitaire': 'Forfaitaire' } },
+        Facture: { statut: { 'emise': 'Émise', 'payee': 'Payée', 'en_attente': 'En attente' } },
+        Personnel: { type_personnel: { 'interne': 'Interne', 'externe': 'Externe' } }
     };
 
     function getEnumLabel(table, colName, value) {
@@ -60,9 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function sanitizeInput(col, valueRaw) {
         const type = col.type.toLowerCase();
-        if (type === "boolean") {
-            return valueRaw === true || valueRaw === "on";
-        }
+        if (type === "boolean") return valueRaw === true || valueRaw === "on";
         if (type.includes("decimal") || type.includes("numeric")) {
             const parsed = parseFloat(String(valueRaw).replace(',', '.'));
             return isNaN(parsed) ? null : parsed;
@@ -71,9 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const parsed = parseInt(valueRaw, 10);
             return isNaN(parsed) ? null : parsed;
         }
-        if (type.includes("date")) {
-            return valueRaw || null;
-        }
+        if (type.includes("date")) return valueRaw || null;
         return valueRaw === "" ? null : valueRaw;
     }
 
@@ -83,6 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function isBooleanField(col) {
         return col.type.toLowerCase() === "boolean";
+    }
+
+    function isForeignKey(col) {
+        return col.foreign_table !== undefined && col.foreign_table !== null;
     }
 
     let tableData = [];
@@ -187,179 +157,171 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderInsertForm() {
-    if (!tableStructure.length) {
-        formInsert.innerHTML = "";
-        return;
-    }
-
-    const enumCols = ENUM_LABELS[tableName] || {};
-    let html = `<form id="insert-form"><h3>Ajouter une entrée</h3>`;
-    let foreignKeyPromises = [];
-
-    tableStructure.forEach(col => {
-        if (/^id_/.test(col.name)) return;
-        html += `<label>${col.name}${col.nullable ? "" : ' <span class="red-star">*</span>'}<br>`;
-
-        if (enumCols[col.name]) {
-            html += `<select name="${col.name}" ${col.nullable ? "" : "required"}>`;
-            html += `<option value="">-- Sélectionner --</option>`;
-            Object.entries(enumCols[col.name]).forEach(([val, label]) => {
-                html += `<option value="${val}">${label}</option>`;
-            });
-            html += `</select>`;
-        } else if (/^id_/.test(col.name)) {
-            const refTable = col.name.replace(/^id_/, "");
-            const selectId = `select-${col.name}`;
-            html += `<select name="${col.name}" id="${selectId}" ${col.nullable ? "" : "required"}>`;
-            html += `<option value="">-- Chargement... --</option>`;
-            html += `</select>`;
-            // Stocke la promesse pour récupérer les données référencées
-            foreignKeyPromises.push(
-                fetch(`/admin/table/${refTable}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        const select = document.getElementById(selectId);
-                        if (!select) return;
-                        select.innerHTML = `<option value="">-- Sélectionner --</option>`;
-                        if (!data.length) {
-                            select.innerHTML = `<option value="" disabled>(aucune donnée)</option>`;
-                            return;
-                        }
-                        const idKey = Object.keys(data[0]).find(k => /^id_/.test(k));
-                        const labelKey = Object.keys(data[0]).find(k => k !== idKey) || idKey;
-                        data.forEach(row => {
-                            select.innerHTML += `<option value="${row[idKey]}">${row[labelKey]}</option>`;
-                        });
-                    }).catch(() => {
-                        const select = document.getElementById(selectId);
-                        if (select) select.innerHTML = `<option value="" disabled>(erreur de chargement)</option>`;
-                    })
-            );
-        } else if (isBooleanField(col)) {
-            html += `<input type="checkbox" name="${col.name}">`;
-        } else {
-            const typeInput = col.name === "password" ? "password" : isDateField(col) ? "date" : "text";
-            html += `<input type="${typeInput}" name="${col.name}" ${col.nullable ? "" : "required"}>`;
+        if (!tableStructure.length) {
+            formInsert.innerHTML = "";
+            return;
         }
+        const enumCols = ENUM_LABELS[tableName] || {};
+        let html = `<form id="insert-form"><h3>Ajouter une entrée</h3>`;
+        let foreignKeyPromises = [];
 
-        html += `</label>`;
-    });
-
-    html += `<div class="validation-error" id="form-error"></div>
-             <button type="submit">Insérer</button></form>`;
-    formInsert.innerHTML = html;
-
-    // Attache le handler après le rendu
-    document.getElementById('insert-form').onsubmit = onInsert;
-
-    // Lance tous les fetch de relation
-    Promise.all(foreignKeyPromises);
-    }
-
-
-    function startEditRow(row) {
-    formInsert.style.display = "none";
-    const enumCols = ENUM_LABELS[tableName] || {};
-    let html = `<form id="update-form"><h3>Modifier cette entrée</h3>`;
-    let foreignKeyPromises = [];
-
-    tableStructure.forEach(col => {
-        if (/^id_/.test(col.name)) return;
-
-        html += `<label>${col.name}${col.nullable ? "" : ' <span class="red-star">*</span>'}<br>`;
-
-        if (enumCols[col.name]) {
-            html += `<select name="${col.name}" ${col.nullable ? "" : "required"}>`;
-            html += `<option value="">-- Sélectionner --</option>`;
-            Object.entries(enumCols[col.name]).forEach(([val, label]) => {
-                const selected = row[col.name] == val ? "selected" : "";
-                html += `<option value="${val}" ${selected}>${label}</option>`;
-            });
-            html += `</select>`;
-        } else if (/^id_/.test(col.name)) {
-            const refTable = col.name.replace(/^id_/, "");
-            const selectId = `update-${col.name}`;
-            html += `<select name="${col.name}" id="${selectId}" ${col.nullable ? "" : "required"}>`;
-            html += `<option value="">-- Chargement... --</option>`;
-            html += `</select>`;
-
-            foreignKeyPromises.push(
-                fetch(`/admin/table/${refTable}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        const select = document.getElementById(selectId);
-                        if (!select) return;
-                        select.innerHTML = `<option value="">-- Sélectionner --</option>`;
-                        if (!data.length) {
-                            select.innerHTML = `<option value="" disabled>(aucune donnée)</option>`;
-                            return;
-                        }
-                        const idKey = Object.keys(data[0]).find(k => /^id_/.test(k));
-                        const labelKey = Object.keys(data[0]).find(k => k !== idKey) || idKey;
-                        data.forEach(rowRef => {
-                            const selected = row[col.name] == rowRef[idKey] ? "selected" : "";
-                            select.innerHTML += `<option value="${rowRef[idKey]}" ${selected}>${rowRef[labelKey]}</option>`;
-                        });
-                    }).catch(() => {
-                        const select = document.getElementById(selectId);
-                        if (select) select.innerHTML = `<option value="" disabled>(erreur de chargement)</option>`;
-                    })
-            );
-        } else if (isBooleanField(col)) {
-            const checked = row[col.name] ? "checked" : "";
-            html += `<input type="checkbox" name="${col.name}" ${checked}>`;
-        } else {
-            const typeInput = col.name === "password" ? "password" : isDateField(col) ? "date" : "text";
-            const val = row[col.name] != null ? row[col.name] : "";
-            html += `<input type="${typeInput}" name="${col.name}" value="${val}" ${col.nullable ? "" : "required"}>`;
-        }
-
-        html += `</label>`;
-    });
-
-    html += `<div class="validation-error" id="form-update-error"></div>
-             <button type="submit" class="update-btn action-btn">Mettre à jour</button>
-             <button type="button" onclick="
-                 document.getElementById('form-update').style.display='none';
-                 document.getElementById('form-insert').style.display='block';
-             " class="delete-btn action-btn">Annuler</button>
-    </form>`;
-
-    formUpdate.innerHTML = html;
-    formUpdate.style.display = "block";
-
-    // Attache le handler après chargement
-    document.getElementById('update-form').onsubmit = function (e) {
-        e.preventDefault();
-        let obj = {};
         tableStructure.forEach(col => {
             if (/^id_/.test(col.name)) return;
-            const input = this[col.name];
-            if (isBooleanField(col)) {
-                obj[col.name] = input.checked;
-            } else {
-                obj[col.name] = sanitizeInput(col, input.value.trim());
-            }
-        });
-        const id = getRowId(row);
-        fetch(`/admin/table/${tableName}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(obj)
-        }).then(res => {
-            if (res.ok) {
-                loadTableData();
-                formUpdate.style.display = "none";
-                formInsert.style.display = "block";
-            } else {
-                res.text().then(t => document.getElementById('form-update-error').innerHTML = t);
-            }
-        });
-    };
+            html += `<label>${col.name}${col.nullable ? "" : ' <span class="red-star">*</span>'}<br>`;
 
-    Promise.all(foreignKeyPromises);
+            if (enumCols[col.name]) {
+                html += `<select name="${col.name}" ${col.nullable ? "" : "required"}>`;
+                html += `<option value="">-- Sélectionner --</option>`;
+                Object.entries(enumCols[col.name]).forEach(([val, label]) => {
+                    html += `<option value="${val}">${label}</option>`;
+                });
+                html += `</select>`;
+            } else if (isForeignKey(col)) {
+                const refTable = col.foreign_table;
+                const selectId = `select-${col.name}`;
+                html += `<select name="${col.name}" id="${selectId}" ${col.nullable ? "" : "required"}>`;
+                html += `<option value="">-- Chargement... --</option>`;
+                html += `</select>`;
+                // Stocke la promesse pour récupérer les données référencées
+                foreignKeyPromises.push(
+                    fetch(`/admin/table/${refTable}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const select = document.getElementById(selectId);
+                            if (!select) return;
+                            select.innerHTML = `<option value="">-- Sélectionner --</option>`;
+                            if (!data.length) {
+                                select.innerHTML = `<option value="" disabled>(aucune donnée)</option>`;
+                                return;
+                            }
+                            const idKey = Object.keys(data[0]).find(k => /^id_/.test(k));
+                            const labelKey = Object.keys(data[0]).find(k => k !== idKey) || idKey;
+                            data.forEach(row => {
+                                select.innerHTML += `<option value="${row[idKey]}">${row[labelKey]}</option>`;
+                            });
+                        }).catch(() => {
+                            const select = document.getElementById(selectId);
+                            if (select) select.innerHTML = `<option value="" disabled>(erreur de chargement)</option>`;
+                        })
+                );
+            } else if (isBooleanField(col)) {
+                html += `<input type="checkbox" name="${col.name}">`;
+            } else {
+                const typeInput = col.name === "password" ? "password" : isDateField(col) ? "date" : "text";
+                html += `<input type="${typeInput}" name="${col.name}" ${col.nullable ? "" : "required"}>`;
+            }
+
+            html += `</label>`;
+        });
+
+        html += `<div class="validation-error" id="form-error"></div>
+                 <button type="submit">Insérer</button></form>`;
+        formInsert.innerHTML = html;
+         // Attache le handler après le rendu
+        document.getElementById('insert-form').onsubmit = onInsert;
+        // Lance tous les fetch de relation
+        Promise.all(foreignKeyPromises);
     }
 
+    function startEditRow(row) {
+        formInsert.style.display = "none";
+        const enumCols = ENUM_LABELS[tableName] || {};
+        let html = `<form id="update-form"><h3>Modifier cette entrée</h3>`;
+        let foreignKeyPromises = [];
+
+        tableStructure.forEach(col => {
+            if (/^id_/.test(col.name)) return;
+            html += `<label>${col.name}${col.nullable ? "" : ' <span class="red-star">*</span>'}<br>`;
+
+            if (enumCols[col.name]) {
+                html += `<select name="${col.name}" ${col.nullable ? "" : "required"}>`;
+                html += `<option value="">-- Sélectionner --</option>`;
+                Object.entries(enumCols[col.name]).forEach(([val, label]) => {
+                    const selected = row[col.name] == val ? "selected" : "";
+                    html += `<option value="${val}" ${selected}>${label}</option>`;
+                });
+                html += `</select>`;
+            } else if (isForeignKey(col)) {
+                const refTable = col.foreign_table;
+                const selectId = `update-${col.name}`;
+                html += `<select name="${col.name}" id="${selectId}" ${col.nullable ? "" : "required"}>`;
+                html += `<option value="">-- Chargement... --</option>`;
+                html += `</select>`;
+                foreignKeyPromises.push(
+                    fetch(`/admin/table/${refTable}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const select = document.getElementById(selectId);
+                            if (!select) return;
+                            select.innerHTML = `<option value="">-- Sélectionner --</option>`;
+                            if (!data.length) {
+                                select.innerHTML = `<option value="" disabled>(aucune donnée)</option>`;
+                                return;
+                            }
+                            const idKey = Object.keys(data[0]).find(k => /^id_/.test(k));
+                            const labelKey = Object.keys(data[0]).find(k => k !== idKey) || idKey;
+                            data.forEach(rowRef => {
+                                const selected = row[col.name] == rowRef[idKey] ? "selected" : "";
+                                select.innerHTML += `<option value="${rowRef[idKey]}" ${selected}>${rowRef[labelKey]}</option>`;
+                            });
+                        }).catch(() => {
+                            const select = document.getElementById(selectId);
+                            if (select) select.innerHTML = `<option value="" disabled>(erreur de chargement)</option>`;
+                        })
+                );
+            } else if (isBooleanField(col)) {
+                const checked = row[col.name] ? "checked" : "";
+                html += `<input type="checkbox" name="${col.name}" ${checked}>`;
+            } else {
+                const typeInput = col.name === "password" ? "password" : isDateField(col) ? "date" : "text";
+                const val = row[col.name] != null ? row[col.name] : "";
+                html += `<input type="${typeInput}" name="${col.name}" value="${val}" ${col.nullable ? "" : "required"}>`;
+            }
+
+            html += `</label>`;
+        });
+
+        html += `<div class="validation-error" id="form-update-error"></div>
+                 <button type="submit" class="update-btn action-btn">Mettre à jour</button>
+                 <button type="button" onclick="
+                     document.getElementById('form-update').style.display='none';
+                     document.getElementById('form-insert').style.display='block';
+                 " class="delete-btn action-btn">Annuler</button>
+        </form>`;
+
+        formUpdate.innerHTML = html;
+        formUpdate.style.display = "block";
+        // Attache le handler après chargement
+        document.getElementById('update-form').onsubmit = function (e) {
+            e.preventDefault();
+            let obj = {};
+            tableStructure.forEach(col => {
+                if (/^id_/.test(col.name)) return;
+                const input = this[col.name];
+                if (isBooleanField(col)) {
+                    obj[col.name] = input.checked;
+                } else {
+                    obj[col.name] = sanitizeInput(col, input.value.trim());
+                }
+            });
+            const id = getRowId(row);
+            fetch(`/admin/table/${tableName}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(obj)
+            }).then(res => {
+                if (res.ok) {
+                    loadTableData();
+                    formUpdate.style.display = "none";
+                    formInsert.style.display = "block";
+                } else {
+                    res.text().then(t => document.getElementById('form-update-error').innerHTML = t);
+                }
+            });
+        };
+
+        Promise.all(foreignKeyPromises);
+    }
 
     function getRowId(row) {
         return Object.keys(row).find(k => /^id_/.test(k)) ? row[Object.keys(row).find(k => /^id_/.test(k))] : null;

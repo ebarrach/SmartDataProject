@@ -1,6 +1,6 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 26/06/2025)
-   Mise à jour : 06/07/2025
+   Mise à jour : 11/07/2025 (v.1.1)
    ============================================== */
 
 #admin-container {
@@ -255,9 +255,22 @@
     margin-bottom: 5px;
 }
 
-#form-insert button,
-#form-update button {
-    margin-top: 12px;
+#form-insert button[type="submit"],
+#form-update button[type="submit"] {
+    display: inline-block;
+    background-color: #1e2d53;
+    color: white;
+    font-weight: bold;
+    border: 2px solid #163070;
+    border-radius: 6px;
+    padding: 8px 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(30, 45, 83, 0.12);
+}
+#form-insert button[type="submit"]:hover,
+#form-update button[type="submit"]:hover {
+    background-color: #142c56;
+    box-shadow: 0 4px 16px rgba(30, 45, 83, 0.2);
 }
 
 .validation-error {
@@ -286,6 +299,22 @@ select:invalid {
 input:required:invalid,
 select:required:invalid {
     background: #ffeaea;
+}
+input:required,
+select:required {
+    border-left: 3px solid #b00808;
+}
+
+/* --- Spécial pour les select de clé étrangère --- */
+select[data-foreign] {
+    background-color: #fff6f6;
+    border-left: 4px solid #d18e8e;
+}
+
+/* --- Mots de passe (input type=password) --- */
+input[type="password"] {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.15em;
 }
 
 /* ----- Bouton de recherche SVG ----- */
