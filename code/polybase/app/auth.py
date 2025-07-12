@@ -2,11 +2,12 @@
 # IMPORTS
 # ============================================
 
+import bcrypt
 from fastapi import Depends, HTTPException, Cookie
 from sqlalchemy.orm import Session
+
 from .database import SessionLocal
 from .models import Personnel
-import bcrypt
 
 # ============================================
 # BASE DE DONNÉES - SESSION
@@ -47,6 +48,10 @@ def authenticate_user(email: str, plain_password: str, db: Session):
     specification: Esteban Barracho (v.2 23/06/25)
     implement: Esteban Barracho (v.2 23/06/25)
     """
+    assert isinstance(email, str) and email, "Email invalide"
+    assert isinstance(plain_password, str) and plain_password, "Mot de passe invalide"
+    assert db, "Session DB invalide"
+
     user = db.query(Personnel).filter(Personnel.email == email).first()
     if not user or not user.password:
         return None
@@ -75,8 +80,9 @@ def get_current_user(session_id: str = Cookie(None), db: Session = Depends(get_d
     specification: Esteban Barracho (v.1 19/06/25)
     implement: Esteban Barracho (v.1 19/06/25)
     """
-    if not session_id:
+    if not session_id or not isinstance(session_id, str):
         raise HTTPException(status_code=401, detail="Session non trouvée")
+    assert db, "Session DB invalide"
     user = db.query(Personnel).filter(Personnel.id_personnel == session_id).first()
     if not user:
         raise HTTPException(status_code=401, detail="Utilisateur non authentifié")

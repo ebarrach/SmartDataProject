@@ -3,11 +3,11 @@
 # ============================================
 
 import os
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
-
 
 # ============================================
 # FOURNITURE DE LA SESSION À L’APPLICATION
@@ -21,6 +21,7 @@ def get_db():
     implement: Esteban Barracho (v.1 22/06/2025)
     """
     db = SessionLocal()
+    assert db is not None, "Session DB invalide"
     try:
         yield db
     finally:
@@ -47,6 +48,8 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
+
+assert all([DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME]), "⚠️ Variables d'environnement SQL manquantes"
 
 # ============================================
 # CONNEXION À LA BASE DE DONNÉES

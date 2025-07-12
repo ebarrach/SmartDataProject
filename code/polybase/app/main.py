@@ -8,8 +8,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_302_FOUND
-import app.utils.outlook_sync as outlook_sync
+
 import app.utils.deepseek_adapter as deepseek
+import app.utils.outlook_sync as outlook_sync
 from app.auth import authenticate_user, get_current_user, get_db
 from app.models import Client, Projet
 from app.models import Facture, PlanificationCollaborateur, PrestationCollaborateur
@@ -17,11 +18,11 @@ from app.routers import admin
 from app.routers import collaborateur
 from app.routers import finance
 from app.routers import offre
+from app.routers import outlook
 from app.routers import (
     user, analytics, client, project, tache,
     facture, dashboard, planification, prestation
 )
-from app.routers import outlook
 
 # ============================================
 # INITIALISATION DE L'APPLICATION FASTAPI
@@ -72,9 +73,7 @@ app.include_router(collaborateur.router)
 app.include_router(finance.router)
 app.include_router(offre.router)
 app.include_router(admin.router)
-
 app.include_router(outlook.router)
-
 """These instructions include routers for each domain (user, tache, etc.).
 Version:
 --------
@@ -132,7 +131,6 @@ def login_user(
         response = RedirectResponse(url="/dashboard", status_code=HTTP_302_FOUND)
         response.set_cookie(key="session_id", value=user.id_personnel)
         return response
-
     return templates.TemplateResponse("login.html", {
         "request": request,
         "error": "Email ou code invalide"
@@ -163,6 +161,7 @@ def dashboard_page(request: Request, user=Depends(get_current_user)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert user is not None, "Utilisateur non connecté"
     return templates.TemplateResponse("dashboard.html", {"request": request, "user": user})
 
 
@@ -174,6 +173,7 @@ def agenda_page(request: Request, user=Depends(get_current_user)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert user is not None, "Utilisateur non connecté"
     return templates.TemplateResponse("agenda.html", {"request": request, "user": user})
 
 
@@ -185,6 +185,7 @@ def documents_page(request: Request, user=Depends(get_current_user)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert user is not None, "Utilisateur non connecté"
     return templates.TemplateResponse("documents.html", {"request": request, "user": user})
 
 
@@ -196,6 +197,7 @@ def task_list_page(request: Request, user=Depends(get_current_user)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert user is not None, "Utilisateur non connecté"
     return templates.TemplateResponse("task_detail.html", {"request": request, "user": user})
 
 
@@ -207,6 +209,7 @@ def clients_page(request: Request, user=Depends(get_current_user), db: Session =
     specification: Esteban Barracho (v.1 24/06/2025)
     implement: Esteban Barracho (v.1 24/06/2025)
     """
+    assert user is not None, "Utilisateur non connecté"
     clients = db.query(Client).all()
     return templates.TemplateResponse("clients.html", {"request": request, "user": user, "clients": clients})
 
@@ -219,6 +222,7 @@ def projects_page(request: Request, user=Depends(get_current_user), db: Session 
     specification: Esteban Barracho (v.1 24/06/2025)
     implement: Esteban Barracho (v.1 24/06/2025)
     """
+    assert user is not None, "Utilisateur non connecté"
     projects = db.query(Projet).all()
     return templates.TemplateResponse("projects.html", {"request": request, "user": user, "projects": projects})
 
@@ -231,6 +235,7 @@ def factures_page(request: Request, user=Depends(get_current_user), db: Session 
     specification: Esteban Barracho (v.1 24/06/2025)
     implement: Esteban Barracho (v.1 24/06/2025)
     """
+    assert user is not None, "Utilisateur non connecté"
     factures = db.query(Facture).all()
     return templates.TemplateResponse("factures.html", {"request": request, "user": user, "factures": factures})
 
@@ -243,6 +248,7 @@ def planifications_page(request: Request, user=Depends(get_current_user), db: Se
     specification: Esteban Barracho (v.1 24/06/2025)
     implement: Esteban Barracho (v.1 24/06/2025)
     """
+    assert user is not None, "Utilisateur non connecté"
     planifications = db.query(PlanificationCollaborateur).all()
     return templates.TemplateResponse("planifications.html", {"request": request, "user": user, "planifications": planifications})
 
@@ -255,6 +261,7 @@ def prestation_page(request: Request, user=Depends(get_current_user), db: Sessio
     specification: Esteban Barracho (v.1 24/06/2025)
     implement: Esteban Barracho (v.1 24/06/2025)
     """
+    assert user is not None, "Utilisateur non connecté"
     prestations = db.query(PrestationCollaborateur).all()
     return templates.TemplateResponse("prestation.html", {"request": request, "user": user, "prestations": prestations})
 
@@ -267,6 +274,7 @@ def finance_page(request: Request, user=Depends(get_current_user)):
     specification: Esteban Barracho (v.1 24/06/2025)
     implement: Esteban Barracho (v.1 24/06/2025)
     """
+    assert user is not None, "Utilisateur non connecté"
     return templates.TemplateResponse("finance.html", {"request": request, "user": user})
 
 # ============================================

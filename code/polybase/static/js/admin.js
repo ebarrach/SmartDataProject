@@ -1,6 +1,6 @@
 // =============================================
 // specification: Esteban Barracho (v.1 26/06/2025)
-// implement: Esteban Barracho (v.4.0 11/07/2025)
+// implement: Esteban Barracho (v.4.1 12/07/2025)
 // =============================================
 document.addEventListener("DOMContentLoaded", () => {
     const tableSelect = document.getElementById('table-select');
@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch('/admin/tables')
         .then(res => res.json())
         .then(tables => {
+            console.assert(Array.isArray(tables), "❌ Les tables doivent être retournées sous forme de tableau");
             tableSelect.innerHTML = "";
             tables.forEach(tbl => {
                 let opt = document.createElement('option');
@@ -101,6 +102,10 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(`/admin/table/${tableName}`)
             .then(res => res.json())
             .then(data => {
+                console.assert(Array.isArray(data), "❌ Les données de la table doivent être un tableau");
+                if (data.length > 0) {
+                    console.assert(typeof data[0] === "object", "❌ Chaque ligne doit être un objet");
+                }
                 tableData = data;
                 renderTable();
             });
@@ -110,6 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(`/admin/table/${tableName}/structure`)
             .then(res => res.json())
             .then(struct => {
+                console.assert(Array.isArray(struct), "❌ La structure de la table doit être un tableau");
+                console.assert(struct.every(col => col.name && col.type), "❌ Chaque colonne doit avoir un nom et un type");
                 tableStructure = struct;
                 renderInsertForm();
             });

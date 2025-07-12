@@ -29,6 +29,7 @@ class Personnel(Base):
 
     collaborateur = relationship("Collaborateur", back_populates="personnel", uselist=False)
     responsable = relationship("ResponsableProjet", back_populates="personnel", uselist=False)
+    assert __tablename__ == "Personnel"
 
 # ============================================
 # TABLE : RESPONSABLE PROJET
@@ -47,6 +48,7 @@ class ResponsableProjet(Base):
 
     personnel = relationship("Personnel", back_populates="responsable")
     projets = relationship("Gerer", back_populates="responsable")
+    assert __tablename__ == "ResponsableProjet"
 
 # ============================================
 # TABLE : CLIENT
@@ -66,6 +68,7 @@ class Client(Base):
     secteur_activite = Column(String(100))
 
     projets = relationship("Projet", back_populates="client")
+    assert __tablename__ == "Client"
 
 # ============================================
 # TABLE : COLLABORATEUR
@@ -84,6 +87,7 @@ class Collaborateur(Base):
     personnel = relationship("Personnel", back_populates="collaborateur")
     planifications = relationship("PlanificationCollaborateur", back_populates="collaborateur")
     prestations = relationship("PrestationCollaborateur", back_populates="collaborateur")
+    assert __tablename__ == "Collaborateur"
 
 # ============================================
 # TABLE : FACTURE
@@ -108,6 +112,7 @@ class Facture(Base):
 
     phases = relationship("Phase", back_populates="facture")
     prestations = relationship("PrestationCollaborateur", back_populates="facture")
+    assert __tablename__ == "Facture"
 
 # ============================================
 # TABLE : PHASE
@@ -129,6 +134,7 @@ class Phase(Base):
 
     facture = relationship("Facture", back_populates="phases")
     taches = relationship("Tache", back_populates="phase")
+    assert __tablename__ == "Phase"
 
 # ============================================
 # TABLE : PROJET
@@ -154,6 +160,7 @@ class Projet(Base):
     client = relationship("Client", back_populates="projets")
     projections = relationship("ProjectionFacturation", back_populates="projet")
     honoraires = relationship("HonoraireReparti", back_populates="projet")
+    assert __tablename__ == "Projet"
 
 # ============================================
 # TABLE : GERER (LIEN RESPONSABLE / PROJET)
@@ -172,6 +179,7 @@ class Gerer(Base):
 
     responsable = relationship("ResponsableProjet", back_populates="projets")
     projet = relationship("Projet")
+    assert __tablename__ == "Gerer"
 
 # ============================================
 # TABLE : TACHE
@@ -200,6 +208,7 @@ class Tache(Base):
     phase = relationship("Phase", back_populates="taches")
     planifications = relationship("PlanificationCollaborateur", back_populates="tache")
     prestations = relationship("PrestationCollaborateur", back_populates="tache")
+    assert __tablename__ == "Tache"
 
 # ============================================
 # TABLE : PLANIFICATION COLLABORATEUR
@@ -223,6 +232,7 @@ class PlanificationCollaborateur(Base):
 
     tache = relationship("Tache", back_populates="planifications")
     collaborateur = relationship("Collaborateur", back_populates="planifications")
+    assert __tablename__ == "PlanificationCollaborateur"
 
 # ============================================
 # TABLE : PRESTATION COLLABORATEUR
@@ -249,6 +259,7 @@ class PrestationCollaborateur(Base):
     tache = relationship("Tache", back_populates="prestations")
     collaborateur = relationship("Collaborateur", back_populates="prestations")
     facture = relationship("Facture", back_populates="prestations")
+    assert __tablename__ == "PrestationCollaborateur"
 
 # ============================================
 # TABLE : COUT
@@ -270,6 +281,7 @@ class Cout(Base):
     source = Column(String(50))
     id_projet = Column(String(10), ForeignKey("Projet.id_projet"), nullable=True)
     projet = relationship("Projet")
+    assert __tablename__ == "Cout"
 
 # ============================================
 # TABLE : PROJECTION FACTURATION
@@ -293,6 +305,7 @@ class ProjectionFacturation(Base):
     est_certain = Column(Boolean, default=True)
 
     projet = relationship("Projet", back_populates="projections")
+    assert __tablename__ == "ProjectionFacturation"
 
 # ============================================
 # TABLE : IMPORT LOG
@@ -314,6 +327,7 @@ class ImportLog(Base):
     message_log = Column(Text)
     id_projet = Column(String(10), ForeignKey("Projet.id_projet"), nullable=True)
     projet = relationship("Projet")
+    assert __tablename__ == "ImportLog"
 
 # ============================================
 # TABLE : HONORAIRE REPARTI
@@ -333,6 +347,7 @@ class HonoraireReparti(Base):
     montant = Column(DECIMAL(10, 2))
 
     projet = relationship("Projet", back_populates="honoraires")
+    assert __tablename__ == "HonoraireReparti"
 
 # ============================================
 # TABLE : OFFRE
@@ -354,4 +369,5 @@ class Offre(Base):
     indicateur = Column(String(32))
     id_client = Column(String(10), ForeignKey("Client.id_client"), nullable=True)
     client = relationship("Client")
+    assert __tablename__ == "Offre"
 
