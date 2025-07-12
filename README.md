@@ -7,16 +7,18 @@ This project was carried out as part of a professional collaboration with **Poly
 ## 📌 Project Description
 
 PolyBase is a secure internal platform designed to optimize project coordination, collaborative planning, and operational traceability.  
-It offers both a RESTful backend and a structured web interface tailored to technical teams and administrative managers.
+It offers both a RESTful backend and a structured web interface tailored to technical teams, financial administrators, and project managers.
 
 The platform enables:
 
 - real-time employee planning and Outlook-style calendar views,
 - encoding and monitoring of performed vs. estimated task hours,
 - automatic alerts for late tasks, billing overruns, or time excess,
-- integrated dashboards for collaborators and project leaders,
+- integrated dashboards for collaborators, finance, and project leaders,
 - centralized access to documentation and client deliverables,
-- secure authentication and role-based navigation through protected pages.
+- intelligent import of Excel files via DeepSeek with type adaptation,
+- secure authentication with session cookies and role-based page access,
+- complete admin interface for table inspection and CRUD operations.
 
 ---
 
@@ -24,14 +26,16 @@ The platform enables:
 
 The codebase is composed of the following key components:
 
-- **Database schema**: MySQL 8 structure managed in Docker with automatic import and integrity constraints, including triggers for live updates of overrun hours.
-- **Backend services**: FastAPI-based API exposing routes for user accounts, projects, clients, tasks, time tracking (prestations), invoices, calendar planning, and analytical views.
-- **Authentication & security**: Login form with 2FA code field (manual), JWT token verification, and session cookie handling for protected page access.
-- **Web frontend (Jinja2)**: Modular HTML/CSS/JS templates with themed pages for login, dashboard, agenda, documents, task detail, and error reporting.
-- **Monitoring tools**: Project-wise dashboards with statistics on delays, overruns, facturation states, user activity, and integrated document access.
-- **UI Style System**: Shared CSS styles (`base.css`, `dashboard.css`, etc.) with unified interaction rules (`base-interactions.css`) and consistent responsive layout.
-- **Error handling**: Unified error template (`error.html`) triggered by FastAPI exception handlers (403/404/422) with redirect options.
-- **Docker integration**: Containerized development with MySQL volume persistence, automatic schema loading, and exposed API.
+- **Database schema**: MySQL 8 structure in Docker with referential integrity, auto-generated primary keys, and triggers for time tracking.
+- **Backend services**: FastAPI-based API exposing routes for personnel, projects, clients, tasks, planning, invoices, performances, costs, dashboards, and calendar.
+- **Authentication & security**: Login form with manual 2FA, session cookie handling (`session_id`) and user role retrieval for page routing.
+- **Outlook synchronization**: OAuth2 support and Graph API integration for importing and exporting events via `/agenda` and `outlook_sync.py`.
+- **Excel adaptation tool**: DeepSeek module that cleans, aligns, and types Excel files based on the SQL table structure before insertion.
+- **Dynamic admin panel**: Full CRUD interface with form generation and validation, table introspection, and enum/foreign key rendering.
+- **Web frontend (Jinja2)**: Modular templates (`login`, `dashboard`, `agenda`, etc.) rendered based on authenticated user and function.
+- **UI Style System**: Unified CSS layout and interaction logic (`base.css`, `dashboard.css`, `base-interactions.css`) for responsive interfaces.
+- **Error handling**: Global error HTML page rendered via FastAPI (403, 404, 422) with contextual feedback and navigation hints.
+- **Docker integration**: Volume-persistent MySQL, automatic SQL import, backend build, and hot-reloading for development.
 
 ---
 
@@ -40,8 +44,10 @@ The codebase is composed of the following key components:
 ### 📦 With Docker
 
 #### ⬢ Basic setup (without data deletion)
+
 ```bash
 docker compose up -d --build
+
 ````
 
 To shut down:
