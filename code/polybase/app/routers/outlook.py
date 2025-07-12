@@ -1,19 +1,19 @@
 # ============================================
-# ROUTEUR OUTLOOK AVEC CONNEXION UTILISATEUR
-# specification: Esteban Barracho (v.2 11/07/2025)
-# implement: Esteban Barracho (v.2 11/07/2025)
+# IMPORTS
 # ============================================
 
+import os
+import uuid
+from datetime import datetime, timedelta
+from urllib.parse import urlencode
+
+import requests
 from fastapi import APIRouter, Request, Depends, Response, HTTPException
-from sqlalchemy.orm import Session
 from fastapi.responses import RedirectResponse, JSONResponse
+from sqlalchemy.orm import Session
+
 from app.database import get_db
 from app.models import PlanificationCollaborateur
-from datetime import datetime, timedelta
-import os
-import requests
-from urllib.parse import urlencode
-import uuid
 
 router = APIRouter()
 
@@ -33,6 +33,19 @@ SESSION_KEY = "outlook_token"
 # --------------------------------------------
 @router.get("/outlook/login")
 def outlook_login():
+    """Démarre le processus d’authentification OAuth2 vers Microsoft Outlook.
+    Retourne une redirection vers la page d’autorisation de Microsoft avec les bons paramètres
+    (client_id, scope, redirect_uri, etc.).
+
+    Returns:
+    --------
+    RedirectResponse : Redirige l’utilisateur vers la page d’autorisation Microsoft.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 11/07/2025)
+    implement: Esteban Barracho (v.1 11/07/2025)
+    """
     state = str(uuid.uuid4())
     query = urlencode({
         "client_id": CLIENT_ID,
@@ -49,6 +62,28 @@ def outlook_login():
 # --------------------------------------------
 @router.get("/outlook/callback")
 def outlook_callback(code: str, response: Response):
+    """Callback de Microsoft pour récupérer un jeton d’accès après autorisation.
+    Parameters:
+    -----------
+    code : str
+        Le code temporaire envoyé par Microsoft après validation.
+    response : Response
+        L’objet de réponse pour définir le cookie de session.
+
+    Returns:
+    --------
+    RedirectResponse : Redirige vers la page `/agenda` avec le token stocké en cookie.
+
+    Raises:
+    -------
+    HTTPException : En cas d’erreur durant la récupération du token.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 11/07/2025)
+    implement: Esteban Barracho (v.1 11/07/2025)
+    """
+    assert isinstance(code, str) and code.strip(), "Code d'autorisation invalide ou manquant"
     data = {
         "client_id": CLIENT_ID,
         "scope": " ".join(SCOPE),
@@ -62,6 +97,7 @@ def outlook_callback(code: str, response: Response):
         raise HTTPException(status_code=400, detail="Erreur OAuth2")
 
     token = r.json().get("access_token")
+    assert isinstance(token, str) and len(token) > 10, "Token OAuth2 invalide"
     if not token:
         raise HTTPException(status_code=400, detail="Token manquant")
 
@@ -74,11 +110,30 @@ def outlook_callback(code: str, response: Response):
 # --------------------------------------------
 @router.get("/outlook/events")
 def get_all_events(request: Request, db: Session = Depends(get_db)):
+    """Récupère l’ensemble des événements planifiés : locaux et Outlook.
+    Parameters:
+    -----------
+    request : Request
+        Objet HTTP contenant les cookies de session (token Outlook).
+    db : Session
+        Session SQLAlchemy pour accéder à la base locale.
+
+    Returns:
+    --------
+    JSONResponse : Liste fusionnée des événements locaux et Outlook.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 11/07/2025)
+    implement: Esteban Barracho (v.1 11/07/2025)
+    """
     all_events = []
 
     # Événements locaux
     db_events = db.query(PlanificationCollaborateur).all()
     for ev in db_events:
+        assert hasattr(ev, "sujet") and hasattr(ev, "date_debut") and hasattr(ev,
+                                                                              "date_fin"), "Événement local mal formé"
         all_events.append({
             "sujet": ev.sujet,
             "date_debut": ev.date_debut.isoformat(),
@@ -96,6 +151,7 @@ def get_all_events(request: Request, db: Session = Depends(get_db)):
         res = requests.get(url, headers=headers)
         if res.status_code == 200:
             for ev in res.json().get("value", []):
+                assert isinstance(ev, dict), "Format d’événement Outlook inattendu"
                 all_events.append({
                     "sujet": ev.get("subject", "Sans titre"),
                     "date_debut": ev.get("start", {}).get("dateTime", ""),

@@ -2,12 +2,12 @@
 # IMPORTS
 # ============================================
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
+
 from ..database import SessionLocal
 from ..models import Collaborateur
-from pydantic import BaseModel
-
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -64,10 +64,12 @@ def create_collaborateur(collaborateur: CollaborateurIn, db: Session = Depends(g
     specification: Esteban Barracho (v.1 21/06/2025)
     implement: Esteban Barracho (v.1.2 22/06/2025)
     """
+    assert isinstance(collaborateur.id_personnel, str), "L'identifiant du collaborateur doit être une chaîne"
     existing = db.query(Collaborateur).filter(Collaborateur.id_personnel == collaborateur.id_personnel).first()
     if existing:
         return {"message": "Collaborateur already exists"}
     nouveau = Collaborateur(id_personnel=collaborateur.id_personnel)
+    assert isinstance(nouveau, Collaborateur), "L'objet créé n'est pas un Collaborateur valide"
     db.add(nouveau)
     db.commit()
     return {"message": f"Collaborateur {collaborateur.id_personnel} created"}

@@ -3,10 +3,11 @@
 # ============================================
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 from sqlalchemy import func
-from app.database import SessionLocal
+from sqlalchemy.orm import Session
+
 from app.auth import get_current_user
+from app.database import SessionLocal
 from app.models import Tache, PlanificationCollaborateur, ProjectionFacturation
 
 # ============================================
@@ -75,6 +76,7 @@ def total_depassement_heures(db: Session = Depends(get_db)):
     implement: Esteban Barracho (v.1 19/06/2025)
     """
     result = db.query(func.sum(Tache.heures_depassees)).scalar()
+    assert result is None or isinstance(result, (float, int)), "Somme d'heures dépassées invalide"
     return {"heures_depassees_totales": float(result or 0)}
 
 # ============================================
@@ -101,15 +103,18 @@ def synthese_facturation(db: Session = Depends(get_db)):
         func.sum(ProjectionFacturation.montant_facturable_actuel).label("total_actuel")
     ).group_by(ProjectionFacturation.id_projet).all()
 
-    return [
-        {
+    resultats = []
+    for p in projets:
+        assert isinstance(p.total_projete, (int, float)), f"Montant projeté invalide pour {p.id_projet}"
+        assert isinstance(p.total_actuel, (int, float)), f"Montant facturable invalide pour {p.id_projet}"
+        resultats.append({
             "id_projet": p.id_projet,
             "montant_projete": float(p.total_projete),
             "montant_facturable_actuel": float(p.total_actuel),
             "ecart": float(p.total_projete - p.total_actuel)
-        }
-        for p in projets
-    ]
+        })
+    return resultats
+
 
 # ============================================
 # ROUTE : Current user’s active tasks
@@ -130,6 +135,8 @@ def mes_taches(user=Depends(get_current_user), db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert hasattr(user, "id_personnel") and isinstance(user.id_personnel,
+                                                        str), "Utilisateur non authentifié ou identifiant invalide"
     taches = db.query(Tache).join(PlanificationCollaborateur).filter(
         PlanificationCollaborateur.id_collaborateur == user.id_personnel,
         Tache.statut != "terminé"

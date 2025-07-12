@@ -2,12 +2,14 @@
 # IMPORTS
 # ============================================
 
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from app.database import get_db
 from app.models import Offre
 from app.schemas import OffreCreate, OffreOut
-from typing import List
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -35,6 +37,7 @@ def create_offre(offre: OffreCreate, db: Session = Depends(get_db)):
     if db_offre:
         raise HTTPException(status_code=400, detail="Offre already exists.")
     new_offre = Offre(**offre.dict())
+    assert isinstance(new_offre, Offre), "Objet créé invalide (Offre attendu)"
     db.add(new_offre)
     db.commit()
     db.refresh(new_offre)
@@ -68,6 +71,7 @@ def get_offre(id_offre: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 24/06/2025)
     implement: Esteban Barracho (v.1 24/06/2025)
     """
+    assert isinstance(id_offre, str), "L’identifiant de l’offre doit être une chaîne"
     offre = db.query(Offre).filter_by(id_offre=id_offre).first()
     if not offre:
         raise HTTPException(status_code=404, detail="Offre not found.")
@@ -86,6 +90,7 @@ def delete_offre(id_offre: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 24/06/2025)
     implement: Esteban Barracho (v.1 24/06/2025)
     """
+    assert isinstance(id_offre, str), "L’identifiant de l’offre doit être une chaîne"
     offre = db.query(Offre).filter_by(id_offre=id_offre).first()
     if not offre:
         raise HTTPException(status_code=404, detail="Offre not found.")

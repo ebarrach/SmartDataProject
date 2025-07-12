@@ -2,17 +2,19 @@
 # IMPORTS
 # ============================================
 
-import string
 import random
-import bcrypt
+import string
+
 import Levenshtein
+import bcrypt
 from fastapi import APIRouter, Depends, Request, HTTPException, status, Query
-from sqlalchemy import inspect, text
-from sqlalchemy.orm import Session
-from app.database import get_db
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import inspect, text
+from sqlalchemy.orm import Session
+
 from app.auth import get_current_user
+from app.database import get_db
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -45,10 +47,26 @@ table_prefixes = {
 
 
 def generate_id(prefix, length=3):
-    """Génère un identifiant métier unique (ex: CL001, PRJ002)."""
+    """Génère un identifiant métier unique à partir d’un préfixe et d’un nombre aléatoire.
+    Parameters:
+    -----------
+    prefix : str
+        Préfixe de l’identifiant (ex : 'CL', 'PRJ', 'T').
+    length : int, optional
+        Longueur de la partie numérique générée aléatoirement (par défaut : 3).
+
+    Returns:
+    --------
+    str
+        Identifiant concaténé de type `prefix` + `chiffres aléatoires`, ex : 'CL001'.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 26/06/2025)
+    """
     num = ''.join(random.choices(string.digits, k=length))
     return f"{prefix}{num}"
-
 
 # ============================================
 # ACCÈS ADMIN
@@ -79,7 +97,6 @@ def check_admin(user):
 # ============================================
 # PAGE HTML ADMIN
 # ============================================
-@router.get("", response_class=JSONResponse)
 @router.get("", response_class=JSONResponse)
 async def admin_page(request: Request, user=Depends(get_current_user)):
     """Renders the admin page for users with administrative privileges.
@@ -134,7 +151,6 @@ def get_tables(db: Session = Depends(get_db), user=Depends(get_current_user)):
 def get_table_structure(table: str, db: Session = Depends(get_db), user=Depends(get_current_user)):
     """Retrieves the structure of a specific table, including types, nullability, and examples,
     and detects foreign key relationships for dynamic dropdowns.
-
     Parameters:
     -----------
     table (str): Name of the table to inspect.
@@ -263,6 +279,7 @@ def insert_row(table: str, row: dict, db: Session = Depends(get_db), user=Depend
                 break
 
     prefix = table_prefixes.get(table)
+    assert prefix is None or isinstance(prefix, str), f"Préfixe mal défini pour la table {table}"
     if id_field and prefix:
         # Vérifie unicité et regénère si existe déjà (boucle protection)
         for _ in range(10):
@@ -278,7 +295,7 @@ def insert_row(table: str, row: dict, db: Session = Depends(get_db), user=Depend
     # INJECTION DES AUTRES CHAMPS (hors ID et password)
     for k, v in row.items():
         if k == id_field:
-            continue  # Ne jamais prendre l'id fourni par le client !
+            continue  # Ne jamais prendre l'id fourni par le client (génération auto)
         if k not in columns:
             raise HTTPException(400, detail=f"Colonne inconnue: {k}")
         c = columns[k]
@@ -295,6 +312,7 @@ def insert_row(table: str, row: dict, db: Session = Depends(get_db), user=Depend
             insert_row[k] = bcrypt.hashpw(v.encode(), bcrypt.gensalt()).decode()
         else:
             insert_row[k] = v if v not in ("", None) else None
+
     # CONSTRUCTION ET EXECUTION SQL
     keys = ", ".join([f"`{k}`" for k in insert_row])
     vals = ", ".join([f":{k}" for k in insert_row])
@@ -404,6 +422,7 @@ def update_row(table: str, id: str, row: dict, db: Session = Depends(get_db), us
             updates.append(f"`{k}` = :{k}")
             values[k] = v
     values["id"] = id
+    assert updates, f"Aucune colonne valide fournie pour la mise à jour de `{table}`"
     sql = text(f"UPDATE `{table}` SET {', '.join(updates)} WHERE `{id_field}` = :id")
     try:
         db.execute(sql, values)
@@ -472,10 +491,13 @@ def detect_foreign_keys(table: str, db: Session):
     implement: Esteban Barracho (v.1.1 11/07/2025)
     """
     inspector = inspect(db.get_bind())
-    fk_map = {}
+    fks = inspector.get_foreign_keys(table)
     assert isinstance(fks, list), "Les clés étrangères doivent être une liste"
-    for fk in inspector.get_foreign_keys(table):
+    fk_map = {}
+
+    for fk in fks:
         if fk.get("constrained_columns") and fk.get("referred_table"):
             for col in fk["constrained_columns"]:
                 fk_map[col] = fk["referred_table"]
     return fk_map
+

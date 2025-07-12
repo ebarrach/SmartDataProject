@@ -8,7 +8,26 @@ from sqlalchemy import inspect
 
 
 def reorder_columns(df: pd.DataFrame, table: str):
-    """Réordonne les colonnes d’un DataFrame selon l’ordre SQL de la table."""
+    """Réordonne les colonnes d’un DataFrame selon l’ordre de la table SQL.
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        Données importées depuis Excel ou autre source.
+    table : str
+        Nom de la table SQL cible.
+
+    Returns:
+    --------
+    pd.DataFrame : DataFrame réordonné selon l’ordre des colonnes SQL.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 11/07/2025)
+    implement: Esteban Barracho (v.1.1 12/07/2025)
+    """
+    assert isinstance(df, pd.DataFrame), "Entrée invalide : un DataFrame est attendu"
+    assert isinstance(table, str) and table.strip(), "Nom de table invalide ou vide"
+
     db = SessionLocal()
     try:
         inspector = inspect(db.get_bind())
@@ -25,7 +44,26 @@ def reorder_columns(df: pd.DataFrame, table: str):
 
 
 def fix_types(df: pd.DataFrame, table: str):
-    """Corrige les types simples pour correspondre à ceux de la table SQL."""
+    """Adapte les types de colonnes d’un DataFrame aux types SQL de la table.
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        Données en mémoire à corriger.
+    table : str
+        Nom de la table SQL pour récupérer les types.
+
+    Returns:
+    --------
+    pd.DataFrame : DataFrame avec colonnes typées selon la structure SQL.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 11/07/2025)
+    implement: Esteban Barracho (v.1.1 12/07/2025)
+    """
+    assert isinstance(df, pd.DataFrame), "Entrée invalide : un DataFrame est attendu"
+    assert isinstance(table, str) and table.strip(), "Nom de table invalide ou vide"
+
     db = SessionLocal()
     try:
         inspector = inspect(db.get_bind())
@@ -48,20 +86,31 @@ def fix_types(df: pd.DataFrame, table: str):
 
 
 def adapt_excel(file_path: str, table: str):
-    """
-    Lit un fichier Excel, le corrige automatiquement et renvoie un JSON prêt à injecter.
-
-    - Corrige les noms de colonnes.
-    - Trie les colonnes dans l'ordre attendu.
-    - Corrige les types selon la base.
+    """Lit un fichier Excel, le nettoie et l’adapte à la structure d’une table SQL.
+    Cette fonction applique plusieurs étapes :
+    - Suppression des espaces dans les noms de colonnes.
+    - Réordonnancement selon la structure SQL.
+    - Conversion automatique des types.
 
     Parameters:
-        file_path (str): Chemin du fichier Excel.
-        table (str): Nom de la table cible.
+    -----------
+    file_path : str
+        Chemin vers le fichier Excel à adapter.
+    table : str
+        Nom de la table cible pour l’adaptation.
 
     Returns:
-        list[dict]: Données adaptées prêtes à être envoyées au backend.
+    --------
+    list[dict] : Liste d’enregistrements prêts à insérer via l’API.
+
+    Version:
+    --------
+    specification: Esteban Barracho (v.1 11/07/2025)
+    implement: Esteban Barracho (v.1.1 12/07/2025)
     """
+    assert isinstance(file_path, str) and file_path.endswith((".xlsx", ".xls")), "Chemin de fichier Excel invalide"
+    assert isinstance(table, str) and table.strip(), "Nom de table invalide ou vide"
+
     df = pd.read_excel(file_path)
     df.columns = df.columns.str.strip()
     df = reorder_columns(df, table)
@@ -70,9 +119,7 @@ def adapt_excel(file_path: str, table: str):
 
 
 def prepare_adaptation():
-    """
-    Prépare l’environnement de correction DeepSeek au démarrage de l’API.
-
+    """Prépare l’environnement de correction DeepSeek au démarrage de l’API.
     Cette fonction peut être utilisée pour :
     - Initialiser des caches si besoin.
     - Vérifier la connectivité base/SQLAlchemy.
@@ -80,8 +127,8 @@ def prepare_adaptation():
 
     Version:
     --------
-    specification: Esteban Barracho (v.2 11/07/2025)
-    implement: Esteban Barracho (v.2 11/07/2025)
+    specification: Esteban Barracho (v.1 11/07/2025)
+    implement: Esteban Barracho (v.1.1 12/07/2025)
     """
     try:
         db = SessionLocal()

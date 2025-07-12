@@ -4,9 +4,10 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from ..models import ProjectionFacturation, PlanificationCollaborateur, Facture
+
 from ..database import SessionLocal
 from ..models import HonoraireReparti
+from ..models import ProjectionFacturation, PlanificationCollaborateur, Facture
 from ..schemas import HonoraireRepartiCreate, ProjectionFacturationCreate, ProjectionFacturationOut
 
 # ============================================
@@ -79,12 +80,11 @@ def delete_projection(id_projection: str, db: Session = Depends(get_db)):
     ).first()
     if not projection:
         raise HTTPException(status_code=404, detail="Projection not found")
+    assert projection.id_projection == id_projection, "ID incohérent avec l'objet récupéré"
     db.delete(projection)
     db.commit()
-    assert isinstance(id_projection, str), "ID de projection doit être une chaîne"
-    assert projection.id_projection == id_projection, "Projection ID incohérent"
-
     return {"message": f"Projection {id_projection} deleted successfully"}
+
 
 # ============================================
 # ROUTE : Delete Facture
@@ -148,6 +148,7 @@ def create_honoraire_reparti(entry: HonoraireRepartiCreate, db: Session = Depend
     implement: Esteban Barracho (v.1 21/06/2025)
     """
     repartition = HonoraireReparti(**entry.dict())
+    assert isinstance(repartition, HonoraireReparti), "Objet créé invalide (HonoraireReparti attendu)"
     db.add(repartition)
     db.commit()
     return {"message": f"Honoraire {entry.id_repartition} added for project {entry.id_projet}"}
@@ -169,6 +170,7 @@ def update_projection_facturation(id_projection: str, update: ProjectionFacturat
     if not proj:
         raise HTTPException(status_code=404, detail="Projection not found")
     for key, value in update.dict().items():
+        assert key in ProjectionFacturation.__table__.columns.keys(), f"Champ '{key}' inconnu dans la table ProjectionFacturation"
         setattr(proj, key, value)
     db.commit()
     db.refresh(proj)

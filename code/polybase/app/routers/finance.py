@@ -2,11 +2,10 @@
 # IMPORTS
 # ============================================
 
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.database import get_db
 
+from app.database import get_db
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -43,7 +42,8 @@ def get_depassements(db: Session = Depends(get_db)):
                         WHERE t.heures_depassees > 0
                         GROUP BY p.id_projet
                         """).fetchall()
-
+    assert all(len(row) == 2 and isinstance(row[1], (int, float)) for row in
+               result), "Résultat SQL invalide pour les dépassements"
     return {
         "labels": [row[0] for row in result],
         "data": [float(row[1]) for row in result]
@@ -79,7 +79,7 @@ def get_alertes(db: Session = Depends(get_db)):
                         WHERE t.alerte_retard = 1
                         GROUP BY p.id_projet
                         """).fetchall()
-
+    assert all(len(row) == 2 and isinstance(row[1], int) for row in result), "Résultat SQL invalide pour les alertes"
     return {
         "labels": [row[0] for row in result],
         "data": [row[1] for row in result]
@@ -115,7 +115,8 @@ def get_budget_vs_couts(db: Session = Depends(get_db)):
                                  JOIN Prestation pr ON pr.id_tache = t.id_tache
                         GROUP BY p.id_projet, p.budget_estime
                         """).fetchall()
-
+    assert all(len(row) == 3 and isinstance(row[1], (int, float)) and isinstance(row[2], (int, float)) for row in
+               result), "Résultat SQL invalide pour les budgets vs coûts"
     return {
         "labels": [row[0] for row in result],
         "budget": [float(row[1]) for row in result],

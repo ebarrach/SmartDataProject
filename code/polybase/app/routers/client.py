@@ -84,6 +84,7 @@ def create_client(client: ClientOut = Body(...), db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Client ID already exists")
 
     db_client = Client(**client.dict())
+    assert isinstance(db_client, Client), "Objet instancié invalide (Client attendu)"
     db.add(db_client)
     db.commit()
     db.refresh(db_client)
@@ -95,26 +96,24 @@ def create_client(client: ClientOut = Body(...), db: Session = Depends(get_db)):
 
 @router.delete("/clients/{id_client}")
 def delete_client(id_client: str, db: Session = Depends(get_db)):
-    """Deletes a client from the database if it exists.
+    """
+    Deletes a client entry from the database based on its identifier.
 
     Parameters:
     -----------
-    id_client (str): ID of the client to delete.
-    db (Session): Active database session.
+    id_client (str): Unique identifier of the client to delete.
+    db (Session): Database session provided by dependency injection.
 
     Returns:
     --------
-    dict: Confirmation message if deletion is successful.
-
-    Raises:
-    -------
-    HTTPException: If the client is not found.
+    dict: Confirmation message upon successful deletion.
 
     Version:
     --------
-    specification: Esteban Barracho (v.1 21/06/2025)
-    implement: Esteban Barracho (v.1 21/06/2025)
+    specification: Esteban Barracho (v.1 26/06/2025)
+    implement: Esteban Barracho (v.1 09/07/2025)
     """
+    assert isinstance(id_client, str), "L’identifiant client doit être une chaîne"
     client = db.query(Client).filter(Client.id_client == id_client).first()
     if not client:
         raise HTTPException(status_code=404, detail="Client not found")
@@ -144,10 +143,10 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 21/06/2025)
     implement: Esteban Barracho (v.2 22/06/2025)
     """
+    assert isinstance(id_facture, str), "L’identifiant facture doit être une chaîne"
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
-
     try:
         db.delete(facture)
         db.commit()
@@ -157,29 +156,4 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
 
     return {"message": f"Facture {id_facture} deleted successfully"}
 
-@router.delete("/clients/{id_client}")
-def delete_client(id_client: str, db: Session = Depends(get_db)):
-    """
-    Deletes a client entry from the database based on its identifier.
-
-    Parameters:
-    -----------
-    id_client (str): Unique identifier of the client to delete.
-    db (Session): Database session provided by dependency injection.
-
-    Returns:
-    --------
-    dict: Confirmation message upon successful deletion.
-
-    Version:
-    --------
-    specification: Esteban Barracho (v.1 26/06/2025)
-    implement: Esteban Barracho (v.1 09/07/2025)
-    """
-    client = db.query(Client).filter(Client.id_client == id_client).first()
-    if not client:
-        raise HTTPException(status_code=404, detail="Client not found")
-    db.delete(client)
-    db.commit()
-    return {"message": f"Client {id_client} deleted successfully"}
 

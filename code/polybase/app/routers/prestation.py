@@ -4,6 +4,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from app.database import SessionLocal
 from app.models import PrestationCollaborateur, Facture
 from app.schemas import PrestationCreate, PrestationOut
@@ -61,6 +62,7 @@ def get_prestation(id_prestation: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.2 22/06/2025)
     """
+    assert isinstance(id_prestation, str), "L’identifiant de prestation doit être une chaîne"
     prestation = db.query(PrestationCollaborateur).filter_by(id_prestation=id_prestation).first()
     if not prestation:
         raise HTTPException(status_code=404, detail="Prestation not found")
@@ -79,6 +81,7 @@ def create_prestation(prestation: PrestationCreate, db: Session = Depends(get_db
     implement: Esteban Barracho (v.1 19/06/2025)
     """
     db_prestation = PrestationCollaborateur(**prestation.dict())
+    assert isinstance(db_prestation, PrestationCollaborateur), "Objet créé invalide (PrestationCollaborateur attendu)"
     db.add(db_prestation)
     db.commit()
     db.refresh(db_prestation)
@@ -101,6 +104,7 @@ def update_prestation(id_prestation: str, updated: PrestationCreate, db: Session
     if not prestation:
         raise HTTPException(status_code=404, detail="Prestation not found")
     for key, value in updated.dict().items():
+        assert hasattr(prestation, key), f"Champ '{key}' introuvable dans PrestationCollaborateur"
         setattr(prestation, key, value)
     db.commit()
     db.refresh(prestation)
@@ -119,6 +123,7 @@ def delete_prestation(id_prestation: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.2 22/06/2025)
     """
+    assert isinstance(id_prestation, str), "L’identifiant de prestation doit être une chaîne"
     prestation = db.query(PrestationCollaborateur).filter_by(id_prestation=id_prestation).first()
     if not prestation:
         raise HTTPException(status_code=404, detail="Prestation not found")
@@ -139,6 +144,7 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.2 22/06/2025)
     """
+    assert isinstance(id_facture, str), "L’identifiant de facture doit être une chaîne"
     facture = db.query(Facture).filter_by(id_facture=id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")

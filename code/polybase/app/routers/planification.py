@@ -4,6 +4,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from app.database import SessionLocal
 from app.models import PlanificationCollaborateur, Facture
 from app.schemas import PlanificationCreate, PlanificationOut
@@ -61,6 +62,7 @@ def get_planification(id_planification: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert isinstance(id_planification, str), "L’identifiant de planification doit être une chaîne"
     plan = db.query(PlanificationCollaborateur).filter(
         PlanificationCollaborateur.id_planification == id_planification
     ).first()
@@ -81,6 +83,7 @@ def create_planification(plan: PlanificationCreate, db: Session = Depends(get_db
     implement: Esteban Barracho (v.1 19/06/2025)
     """
     db_plan = PlanificationCollaborateur(**plan.dict())
+    assert isinstance(db_plan, PlanificationCollaborateur), "Objet créé invalide (PlanificationCollaborateur attendu)"
     db.add(db_plan)
     db.commit()
     db.refresh(db_plan)
@@ -105,6 +108,7 @@ def update_planification(id_planification: str, plan_update: PlanificationCreate
     if not plan:
         raise HTTPException(status_code=404, detail="Planification not found")
     for key, value in plan_update.dict().items():
+        assert hasattr(plan, key), f"Champ '{key}' introuvable dans PlanificationCollaborateur"
         setattr(plan, key, value)
     db.commit()
     db.refresh(plan)
@@ -123,6 +127,7 @@ def delete_planification(id_planification: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert isinstance(id_planification, str), "L’identifiant de planification doit être une chaîne"
     plan = db.query(PlanificationCollaborateur).filter(
         PlanificationCollaborateur.id_planification == id_planification
     ).first()
@@ -144,6 +149,7 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.2 22/06/2025)
     """
+    assert isinstance(id_facture, str), "L’identifiant de facture doit être une chaîne"
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")

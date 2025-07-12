@@ -4,6 +4,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from app.database import SessionLocal
 from app.models import Projet, Phase, Facture
 from app.schemas import ProjetCreate, ProjetOut, PhaseCreate, PhaseOut
@@ -61,6 +62,7 @@ def get_project(id_projet: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert isinstance(id_projet, str), "L’identifiant de projet doit être une chaîne"
     project = db.query(Projet).filter(Projet.id_projet == id_projet).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -79,6 +81,7 @@ def create_project(project: ProjetCreate, db: Session = Depends(get_db)):
     implement: Esteban Barracho (v.1 19/06/2025)
     """
     db_project = Projet(**project.dict())
+    assert isinstance(db_project, Projet), "Objet créé invalide (Projet attendu)"
     db.add(db_project)
     db.commit()
     db.refresh(db_project)
@@ -96,6 +99,7 @@ def list_phases(id_projet: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert isinstance(id_projet, str), "L’identifiant de projet doit être une chaîne"
     return db.query(Phase).filter(Phase.id_facture == id_projet).all()
 
 # ============================================
@@ -111,6 +115,7 @@ def add_phase(id_projet: str, phase: PhaseCreate, db: Session = Depends(get_db))
     implement: Esteban Barracho (v.1 19/06/2025)
     """
     new_phase = Phase(**phase.dict())
+    assert isinstance(new_phase, Phase), "Objet créé invalide (Phase attendu)"
     db.add(new_phase)
     db.commit()
     db.refresh(new_phase)
@@ -129,6 +134,7 @@ def delete_project(id_projet: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 21/06/2025)
     """
+    assert isinstance(id_projet, str), "L’identifiant de projet doit être une chaîne"
     project = db.query(Projet).filter(Projet.id_projet == id_projet).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -149,6 +155,7 @@ def delete_phase(id_phase: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 21/06/2025)
     """
+    assert isinstance(id_phase, str), "L’identifiant de phase doit être une chaîne"
     phase = db.query(Phase).filter(Phase.id_phase == id_phase).first()
     if not phase:
         raise HTTPException(status_code=404, detail="Phase not found")
@@ -169,6 +176,7 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 21/06/2025)
     """
+    assert isinstance(id_facture, str), "L’identifiant de facture doit être une chaîne"
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")

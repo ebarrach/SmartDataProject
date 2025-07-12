@@ -2,14 +2,15 @@
 # IMPORTS
 # ============================================
 
+from datetime import date
+
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
+
 from ..database import SessionLocal
 from ..models import Facture
 from ..schemas import FactureOut
-from pydantic import BaseModel
-from datetime import date
-from typing import Optional
 
 # ============================================
 # SCHEMA : CREATE INVOICE
@@ -85,6 +86,7 @@ def get_facture(id_facture: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert isinstance(id_facture, str), "L’identifiant de facture doit être une chaîne"
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
@@ -103,6 +105,7 @@ def create_facture(facture: FactureCreate, db: Session = Depends(get_db)):
     implement: Esteban Barracho (v.1 19/06/2025)
     """
     db_facture = Facture(**facture.dict())
+    assert isinstance(db_facture, Facture), "Objet créé invalide (Facture attendu)"
     db.add(db_facture)
     db.commit()
     db.refresh(db_facture)
@@ -121,10 +124,12 @@ def update_facture(id_facture: str, facture_update: FactureCreate, db: Session =
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert isinstance(id_facture, str), "L’identifiant de facture doit être une chaîne"
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
     for key, value in facture_update.dict().items():
+        assert hasattr(facture, key), f"Champ '{key}' introuvable dans l’objet Facture"
         setattr(facture, key, value)
     db.commit()
     db.refresh(facture)
@@ -143,6 +148,7 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.2 22/06/2025)
     """
+    assert isinstance(id_facture, str), "L’identifiant de facture doit être une chaîne"
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")

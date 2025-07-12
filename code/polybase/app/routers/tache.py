@@ -4,11 +4,11 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
+from app.auth import get_current_user
 from app.database import get_db
 from app.models import Tache, Facture
 from app.schemas import TacheCreate, TacheOut
-from app.auth import get_current_user
-
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -43,6 +43,7 @@ def get_task(id_tache: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert isinstance(id_tache, str), "L’identifiant de tâche doit être une chaîne"
     task = db.query(Tache).filter(Tache.id_tache == id_tache).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -61,6 +62,7 @@ def create_task(task: TacheCreate, db: Session = Depends(get_db)):
     implement: Esteban Barracho (v.1 19/06/2025)
     """
     db_task = Tache(**task.dict())
+    assert isinstance(db_task, Tache), "Objet créé invalide (Tache attendu)"
     db.add(db_task)
     db.commit()
     db.refresh(db_task)
@@ -83,6 +85,7 @@ def update_task(id_tache: str, updated_task: TacheCreate, db: Session = Depends(
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     for key, value in updated_task.dict().items():
+        assert hasattr(task, key), f"Champ '{key}' introuvable dans Tache"
         setattr(task, key, value)
     db.commit()
     db.refresh(task)
@@ -101,6 +104,7 @@ def delete_task(id_tache: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.1 19/06/2025)
     """
+    assert isinstance(id_tache, str), "L’identifiant de tâche doit être une chaîne"
     task = db.query(Tache).filter(Tache.id_tache == id_tache).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -120,6 +124,7 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     specification: Esteban Barracho (v.1 19/06/2025)
     implement: Esteban Barracho (v.2 22/06/2025)
     """
+    assert isinstance(id_facture, str), "L’identifiant de facture doit être une chaîne"
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
@@ -145,5 +150,6 @@ def get_agenda_tasks(user=Depends(get_current_user), db: Session = Depends(get_d
     specification: Esteban Barracho (v.1 11/07/2025)
     implement: Esteban Barracho (v.1 11/07/2025)
     """
+    assert hasattr(user, "id_personnel") and isinstance(user.id_personnel, str), "Utilisateur non authentifié ou invalide"
     tasks = db.query(Tache).filter(Tache.statut.in_(["planifiée", "à faire"])).all()
     return [{"id": t.id_tache, "nom_tache": t.nom_tache} for t in tasks]
