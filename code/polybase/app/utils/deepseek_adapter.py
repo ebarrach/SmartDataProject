@@ -4,7 +4,11 @@
 
 import pandas as pd
 from app.database import SessionLocal
-from sqlalchemy import inspect
+from sqlalchemy import inspect, text
+import time
+import sqlalchemy.exc
+from app.database import SessionLocal
+
 
 
 def reorder_columns(df: pd.DataFrame, table: str):
@@ -130,11 +134,55 @@ def prepare_adaptation():
     specification: Esteban Barracho (v.1 11/07/2025)
     implement: Esteban Barracho (v.1.1 12/07/2025)
     """
-    try:
-        db = SessionLocal()
-        db.execute("SELECT 1")  # Simple test de connexion
-        print("🧠 DeepSeek prêt pour adapter les fichiers Excel.")
-    except Exception as e:
-        print(f"⚠ Erreur DeepSeek : {e}")
-    finally:
-        db.close()
+    max_retries = 10
+    for attempt in range(max_retries):
+        try:
+            db = SessionLocal()
+            db.execute(text("SELECT 1"))
+            print("🧠 DeepSeek prêt pour adapter les fichiers Excel.")
+            return
+        except sqlalchemy.exc.OperationalError as e:
+            print(f"⏳ Connexion base échouée (tentative {attempt+1}/{max_retries}) : {e}")
+            time.sleep(2)
+        finally:
+            db.close()
+    print("❌ DeepSeek : Échec connexion base après plusieurs tentatives.")
+
+def adapt_excel_to_table(table: str, file_path: str, db):
+    """
+    Fonction pont appelée depuis admin.py pour importer et insérer des lignes Excel adaptées.
+
+    Parameters:
+    -----------
+    table : str
+        Nom de la table cible.
+    file_path : str
+        Chemin vers le fichier Excel.
+    db : Session
+        Session SQLAlchemy active.
+
+    Returns:
+    --------
+    int : Nombre de lignes insérées.
+
+    Version:
+    --------
+    implement: Esteban Barracho (v.1.2 12/07/2025)
+    """
+    rows = adapt_excel(file_path, table)
+    if not rows:
+        return 0
+    columns = rows[0].keys()
+    keys = ", ".join([f"`{k}`" for k in columns])
+    vals = ", ".join([f":{k}" for k in columns])
+    sql = text(f"INSERT INTO `{table}` ({keys}) VALUES ({vals})")
+
+    count = 0
+    for row in rows:
+        try:
+            db.execute(sql, row)
+            count += 1
+        except Exception as e:
+            print(f"❌ Erreur ligne ignorée : {e}")
+    db.commit()
+    return count

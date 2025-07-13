@@ -1,7 +1,8 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 22/06/2025)
-   Mise à jour : 22/06/2025
+   Mise à jour : 13/07/2025 (v.2.1 palette rose/brique)
    ============================================== */
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -18,12 +19,12 @@
 }
 
 .card:hover {
-    box-shadow: 0 4px 16px rgba(170, 57, 57, 0.08);
+    box-shadow: 0 4px 16px rgba(212, 130, 106, 0.08);
 }
 
 .card h3 {
     margin-top: 0;
-    color: #AA3939;
+    color: #AA5239;
     font-size: 1.2em;
 }
 
@@ -43,23 +44,23 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 1em;
-    background: #fafbfa;
+    background: #fff2ee;
 }
 
 .data-table th, .data-table td {
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid #f3d9cf;
     padding: 0.8em 0.6em;
     text-align: left;
 }
 
 .data-table th {
-    background: #f7f5f5;
-    color: #AA3939;
+    background: #FFBDAA;
+    color: #802D15;
     font-weight: 600;
     font-size: 1em;
 }
 
 .data-table tr:hover {
-    background: #fbecec;
+    background: #FFDAD1;
     transition: background 0.2s;
 }

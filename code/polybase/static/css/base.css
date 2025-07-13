@@ -1,10 +1,10 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 22/06/2025)
-   Mise à jour : 22/06/2025
+   Mise à jour : 13/07/2025 (v.2.1 – palette rose/brique + logo étendu)
    ============================================== */
 
 .navbar {
-    background-color: #AA3939;
+    background-color: #AA5239; /* Brique principale */
     color: white;
     display: flex;
     justify-content: space-between;
@@ -28,15 +28,16 @@
 }
 
 .logo-img {
-    width: 42px;
-    height: 42px;
-    margin-right: 12px;
-    border-radius: 6px;
+    width: auto;
+    height: 70px; /* ↗️ Hauteur augmentée */
+    margin-right: 14px;
+    border-radius: 8px;
 }
 
 .logo-text {
     font-size: 1.7em;
     font-weight: bold;
+    color: #FFBDAA; /* Rose clair pour contraste texte */
 }
 
 /* ----- Liens à droite ----- */
@@ -47,7 +48,7 @@
 }
 
 .navbar-right a {
-    color: white;
+    color: #FFBDAA;
     text-decoration: none;
     font-weight: bold;
     font-size: 1em;
@@ -55,8 +56,9 @@
 }
 
 .navbar-right a:hover {
-    opacity: 0.85;
+    opacity: 0.95;
     transform: translateY(-1px);
+    color: #D4826A; /* Teinte plus vive au hover */
 }
 
 /* ----- Responsive ----- */
@@ -74,8 +76,8 @@
     }
 
     .logo-img {
-        width: 36px;
-        height: 36px;
+        height: 52px; /* ↗️ Taille responsive aussi augmentée */
+        width: auto;
     }
 
     .logo-text {

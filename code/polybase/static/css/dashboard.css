@@ -1,6 +1,6 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 22/06/2025)
-   Mise à jour : 22/06/2025
+   Mise à jour : 13/07/2025 (v.2.1 palette rose/brique)
    ============================================== */
 
 .stats-grid {
@@ -24,14 +24,14 @@
 
 .card h3 {
     margin-top: 0;
-    color: #AA3939;
+    color: #AA5239;
     font-size: 1.2em;
 }
 
 .stat-value {
     font-size: 2em;
     font-weight: bold;
-    color: #444;
+    color: #D4826A;
 }
 
 .facturation-list p {

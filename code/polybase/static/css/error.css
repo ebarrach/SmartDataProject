@@ -1,6 +1,6 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 22/06/2025)
-   Mise à jour : 22/06/2025
+   Mise à jour : 13/07/2025 (v.2.1 palette rose/brique)
    ============================================== */
 
 .error-container {
@@ -8,15 +8,15 @@
     margin: 4em auto;
     padding: 3em;
     background-color: #ffffff;
-    border: 2px solid #AA3939;
+    border: 2px solid #AA5239;
     border-radius: 12px;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(170, 57, 57, 0.1);
+    box-shadow: 0 4px 12px rgba(212, 130, 106, 0.1);
 }
 
 .error-code {
     font-size: 5em;
-    color: #AA3939;
+    color: #AA5239;
     margin-bottom: 0.2em;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .button {
-    background-color: #AA3939;
+    background-color: #D4826A;
     color: white;
     padding: 0.75em 1.5em;
     border-radius: 6px;
@@ -44,5 +44,5 @@
 }
 
 .button:hover {
-    background-color: #941212;
+    background-color: #AA5239;
 }

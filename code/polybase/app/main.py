@@ -90,11 +90,16 @@ def startup_event():
     """Événements de démarrage au lancement du serveur API.
     Version:
     --------
-    specification: Esteban Barracho (v.2 11/07/2025)
+    specification: Esteban Barracho (v.1 11/07/2025)
     implement: Esteban Barracho (v.2 11/07/2025)
     """
     print("✅ API disponible sur http://localhost:8000")
-    outlook_sync.synchronize_outlook()
+
+    try:
+        outlook_sync.synchronize_outlook()
+    except Exception as e:
+        print(f"⚠️  Synchronisation Outlook ignorée : {e}")
+
     deepseek.prepare_adaptation()
 
 # ============================================

@@ -1,11 +1,11 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 22/06/2025)
-   Mise à jour : 22/06/2025
+   Mise à jour : 13/07/2025 (v.2.1 palette rose/brique)
    ============================================== */
 
 /* ----- Boutons standards ----- */
 button {
-    background-color: #AA3939;
+    background-color: #AA5239;
     color: white;
     border: none;
     padding: 0.75em 1.5em;
@@ -17,20 +17,20 @@ button {
 }
 
 button:hover {
-    background-color: #941212;
+    background-color: #802D15;
     transform: translateY(-1px);
 }
 
 /* ----- Liens actifs ----- */
 a {
-    color: #AA3939;
+    color: #D4826A;
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
 a:hover {
     text-decoration: underline;
-    color: #941212;
+    color: #AA5239;
 }
 
 /* ----- Champs de formulaire ----- */
@@ -38,7 +38,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 textarea {
-    border: 1px solid #C06969;
+    border: 1px solid #FFBDAA;
     border-radius: 5px;
     padding: 0.75em;
     font-size: 1em;
@@ -49,15 +49,15 @@ textarea {
 
 input:focus,
 textarea:focus {
-    border-color: #AA3939;
-    box-shadow: 0 0 5px rgba(170, 57, 57, 0.3);
+    border-color: #D4826A;
+    box-shadow: 0 0 5px rgba(212, 130, 106, 0.3);
     outline: none;
 }
 
 /* ----- Cartes ou blocs d’information ----- */
 .card {
     background-color: white;
-    border: 1px solid #e2c4c4;
+    border: 1px solid #FFBDAA;
     border-radius: 10px;
     padding: 1.5em;
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
@@ -72,7 +72,7 @@ textarea:focus {
 .badge {
     display: inline-block;
     padding: 0.3em 0.6em;
-    background-color: #AA3939;
+    background-color: #AA5239;
     color: white;
     border-radius: 999px;
     font-size: 0.85em;
@@ -104,11 +104,11 @@ textarea:focus {
 }
 
 .alert-success {
-    background-color: #d3e9d3;
-    color: #225c22;
+    background-color: #FFBDAA;
+    color: #551300;
 }
 
 .alert-error {
-    background-color: #f5d2d2;
-    color: #941212;
+    background-color: #FDECEA;
+    color: #AA5239;
 }

@@ -24,6 +24,7 @@ code/
                 facture.py
                 finance.py
                 offre.py
+                outlook.py
                 planification.py
                 prestation.py
                 project.py

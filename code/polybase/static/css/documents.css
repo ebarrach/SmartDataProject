@@ -1,6 +1,6 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 22/06/2025)
-   Mise à jour : 22/06/2025
+   Mise à jour : 13/07/2025 (v.2.1 palette rose/brique)
    ============================================== */
 
 /* ----- En-tête de la page ----- */
@@ -13,7 +13,7 @@
 }
 
 .documents-header h1 {
-    color: #AA3939;
+    color: #AA5239;
     margin: 0;
     font-size: 2em;
 }
@@ -34,23 +34,23 @@
 
 /* ----- Élément individuel ----- */
 #document-list li {
-    background-color: #D6A3A3;
+    background-color: #FFBDAA;
     padding: 0.75em 1em;
     margin-bottom: 0.75em;
-    border-left: 5px solid #AA3939;
+    border-left: 5px solid #AA5239;
     border-radius: 6px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     transition: background-color 0.2s ease;
 }
 
 #document-list li:hover {
-    background-color: #c98b8b;
+    background-color: #D4826A;
 }
 
 /* ----- Liens ----- */
 #document-list li a {
     text-decoration: none;
-    color: #fff;
+    color: #551300;
     font-weight: bold;
     display: block;
 }

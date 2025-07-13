@@ -1,6 +1,6 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 26/06/2025)
-   Mise à jour : 11/07/2025 (v.1.2 responsive)
+   Mise à jour : 13/07/2025 (v.2.1 – palette rose/brique)
    ============================================== */
 
 html, body {
@@ -15,25 +15,25 @@ html, body {
     max-width: 1200px;
     margin: 30px auto 40px auto;
     padding: 30px 28px 32px 28px;
-    background: #f4eded;
+    background: #FFBDAA;
     border-radius: 14px;
     font-family: Arial, sans-serif;
     box-sizing: border-box;
-    box-shadow: 0 6px 32px rgba(170, 57, 57, 0.14);
+    box-shadow: 0 6px 32px rgba(170, 82, 57, 0.14);
     overflow-x: auto;
 }
 
 /* ----- Titres ----- */
 #admin-container h1 {
     margin-bottom: 1.2em;
-    color: #8a2323;
     font-size: 2em;
     font-weight: 900;
     letter-spacing: 0.01em;
-    text-shadow: 0 2px 8px #efd5d5;
+    color: #AA5239;
+    text-shadow: 0 2px 8px #D4826A;
 }
 #admin-container h2 {
-    color: #6d1a1a;
+    color: #D4826A;
     font-size: 1.25em;
     font-weight: 700;
     margin-bottom: 1em;
@@ -46,10 +46,10 @@ html, body {
     flex-wrap: wrap;
     align-items: center;
     gap: 12px;
-    background: #fae9e9;
+    background: #FFD3C7;
+    box-shadow: 0 4px 14px rgba(170, 82, 57, 0.07);
     padding: 18px;
     border-radius: 10px;
-    box-shadow: 0 4px 14px rgba(170,57,57,0.07);
     margin-bottom: 2em;
     box-sizing: border-box;
 }
@@ -58,7 +58,7 @@ html, body {
     font-size: 1.08em;
     font-weight: 700;
     margin-right: 8px;
-    color: #922727;
+    color: #AA5239;
 }
 
 #admin-container select,
@@ -68,19 +68,19 @@ html, body {
     margin: 0 6px 0 0;
     padding: 8px 16px;
     font-size: 1em;
-    border: 1.8px solid #a96a6a;
+    border: 1.8px solid #D4826A;
+    background: #FFE7E2;
+    color: #551300;
+    box-shadow: 0 1px 2px rgba(212, 130, 106, 0.11);
     border-radius: 7px;
-    background: #f4e6e6;
-    color: #671e1e;
-    box-shadow: 0 1px 2px rgba(170, 57, 57, 0.11);
     transition: border 0.14s, background 0.13s, color 0.13s;
 }
 
 #admin-container select:focus,
 #admin-container input[type="text"]:focus {
-    border-color: #AA3939;
-    background: #fff2f2;
-    color: #220000;
+    border-color: #AA5239;
+    background: #FFD3C7;
+    color: #551300;
 }
 
 /* ----- Barre de recherche ----- */
@@ -93,18 +93,18 @@ html, body {
 
 #search-input {
     padding: 8px 14px;
-    border: 1.8px solid #a96a6a;
     border-radius: 7px;
     font-size: 1em;
-    background: #f4e6e6;
-    color: #671e1e;
     width: 200px;
+    border: 1.8px solid #D4826A;
+    background: #FFE7E2;
+    color: #551300;
 }
 
 #search-input:focus {
-    border-color: #AA3939;
-    background: #fff2f2;
-    color: #220000;
+    border-color: #AA5239;
+    background: #FFD3C7;
+    color: #551300;
 }
 
 /* ----- Boutons ----- */
@@ -126,49 +126,49 @@ html, body {
 }
 
 .update-btn {
-    background: #1e2d53;
     color: #fff;
-    border: 2px solid #163070;
-    box-shadow: 0 2px 12px rgba(37,99,235,0.20);
+    background: #802D15;
+    border: 2px solid #551300;
+    box-shadow: 0 2px 12px rgba(212, 130, 106, 0.2);
 }
 .update-btn:hover,
 .update-btn:focus {
-    background: #14305d;
-    border-color: #11326a;
-    box-shadow: 0 6px 24px rgba(37,99,235,0.21);
+    background: #551300;
+    border-color: #3a0d00;
+    box-shadow: 0 6px 24px rgba(170, 82, 57, 0.21);
     transform: translateY(-1px) scale(1.055);
 }
 
 .delete-btn {
-    background: #7c1919;
     color: #fff;
-    border: 2px solid #4b0808;
-    box-shadow: 0 2px 10px rgba(192,57,43,0.19);
+    background: #AA5239;
+    border: 2px solid #802D15;
+    box-shadow: 0 2px 10px rgba(212, 130, 106, 0.19);
 }
 .delete-btn:hover,
 .delete-btn:focus {
-    background: #4b0808;
-    border-color: #AA3939;
-    box-shadow: 0 8px 28px rgba(192,57,43,0.24);
+    background: #802D15;
+    border-color: #AA5239;
+    box-shadow: 0 8px 28px rgba(170, 82, 57, 0.24);
     transform: translateY(-1px) scale(1.07);
 }
 
 /* ----- Tableau responsive ----- */
 #table-wrapper {
     overflow-x: auto;
-    background: #fdf4f4;
     border-radius: 15px;
-    box-shadow: 0 4px 32px rgba(214, 163, 163, 0.15);
     padding: 16px;
     flex: 1;
     min-width: 0;
     box-sizing: border-box;
+    background: #FFF5F1;
+    box-shadow: 0 4px 32px rgba(255, 189, 170, 0.15);
 }
 
 #data-table {
     width: 100%;
     border-collapse: collapse;
-    background: #fff;
+    background: #D4826A;
     font-size: 1em;
     border-radius: 11px;
     box-shadow: 0 2px 11px rgba(180, 130, 130, 0.08);
@@ -176,7 +176,7 @@ html, body {
 
 #data-table th,
 #data-table td {
-    border: 1px solid #caa4a4;
+    border: 1px solid #FFD3C7;
     padding: 14px 22px;
     text-align: left;
     background: #fff;
@@ -191,7 +191,7 @@ html, body {
 }
 
 #data-table tr:hover td {
-    background: #f7dcdc;
+    background: #FFE7E2;
 }
 
 #data-table td:last-child {
@@ -215,18 +215,18 @@ html, body {
 #form-update {
     margin: 0;
     padding: 22px 30px;
-    background: #fff8f8;
     border-radius: 11px;
-    box-shadow: 0 3px 14px rgba(170, 57, 57, 0.11);
     flex: 1 1 460px;
     min-width: 280px;
     max-width: 100%;
     box-sizing: border-box;
+    background: #FFF1EE;
+    box-shadow: 0 3px 14px rgba(255, 189, 170, 0.11);
 }
 
 #form-insert h3,
 #form-update h3 {
-    color: #822929;
+    color: #AA5239;
     margin-top: 0;
     margin-bottom: 10px;
     font-size: 1.13em;
@@ -244,20 +244,20 @@ html, body {
 #form-update select {
     padding: 8px 13px;
     width: 98%;
-    border: 1.7px solid #a96a6a;
     border-radius: 6px;
     font-size: 1em;
+    border: 1.7px solid #D4826A;
     background: #fff;
-    color: #2a0c0c;
+    color: #551300;
 }
 
 #form-insert input:focus,
 #form-insert select:focus,
 #form-update input:focus,
 #form-update select:focus {
-    border-color: #AA3939;
-    background: #ffe6e6;
-    color: #090000;
+    border-color: #AA5239;
+    background: #FFE7E2;
+    color: #551300;
 }
 
 #form-insert label,
@@ -269,19 +269,20 @@ html, body {
 
 #form-insert button[type="submit"],
 #form-update button[type="submit"] {
-    background-color: #1e2d53;
+    background-color: #802D15;
+    border: 2px solid #551300;
+    box-shadow: 0 2px 10px rgba(212, 130, 106, 0.12);
     color: white;
     font-weight: bold;
-    border: 2px solid #163070;
     border-radius: 6px;
     padding: 8px 20px;
     cursor: pointer;
-    box-shadow: 0 2px 10px rgba(30, 45, 83, 0.12);
 }
+
 #form-insert button[type="submit"]:hover,
 #form-update button[type="submit"]:hover {
-    background-color: #142c56;
-    box-shadow: 0 4px 16px rgba(30, 45, 83, 0.2);
+    background-color: #551300;
+    box-shadow: 0 4px 16px rgba(212, 130, 106, 0.2);
 }
 
 .validation-error {
@@ -331,19 +332,20 @@ input[type="password"] {
 
 /* --- Bouton recherche --- */
 #search-btn {
-    background: #b06464;
-    border: 2px solid #922727;
+    background: #D4826A;
+    border: 2px solid #AA5239;
+    box-shadow: 0 2px 8px rgba(212, 130, 106, 0.11);
     border-radius: 8px;
     color: #fff;
-    box-shadow: 0 2px 8px rgba(176, 100, 100, 0.11);
     transition: background 0.15s, border 0.13s;
     padding: 7px 16px;
     cursor: pointer;
 }
+
 #search-btn:hover,
 #search-btn:focus {
-    background: #922727;
-    border-color: #8a2323;
+    background: #AA5239;
+    border-color: #802D15;
 }
 #search-btn svg {
     display: inline-block;
@@ -353,7 +355,7 @@ input[type="password"] {
 #admin-container input:focus,
 #admin-container select:focus,
 #admin-container button:focus {
-    outline: 2.2px solid #b00808;
+    outline: 2.2px solid #AA5239;
     outline-offset: 2px;
 }
 

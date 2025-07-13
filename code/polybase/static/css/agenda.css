@@ -1,6 +1,6 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 22/06/2025)
-   Mise à jour : 22/06/2025
+   Mise à jour : 13/07/2025 (v.2.1 – palette rose/brique)
    ============================================== */
 
 /* ----- En-tête de la page ----- */
@@ -13,7 +13,7 @@
 }
 
 .agenda-header h1 {
-    color: #AA3939;
+    color: #AA5239;
     font-size: 2em;
     margin: 0;
 }
@@ -31,7 +31,7 @@
 /* ----- Colonne : mini calendrier ----- */
 .calendar-sidebar {
     flex: 1 1 220px;
-    background-color: #D6A3A3;
+    background-color: #D4826A;
     padding: 1.5em;
     border-radius: 10px;
     color: white;
@@ -42,7 +42,7 @@
 .calendar-main {
     flex: 2 1 500px;
     background-color: white;
-    border: 2px solid #AA3939;
+    border: 2px solid #AA5239;
     padding: 1.5em;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -51,7 +51,7 @@
 /* ----- Colonne : tâches ----- */
 .task-sidebar {
     flex: 1 1 220px;
-    background-color: #D6A3A3;
+    background-color: #D4826A;
     padding: 1.5em;
     border-radius: 10px;
     color: white;
@@ -66,7 +66,7 @@
 
 .task-sidebar li {
     background-color: white;
-    color: #AA3939;
+    color: #AA5239;
     padding: 0.7em 1em;
     border-radius: 6px;
     margin-bottom: 0.75em;
@@ -80,15 +80,15 @@
     vertical-align: top;
     width: 18%;
     margin-right: 1%;
-    background-color: #f4eaea;
+    background-color: #FFBDAA;
     border-radius: 6px;
     padding: 0.75em;
     text-align: center;
-    border: 1px solid #C06969;
+    border: 1px solid #D4826A;
 }
 
 .day-column h4 {
-    color: #AA3939;
+    color: #AA5239;
     margin-bottom: 0.5em;
 }
 

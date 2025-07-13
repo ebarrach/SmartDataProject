@@ -1,6 +1,6 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 22/06/2025)
-   Mise à jour : 22/06/2025
+   Mise à jour : 13/07/2025 (v.2.1 palette rose/brique)
    ============================================== */
 
 /* ----- En-tête de la tâche ----- */
@@ -13,7 +13,7 @@
 }
 
 .task-detail-header h1 {
-    color: #AA3939;
+    color: #AA5239;
     font-size: 2em;
     margin: 0;
 }
@@ -24,9 +24,9 @@
     margin: 2em auto;
     background-color: #ffffff;
     padding: 2.5em;
-    border: 2px solid #AA3939;
+    border: 2px solid #FFBDAA;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(170, 57, 57, 0.1);
+    box-shadow: 0 4px 12px rgba(212, 130, 106, 0.1);
     color: #333;
     font-size: 1em;
     line-height: 1.6;
@@ -43,7 +43,7 @@ textarea {
     height: 100px;
     padding: 1em;
     margin-top: 1em;
-    border: 1px solid #C06969;
+    border: 1px solid #D4826A;
     border-radius: 6px;
     resize: vertical;
     font-size: 1em;
@@ -55,7 +55,7 @@ button {
     display: inline-block;
     margin-top: 1.2em;
     padding: 0.75em 1.5em;
-    background-color: #AA3939;
+    background-color: #AA5239;
     color: white;
     border: none;
     border-radius: 6px;
@@ -66,7 +66,7 @@ button {
 }
 
 button:hover {
-    background-color: #941212;
+    background-color: #802D15;
     transform: translateY(-1px);
 }
 

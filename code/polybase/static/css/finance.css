@@ -1,11 +1,11 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 22/06/2025)
-   Mise à jour : 22/06/2025
+   Mise à jour : 13/07/2025 (v.2.1 palette rose/brique)
    ============================================== */
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #fdf6f6;
+    background-color: #FFBDAA;
     margin: 0;
     padding: 0;
     color: #333;
@@ -15,13 +15,13 @@ body {
     text-align: center;
     padding: 2em;
     background-color: #ffffff;
-    border-bottom: 2px solid #AA3939;
+    border-bottom: 2px solid #AA5239;
     margin-bottom: 2em;
 }
 
 .finance-header h1 {
     margin: 0;
-    color: #AA3939;
+    color: #AA5239;
     font-size: 2.5em;
 }
 
@@ -42,7 +42,7 @@ body {
 
 .chart-card {
     background-color: #ffffff;
-    border: 2px solid #D6A3A3;
+    border: 2px solid #D4826A;
     border-radius: 12px;
     padding: 1.5em;
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
@@ -55,7 +55,7 @@ body {
 
 .chart-card h3 {
     text-align: center;
-    color: #AA3939;
+    color: #AA5239;
     margin-bottom: 1em;
 }
 
@@ -64,13 +64,13 @@ canvas {
     height: 300px !important;
 }
 
-/* ----- Ajout visuel facultatif pour encadrer les cas positifs/négatifs ----- */
+/* ----- Encadré positif/négatif ----- */
 .chart-card.positive {
-    border-color: #66B466;
-    background-color: #f0fdf2;
+    border-color: #AA5239;
+    background-color: #fff3ef;
 }
 
 .chart-card.negative {
-    border-color: #E06A6A;
-    background-color: #fff5f5;
+    border-color: #FFBDAA;
+    background-color: #fffaf9;
 }

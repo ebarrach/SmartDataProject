@@ -4,6 +4,10 @@
 
 import random
 import string
+import os
+import pandas as pd
+from fastapi.responses import FileResponse
+from app.utils.deepseek_adapter import adapt_excel_to_table
 
 import Levenshtein
 import bcrypt
@@ -500,4 +504,28 @@ def detect_foreign_keys(table: str, db: Session):
             for col in fk["constrained_columns"]:
                 fk_map[col] = fk["referred_table"]
     return fk_map
+
+UPLOAD_DIR = "uploaded_files"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+@router.get("/export/{table}")
+def export_table(table: str, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    check_admin(user)
+    result = db.execute(text(f"SELECT * FROM `{table}`")).mappings().all()
+    df = pd.DataFrame(result)
+    file_path = os.path.join(UPLOAD_DIR, f"{table}.xlsx")
+    df.to_excel(file_path, index=False)
+    return FileResponse(file_path, filename=f"{table}.xlsx", media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+@router.post("/import/{table}")
+async def import_table(table: str, request: Request, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    check_admin(user)
+    form = await request.form()
+    file = form["file"]
+    contents = await file.read()
+    path = os.path.join(UPLOAD_DIR, f"import_{table}.xlsx")
+    with open(path, "wb") as f:
+        f.write(contents)
+    result = adapt_excel_to_table(table, path, db)
+    return {"status": "ok", "inserted": result}
 
