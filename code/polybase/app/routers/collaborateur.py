@@ -45,20 +45,16 @@ class CollaborateurIn(BaseModel):
 # ============================================
 # ENDPOINT : Create Collaborateur
 # ============================================
-
 @router.post("/collaborateurs")
 def create_collaborateur(collaborateur: CollaborateurIn, db: Session = Depends(get_db)):
     """Creates a new collaborator entry in the database if it does not already exist.
-
     Parameters:
     -----------
     collaborateur (CollaborateurIn): Input schema containing the personnel ID.
     db (Session): SQLAlchemy session dependency.
-
     Returns:
     --------
     dict: Success message indicating creation or existence.
-
     Version:
     --------
     specification: Esteban Barracho (v.1 21/06/2025)

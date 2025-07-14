@@ -14,7 +14,6 @@ from app.schemas import OffreCreate, OffreOut
 # ============================================
 # ROUTER INITIALIZATION
 # ============================================
-
 router = APIRouter(
     prefix="/offres",
     tags=["offres"]
@@ -23,11 +22,25 @@ router = APIRouter(
 # ============================================
 # CREATE OFFRE
 # ============================================
-
 @router.post("/", response_model=OffreOut)
 def create_offre(offre: OffreCreate, db: Session = Depends(get_db)):
-    """
-    Create a new Offre entry.
+    """Create a new Offre entry.
+    Parameters:
+    -----------
+    offre : OffreCreate
+        Pydantic schema containing data for the new offer.
+    db : Session
+        Active SQLAlchemy session used to interact with the database.
+    Returns:
+    --------
+    Offre
+        The newly created offer record.
+    Raises:
+    -------
+    HTTPException (400)
+        If an offer with the same ID already exists.
+    AssertionError
+        If the created object is not of type Offre.
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
@@ -46,11 +59,17 @@ def create_offre(offre: OffreCreate, db: Session = Depends(get_db)):
 # ============================================
 # GET ALL OFFRES
 # ============================================
-
 @router.get("/", response_model=List[OffreOut])
 def get_offres(db: Session = Depends(get_db)):
-    """
-    Retrieve all Offres.
+    """Retrieve all Offres.
+    Parameters:
+    -----------
+    db : Session
+        Active SQLAlchemy session used to fetch data from the database.
+    Returns:
+    --------
+    List[OffreOut]
+        A list of all offers registered in the database.
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
@@ -61,11 +80,23 @@ def get_offres(db: Session = Depends(get_db)):
 # ============================================
 # GET OFFRE BY ID
 # ============================================
-
 @router.get("/{id_offre}", response_model=OffreOut)
 def get_offre(id_offre: str, db: Session = Depends(get_db)):
-    """
-    Retrieve an Offre by its ID.
+    """Retrieve an Offre by its ID.
+    Parameters:
+    -----------
+    id_offre : str
+        Unique identifier of the offer to retrieve.
+    db : Session
+        Active SQLAlchemy session used to query the database.
+    Returns:
+    --------
+    OffreOut
+        The offer corresponding to the provided ID.
+    Raises:
+    -------
+    HTTPException
+        404 if the offer is not found in the database.
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)
@@ -80,11 +111,23 @@ def get_offre(id_offre: str, db: Session = Depends(get_db)):
 # ============================================
 # DELETE OFFRE
 # ============================================
-
 @router.delete("/{id_offre}")
 def delete_offre(id_offre: str, db: Session = Depends(get_db)):
-    """
-    Delete an Offre by its ID.
+    """Delete an Offre by its ID.
+    Parameters:
+    -----------
+    id_offre : str
+        Unique identifier of the offer to delete.
+    db : Session
+        Active SQLAlchemy session used to perform deletion.
+    Returns:
+    --------
+    dict
+        Confirmation message indicating successful deletion.
+    Raises:
+    -------
+    HTTPException
+        404 if the offer is not found in the database.
     Version:
     --------
     specification: Esteban Barracho (v.1 24/06/2025)

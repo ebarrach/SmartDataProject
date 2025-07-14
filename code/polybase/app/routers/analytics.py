@@ -13,10 +13,8 @@ from ..schemas import HonoraireRepartiCreate, ProjectionFacturationCreate, Proje
 # ============================================
 # DATABASE DEPENDENCY
 # ============================================
-
 def get_db():
     """Provides a database session for dependency injection.
-
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -31,13 +29,11 @@ def get_db():
 # ============================================
 # ROUTER INITIALIZATION
 # ============================================
-
 router = APIRouter()
 
 # ============================================
 # ROUTE : Multiplicating Factor Calculation
 # ============================================
-
 @router.get("/multiplicating-factor/{honoraire}/{cout}")
 def get_multiplicating_factor(honoraire: float, cout: float):
     """This endpoint calculates the multiplicating factor (honoraire / cout).
@@ -64,7 +60,6 @@ def get_multiplicating_factor(honoraire: float, cout: float):
 # ============================================
 # ROUTE : Delete Projection Facturation
 # ============================================
-
 @router.delete("/projection_facturation/{id_projection}")
 def delete_projection(id_projection: str, db: Session = Depends(get_db)):
     """Deletes a billing projection entry.

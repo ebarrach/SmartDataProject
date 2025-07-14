@@ -60,7 +60,6 @@ def taches_en_alerte(db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Sum of exceeded hours
 # ============================================
-
 @router.get("/dashboard/heures-depassees")
 def total_depassement_heures(db: Session = Depends(get_db)):
     """Returns the total number of exceeded hours across all tasks.
@@ -82,7 +81,6 @@ def total_depassement_heures(db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Billing projection summary
 # ============================================
-
 @router.get("/dashboard/facturation")
 def synthese_facturation(db: Session = Depends(get_db)):
     """Returns a summary of projected vs. actual billable amounts by project.
@@ -115,11 +113,9 @@ def synthese_facturation(db: Session = Depends(get_db)):
         })
     return resultats
 
-
 # ============================================
 # ROUTE : Current user’s active tasks
 # ============================================
-
 @router.get("/dashboard/mes-taches")
 def mes_taches(user=Depends(get_current_user), db: Session = Depends(get_db)):
     """Returns all non-completed tasks assigned to the current user.

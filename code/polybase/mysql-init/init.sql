@@ -315,12 +315,12 @@ VALUES
     ('IMP001', 'Excel v2025', 'Personnel', '2025-06-01', 'succès', 'Import initial sans erreurs.', 'PRJ001');
 
 
--- ==== Honoraires gagnés au 06/06/2025 ====
+-- ==== Fees earned as of 06/06/2025 ====
 INSERT INTO HonoraireReparti (id_repartition, id_projet, societe, montant) VALUES
 ('HR2025PT1', 'PRJ001', 'Poly-Tech', 426312.55),
 ('HR2025PR1', 'PRJ001', 'Pirnay', 1931892.42);
 
--- ==== Honoraires gagnés cumulés années précédentes (exemple fictif) ====
+-- ==== Cumulative fees earned in previous years (fictitious example) ====
 INSERT INTO HonoraireReparti (id_repartition, id_projet, societe, montant) VALUES
 ('HR2024PT1', 'PRJ001', 'Poly-Tech', 3434756.85),
 ('HR2024PR1', 'PRJ001', 'Pirnay', 3082328.84);
@@ -330,13 +330,14 @@ INSERT INTO Offre (id_offre, annee, entite, type_marche, nombre, indicateur, id_
 VALUES
     ('OFF001', 2025, 'POLY-TECH', 'public', 1, 'offres_gagnées', 'CL001');
 
--- Compte administrateur provisoire
+-- Provisional administrator account
 INSERT INTO Personnel (id_personnel, type_personnel, nom, prenom, email, password, fonction, taux_honoraire_standard)
 VALUES ('ADMIN1', 'interne', 'Super', 'Admin', 'admin@polybase.local',
 '$2b$12$ejEmsLAepn0dkygqIfgX8.hXr8G8AIwozn6yzVRPdQ2PbqCrHBwKe', 'admin', 0.00);
 
 
 -- ======= VUE =======
+
 CREATE VIEW VueAnalyseTache AS
 SELECT
     T.id_tache,
@@ -363,7 +364,7 @@ WHERE PC.facture_associee IS NULL;
 
 
 -- ======= TRIGGER =======
--- Nettoyage préalable
+-- Preliminary cleaning
 DROP TRIGGER IF EXISTS maj_heures_tache;
 DROP TRIGGER IF EXISTS maj_depassement_apres_modif_estimee;
 DROP TRIGGER IF EXISTS maj_heures_apres_modif_prestation;
@@ -371,7 +372,8 @@ DROP TRIGGER IF EXISTS maj_alerte_retard;
 
 DELIMITER $$
 
--- Trigger 1 : mise à jour des heures après INSERT d'une prestation
+-- Trigger 1: Update hours after INSERT of a service
+
 CREATE TRIGGER maj_heures_tache
     AFTER INSERT ON PrestationCollaborateur
     FOR EACH ROW
@@ -398,7 +400,8 @@ BEGIN
     WHERE id_tache = NEW.id_tache;
 END$$
 
--- Trigger 2 : mise à jour du dépassement si heures estimées ou prestées changent
+-- Trigger 2: Update the overtime if the estimated or actual hours change
+
 CREATE TRIGGER maj_depassement_apres_modif_tache
     BEFORE UPDATE ON Tache
     FOR EACH ROW
@@ -411,7 +414,8 @@ BEGIN
     END IF;
 END$$
 
--- Trigger 3 : mise à jour des heures après modification d'une prestation
+-- Trigger 3: Update hours after modifying a service
+
 CREATE TRIGGER maj_heures_apres_modif_prestation
     AFTER UPDATE ON PrestationCollaborateur
     FOR EACH ROW
@@ -440,7 +444,8 @@ BEGIN
     END IF;
 END$$
 
--- Trigger 4 : alerte de retard automatique
+-- Trigger 4: Automatic delay alert
+
 CREATE TRIGGER maj_alerte_retard
     BEFORE UPDATE ON Tache
     FOR EACH ROW
@@ -451,5 +456,4 @@ BEGIN
         SET NEW.alerte_retard = FALSE;
     END IF;
 END$$
-
 DELIMITER ;

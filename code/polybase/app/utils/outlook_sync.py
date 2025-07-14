@@ -16,7 +16,7 @@ from app.database import SessionLocal
 from app.models import Tache
 
 # ============================================
-# CHARGEMENT .ENV
+# LOADING .ENV
 # ============================================
 
 load_dotenv()
@@ -26,17 +26,18 @@ TENANT_ID = os.getenv("GRAPH_TENANT_ID")
 CLIENT_SECRET = os.getenv("GRAPH_CLIENT_SECRET")
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
 SCOPE = ["https://graph.microsoft.com/.default"]
+REDIRECT_URI = "http://localhost:8000/outlook/callback"
+OAUTH_SCOPE = ["Calendars.ReadWrite"]
 
 # ============================================
-# FONCTIONS DE SYNCHRONISATION
+# SYNCHRONISATION FUNCTIONS
 # ============================================
 
 def get_token():
-    """Obtient un token d’accès OAuth2 valide via MSAL pour l’API Graph.
+    """Gets a valid OAuth2 access token via MSAL for the Graph API.
     Returns:
     --------
-    str | None : Jeton d’accès OAuth2 ou None si échec.
-
+    str | None: OAuth2 access token or None if unsuccessful.
     Version:
     --------
     specification: Esteban Barracho (v.2 11/07/2025)
@@ -52,16 +53,14 @@ def get_token():
     return result.get("access_token")
 
 def fetch_outlook_events(access_token):
-    """Récupère les événements Outlook prévus dans les 30 prochains jours.
+    """Retrieves Outlook events scheduled for the next 30 days.
     Parameters:
     -----------
-    access_token : str
-        Jeton OAuth2 valide pour authentification.
-
+    access_token: str
+        Valid OAuth2 token for authentication.
     Returns:
     --------
-    list[dict] : Liste d’événements extraits de Microsoft Graph.
-
+    list[dict]: List of events extracted from Microsoft Graph.
     Version:
     --------
     specification: Esteban Barracho (v.2 11/07/2025)
@@ -78,13 +77,12 @@ def fetch_outlook_events(access_token):
     assert response.status_code == 200, f"Erreur lors de la récupération des événements Outlook: {response.status_code}"
     return response.json().get("value", [])
 
-
 def sync_to_db(events):
-    """Insère les événements Outlook dans PlanificationCollaborateur, sans doublons.
+    """Inserts Outlook events into PlanificationCollaborateur, without duplicates.
     Parameters:
     -----------
-    events : list[dict]
-        Liste d’événements récupérés depuis Outlook.
+    events: list[dict]
+        List of events retrieved from Outlook.
 
     Version:
     --------
@@ -124,12 +122,11 @@ def sync_to_db(events):
         db.close()
 
 def launch_sync():
-    """Lance la synchronisation complète d’Outlook vers la base de données.
-    Cette fonction enchaîne les étapes :
-    - Récupération du token client,
-    - Extraction des événements Outlook,
-    - Insertion filtrée dans la base.
-
+    """Launches full synchronization from Outlook to the database.
+    This function performs the following steps:
+    Retrieves the client token,
+    Extracts Outlook events,
+    Inserts filtered events into the database.
     Version:
     --------
     specification: Esteban Barracho (v.2 11/07/2025)
@@ -144,12 +141,9 @@ def launch_sync():
         print(f"❌ Outlook sync échouée: {e}")
 
 def synchronize_outlook():
-    """
-    Point d’entrée principal appelé au démarrage du backend.
-
-    Cette fonction déclenche la récupération des événements Outlook
-    et l’insertion dans la base, si nécessaire.
-
+    """Main entry point called when the backend starts up.
+    This function triggers the retrieval of Outlook events
+    and their insertion into the database, if necessary.
     Version:
     --------
     specification: Esteban Barracho (v.2 11/07/2025)
@@ -161,16 +155,11 @@ def synchronize_outlook():
     print("🔄 Synchronisation Outlook en cours...")
     launch_sync()
 
-
-REDIRECT_URI = "http://localhost:8000/outlook/callback"
-OAUTH_SCOPE = ["Calendars.ReadWrite"]
-
 def get_oauth_url():
-    """Construit dynamiquement l’URL de redirection pour l’authentification OAuth2.
+    """Dynamically builds the redirect URL for OAuth2 authentication.
     Returns:
     --------
-    str : URL d’autorisation OAuth2 Microsoft à ouvrir dans un navigateur.
-
+    str: Microsoft OAuth2 authorisation URL to open in a browser.
     Version:
     --------
     specification: Esteban Barracho (v.2 11/07/2025)
@@ -186,16 +175,14 @@ def get_oauth_url():
     return f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/authorize?{urlencode(params)}"
 
 def exchange_code_for_token(code: str):
-    """Échange un code d’autorisation contre un token d’accès OAuth2.
+    """Exchange an authorisation code for an OAuth2 access token.
     Parameters:
     -----------
-    code : str
-        Code retourné après autorisation utilisateur.
-
+    code: str
+        Code returned after user authorisation.
     Returns:
     --------
-    str | None : Jeton d’accès OAuth2 ou None si erreur.
-
+    str | None: OAuth2 access token or None if error.
     Version:
     --------
     specification: Esteban Barracho (v.2 11/07/2025)
@@ -220,18 +207,16 @@ def exchange_code_for_token(code: str):
     return token
 
 def create_events_from_db(db, token: str):
-    """Crée dans Outlook des événements basés sur les tâches importantes du système.
+    """Creates events in Outlook based on important system tasks.
     Parameters:
     -----------
-    db : Session
-        Session SQLAlchemy active.
-    token : str
-        Jeton d’accès valide pour Microsoft Graph.
-
+    db: Session
+        Active SQLAlchemy session.
+    token: str
+        Valid access token for Microsoft Graph.
     Returns:
     --------
-    int : Nombre d’événements créés avec succès.
-
+    int: Number of events successfully created.
     Version:
     --------
     specification: Esteban Barracho (v.2 11/07/2025)

@@ -19,12 +19,12 @@
         </div>
         <div class="navbar-right">
             <a href="/dashboard">Accueil</a>
-            {% if user.fonction == "admin" %}
+            {% if user is defined and user.fonction == "admin" %}
             <a href="/finance">Finance</a>
             {% endif %}
             <a href="/agenda">Agenda</a>
             <a href="/documents">Documents</a>
-            {% if user.fonction == "admin" %}
+            {% if user is defined and user.fonction == "admin" %}
             <a href="/admin">Administration</a>
             {% endif %}
             <a href="/logout">Déconnexion</a>

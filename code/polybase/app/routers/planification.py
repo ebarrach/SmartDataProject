@@ -38,10 +38,17 @@ def get_db():
 # ============================================
 # ROUTE : List all planifications
 # ============================================
-
 @router.get("/planifications", response_model=list[PlanificationOut])
 def list_planifications(db: Session = Depends(get_db)):
     """Returns all collaborator task planifications.
+    Parameters:
+    -----------
+    db : Session
+        Active SQLAlchemy session used for database interaction.
+    Returns:
+    --------
+    list[PlanificationOut]
+        List of all task planification records.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -52,11 +59,20 @@ def list_planifications(db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Get one planification by ID
 # ============================================
-
 @router.get("/planifications/{id_planification}", response_model=PlanificationOut)
 def get_planification(id_planification: str, db: Session = Depends(get_db)):
     """Returns a specific planification by ID.
     Raises 404 if not found.
+    Parameters:
+    -----------
+    id_planification : str
+        Unique identifier of the planification.
+    db : Session
+        Active SQLAlchemy session used for database interaction.
+    Returns:
+    --------
+    PlanificationOut
+        The planification object matching the provided ID.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -73,10 +89,23 @@ def get_planification(id_planification: str, db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Create a new planification
 # ============================================
-
 @router.post("/planifications", response_model=PlanificationOut)
 def create_planification(plan: PlanificationCreate, db: Session = Depends(get_db)):
-    """Creates and stores a new planification entry.
+    """
+    Creates and stores a new planification entry.
+
+    Parameters:
+    -----------
+    plan : PlanificationCreate
+        The planification data to insert into the database.
+    db : Session
+        Active SQLAlchemy session used for database interaction.
+
+    Returns:
+    --------
+    PlanificationOut
+        The newly created planification object.
+
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -92,11 +121,25 @@ def create_planification(plan: PlanificationCreate, db: Session = Depends(get_db
 # ============================================
 # ROUTE : Update an existing planification
 # ============================================
-
 @router.put("/planifications/{id_planification}", response_model=PlanificationOut)
 def update_planification(id_planification: str, plan_update: PlanificationCreate, db: Session = Depends(get_db)):
     """Updates an existing planification entry.
-    Raises 404 if not found.
+    Parameters:
+    -----------
+    id_planification : str
+        The unique identifier of the planification to update.
+    plan_update : PlanificationCreate
+        The new values to apply to the planification.
+    db : Session
+        Active SQLAlchemy session used for database operations.
+    Returns:
+    --------
+    PlanificationOut
+        The updated planification object.
+    Raises:
+    -------
+    HTTPException (404)
+        If the planification does not exist.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -117,11 +160,23 @@ def update_planification(id_planification: str, plan_update: PlanificationCreate
 # ============================================
 # ROUTE : Delete a planification
 # ============================================
-
 @router.delete("/planifications/{id_planification}")
 def delete_planification(id_planification: str, db: Session = Depends(get_db)):
     """Deletes a planification from the database.
-    Raises 404 if not found.
+    Parameters:
+    -----------
+    id_planification : str
+        The unique identifier of the planification to delete.
+    db : Session
+        Active SQLAlchemy session used for database operations.
+    Returns:
+    --------
+    dict
+        A confirmation message upon successful deletion.
+    Raises:
+    -------
+    HTTPException (404)
+        If the planification does not exist.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -140,10 +195,25 @@ def delete_planification(id_planification: str, db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Delete a facture (temporary fix included here)
 # ============================================
-
 @router.delete("/factures/{id_facture}")
 def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     """Deletes a facture from the database.
+    Parameters:
+    -----------
+    id_facture : str
+        The unique identifier of the invoice to delete.
+    db : Session
+        Active SQLAlchemy session used for database operations.
+    Returns:
+    --------
+    dict
+        A confirmation message upon successful deletion.
+    Raises:
+    -------
+    HTTPException (404)
+        If the facture does not exist.
+    HTTPException (500)
+        If an error occurs during deletion.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -160,3 +230,4 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
     return {"message": f"Facture {id_facture} deleted successfully"}
+

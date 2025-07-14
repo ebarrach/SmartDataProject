@@ -17,7 +17,6 @@ router = APIRouter()
 # ============================================
 # DATABASE DEPENDENCY
 # ============================================
-
 def get_db():
     """Provides a database session for dependency injection.
     Yields:
@@ -42,15 +41,12 @@ def get_db():
 @router.get("/clients")
 def list_clients(db: Session = Depends(get_db)):
     """Retrieves all registered clients from the database.
-
     Parameters:
     -----------
     db (Session): Database session provided by dependency.
-
     Returns:
     --------
     list[Client]: List of client records.
-
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -61,20 +57,16 @@ def list_clients(db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Create New Client
 # ============================================
-
 @router.post("/clients", response_model=ClientOut)
 def create_client(client: ClientOut = Body(...), db: Session = Depends(get_db)):
     """Creates a new client entry in the database.
-
     Parameters:
     -----------
     client (ClientOut): Client data from request body.
     db (Session): Database session provided by dependency.
-
     Returns:
     --------
     ClientOut: Newly created client record.
-
     Version:
     --------
     specification: Esteban Barracho (v.1 21/06/2025)
@@ -82,7 +74,6 @@ def create_client(client: ClientOut = Body(...), db: Session = Depends(get_db)):
     """
     if db.query(Client).filter(Client.id_client == client.id_client).first():
         raise HTTPException(status_code=400, detail="Client ID already exists")
-
     db_client = Client(**client.dict())
     assert isinstance(db_client, Client), "Objet instancié invalide (Client attendu)"
     db.add(db_client)
@@ -93,21 +84,16 @@ def create_client(client: ClientOut = Body(...), db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Delete Client
 # ============================================
-
 @router.delete("/clients/{id_client}")
 def delete_client(id_client: str, db: Session = Depends(get_db)):
-    """
-    Deletes a client entry from the database based on its identifier.
-
+    """Deletes a client entry from the database based on its identifier.
     Parameters:
     -----------
     id_client (str): Unique identifier of the client to delete.
-    db (Session): Database session provided by dependency injection.
-
+    Db (Session): Database session provided by dependency injection.
     Returns:
     --------
     dict: Confirmation message upon successful deletion.
-
     Version:
     --------
     specification: Esteban Barracho (v.1 26/06/2025)
@@ -124,20 +110,16 @@ def delete_client(id_client: str, db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Delete Facture
 # ============================================
-
 @router.delete("/factures/{id_facture}")
 def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     """Deletes a facture if found.
-
     Parameters:
     -----------
     id_facture (str): ID of the facture to delete.
-    db (Session): Database session.
-
+    Db (Session): Database session.
     Returns:
     --------
     dict: Confirmation message or error.
-
     Version:
     --------
     specification: Esteban Barracho (v.1 21/06/2025)
@@ -153,7 +135,6 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
-
     return {"message": f"Facture {id_facture} deleted successfully"}
 
 

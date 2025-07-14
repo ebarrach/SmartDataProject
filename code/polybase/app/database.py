@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # ============================================
-# FOURNITURE DE LA SESSION À L’APPLICATION
+# PROVIDING THE SESSION TO THE APPLICATION
 # ============================================
 
 def get_db():
@@ -28,7 +28,7 @@ def get_db():
         db.close()
 
 # ============================================
-# CHARGEMENT DES VARIABLES D’ENVIRONNEMENT
+# LOADING ENVIRONMENT VARIABLES
 # ============================================
 
 load_dotenv()
@@ -40,7 +40,7 @@ implement: Esteban Barracho (v.1 19/06/2025)
 """
 
 # ============================================
-# CONFIGURATION DES IDENTIFIANTS DE CONNEXION
+# CONFIGURATION OF LOGIN CREDENTIALS
 # ============================================
 
 DB_USER = os.getenv("DB_USER")
@@ -52,7 +52,7 @@ DB_NAME = os.getenv("DB_NAME")
 assert all([DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME]), "⚠️ Variables d'environnement SQL manquantes"
 
 # ============================================
-# CONNEXION À LA BASE DE DONNÉES
+# CONNECTION TO THE DATABASE
 # ============================================
 
 SQLALCHEMY_DATABASE_URL = (

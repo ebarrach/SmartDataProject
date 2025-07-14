@@ -111,5 +111,5 @@ This project was developed by:
 
 ## 📄 License
 
-This project is licensed **"All Rights Reserved"**.
+This project is licensed **"All Rights Reserved"**.  
 See the LICENSE file for more details.

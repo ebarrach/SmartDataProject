@@ -19,9 +19,15 @@ router = APIRouter()
 
 @router.get("/me", response_model=PersonnelOut)
 def get_profile(current_user: PersonnelOut = Depends(get_current_user)):
-    """
-    Returns the authenticated user's profile based on session.
-
+    """Returns the authenticated user's profile based on session.
+    Parameters:
+    -----------
+    current_user : PersonnelOut
+        The user retrieved from session using dependency injection.
+    Returns:
+    --------
+    PersonnelOut
+        The structured profile of the currently authenticated user.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)

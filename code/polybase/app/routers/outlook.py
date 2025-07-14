@@ -18,7 +18,7 @@ from app.models import PlanificationCollaborateur
 router = APIRouter()
 
 # --------------------------------------------
-# Configuration dynamique OAuth2
+# Dynamic OAuth2 configuration
 # --------------------------------------------
 CLIENT_ID = os.getenv("GRAPH_CLIENT_ID")
 CLIENT_SECRET = os.getenv("GRAPH_CLIENT_SECRET")
@@ -29,18 +29,16 @@ SCOPE = ["Calendars.Read"]
 SESSION_KEY = "outlook_token"
 
 # --------------------------------------------
-# Étape 1: Lancer l'autorisation Microsoft
+# Step 1: Launch Microsoft Authorisation
 # --------------------------------------------
 @router.get("/outlook/login")
 def outlook_login():
-    """Démarre le processus d’authentification OAuth2 vers Microsoft Outlook.
-    Retourne une redirection vers la page d’autorisation de Microsoft avec les bons paramètres
+    """Starts the OAuth2 authentication process to Microsoft Outlook.
+    Returns a redirect to the Microsoft authorisation page with the correct parameters
     (client_id, scope, redirect_uri, etc.).
-
     Returns:
     --------
-    RedirectResponse : Redirige l’utilisateur vers la page d’autorisation Microsoft.
-
+    RedirectResponse: Redirects the user to the Microsoft authorisation page.
     Version:
     --------
     specification: Esteban Barracho (v.1 11/07/2025)
@@ -58,26 +56,23 @@ def outlook_login():
     return RedirectResponse(url=f"{AUTHORITY}/oauth2/v2.0/authorize?{query}")
 
 # --------------------------------------------
-# Étape 2: Récupération du token via callback
+# Step 2: Retrieving the token via callback
 # --------------------------------------------
 @router.get("/outlook/callback")
 def outlook_callback(code: str, response: Response):
-    """Callback de Microsoft pour récupérer un jeton d’accès après autorisation.
+    """Microsoft callback to retrieve an access token after authorisation.
     Parameters:
     -----------
-    code : str
-        Le code temporaire envoyé par Microsoft après validation.
-    response : Response
-        L’objet de réponse pour définir le cookie de session.
-
+    code: str
+        The temporary code sent by Microsoft after validation.
+    response: Response
+        The response object to set the session cookie.
     Returns:
     --------
-    RedirectResponse : Redirige vers la page `/agenda` avec le token stocké en cookie.
-
+    RedirectResponse: Redirects to the `/agenda` page with the token stored in the cookie.
     Raises:
     -------
-    HTTPException : En cas d’erreur durant la récupération du token.
-
+    HTTPException: In case of error during token retrieval.
     Version:
     --------
     specification: Esteban Barracho (v.1 11/07/2025)
@@ -106,30 +101,27 @@ def outlook_callback(code: str, response: Response):
     return response
 
 # --------------------------------------------
-# Route API: Récupérer les événements Outlook + locaux
+# API route: Retrieve Outlook + local events
 # --------------------------------------------
 @router.get("/outlook/events")
 def get_all_events(request: Request, db: Session = Depends(get_db)):
-    """Récupère l’ensemble des événements planifiés : locaux et Outlook.
+    """Retrieves all scheduled events: local and Outlook.
     Parameters:
     -----------
-    request : Request
-        Objet HTTP contenant les cookies de session (token Outlook).
-    db : Session
-        Session SQLAlchemy pour accéder à la base locale.
-
+    request: Request
+        HTTP object containing session cookies (Outlook token).
+    db: Session
+        SQLAlchemy session for accessing the local database.
     Returns:
     --------
-    JSONResponse : Liste fusionnée des événements locaux et Outlook.
-
+    JSONResponse: Merged list of local and Outlook events.
     Version:
     --------
     specification: Esteban Barracho (v.1 11/07/2025)
     implement: Esteban Barracho (v.1 11/07/2025)
     """
     all_events = []
-
-    # Événements locaux
+    # Local events
     db_events = db.query(PlanificationCollaborateur).all()
     for ev in db_events:
         assert hasattr(ev, "sujet") and hasattr(ev, "date_debut") and hasattr(ev,
@@ -140,8 +132,7 @@ def get_all_events(request: Request, db: Session = Depends(get_db)):
             "date_fin": ev.date_fin.isoformat(),
             "source": ev.source or "local"
         })
-
-    # Événements Outlook si connecté
+    # Outlook events if connected
     token = request.cookies.get(SESSION_KEY)
     if token:
         today = datetime.utcnow().isoformat()
@@ -158,5 +149,4 @@ def get_all_events(request: Request, db: Session = Depends(get_db)):
                     "date_fin": ev.get("end", {}).get("dateTime", ""),
                     "source": "outlook"
                 })
-
     return JSONResponse(content=all_events)

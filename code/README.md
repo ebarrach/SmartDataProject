@@ -1,6 +1,6 @@
-# PolyBase – Developer Guide (Internal)
+# SmartDataProject – Developer Guide (Internal)
 
-This document provides a structured overview of the key modules and bookmarks defined within the PolyBase codebase to support onboarding, debugging, and contribution from developers and collaborators.
+This document provides a structured overview of the key modules and bookmarks defined within the PolyBase codebase to support onboarding, debugging, and contributions from developers and collaborators.
 
 ---
 
@@ -67,10 +67,10 @@ For reference, here's the recommended bookmark layout in PyCharm:
 
 ## 🧭 Best Practices
 
-- Use the **Bookmarks Panel (Shift+F11)** to navigate quickly between key areas.
+- Use the **Bookmarks Panel (Shift+F11)** to quickly navigate between key areas.
 - Mark new logic, routes, or modules with a clear and meaningful bookmark.
 - Avoid modifying excluded folders (`legacy/`, etc.) without prior validation.
-- Keep your editor in sync with the `.venv` interpreter and `.env` configs.
+- Keep your editor synchronized with the `.venv` interpreter and `.env` configurations.
 
 ---
 
@@ -86,5 +86,5 @@ For internal use by the development team of **Poly-Tech Engineering SA**.
 
 ## 📄 License
 
-This documentation and related structure are licensed **"All Rights Reserved"**.  
-See the root `LICENSE` file for additional terms.
+This documentation and its associated structure are licensed **"All Rights Reserved"**.  
+Refer to the root `LICENSE` file for additional terms.

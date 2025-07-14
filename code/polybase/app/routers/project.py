@@ -38,10 +38,17 @@ def get_db():
 # ============================================
 # ROUTE : List all projects
 # ============================================
-
 @router.get("/projects", response_model=list[ProjetOut])
 def list_projects(db: Session = Depends(get_db)):
     """Returns all projects registered in the system.
+    Parameters:
+    -----------
+    db : Session
+        Active SQLAlchemy session for database interaction.
+    Returns:
+    --------
+    list[ProjetOut]
+        List of all project records found in the database.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -52,11 +59,20 @@ def list_projects(db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Get a specific project
 # ============================================
-
 @router.get("/projects/{id_projet}", response_model=ProjetOut)
 def get_project(id_projet: str, db: Session = Depends(get_db)):
     """Returns a project by its ID.
     Raises 404 if not found.
+    Parameters:
+    -----------
+    id_projet : str
+        Unique identifier of the project.
+    db : Session
+        Active SQLAlchemy session for database interaction.
+    Returns:
+    --------
+    ProjetOut
+        The project corresponding to the given ID.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -71,10 +87,19 @@ def get_project(id_projet: str, db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Create a new project
 # ============================================
-
 @router.post("/projects", response_model=ProjetOut)
 def create_project(project: ProjetCreate, db: Session = Depends(get_db)):
     """Creates and stores a new project.
+    Parameters:
+    -----------
+    project : ProjetCreate
+        Project data provided by the client.
+    db : Session
+        Active SQLAlchemy session for database interaction.
+    Returns:
+    --------
+    ProjetOut
+        The newly created project record.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -90,10 +115,19 @@ def create_project(project: ProjetCreate, db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : List phases of a project
 # ============================================
-
 @router.get("/projects/{id_projet}/phases", response_model=list[PhaseOut])
 def list_phases(id_projet: str, db: Session = Depends(get_db)):
     """Returns all phases linked to a project via its invoice reference.
+    Parameters:
+    -----------
+    id_projet : str
+        Unique identifier of the project whose phases are to be retrieved.
+    db : Session
+        Active SQLAlchemy session for database operations.
+    Returns:
+    --------
+    list[PhaseOut]
+        List of phases associated with the project.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -105,10 +139,21 @@ def list_phases(id_projet: str, db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Add a phase to a project
 # ============================================
-
 @router.post("/projects/{id_projet}/phases", response_model=PhaseOut)
 def add_phase(id_projet: str, phase: PhaseCreate, db: Session = Depends(get_db)):
     """Adds a new phase to a given project.
+    Parameters:
+    -----------
+    id_projet : str
+        Identifier of the target project.
+    phase : PhaseCreate
+        Data model containing phase information to insert.
+    db : Session
+        Active SQLAlchemy session used for database operations.
+    Returns:
+    --------
+    PhaseOut
+        The newly created phase object.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -124,11 +169,20 @@ def add_phase(id_projet: str, phase: PhaseCreate, db: Session = Depends(get_db))
 # ============================================
 # ROUTE : Delete a project
 # ============================================
-
 @router.delete("/projects/{id_projet}")
 def delete_project(id_projet: str, db: Session = Depends(get_db)):
     """Deletes a project from the database.
-    Raises 404 if not found.
+    If the specified project does not exist, raises a 404 error.
+    Parameters:
+    -----------
+    id_projet : str
+        The unique identifier of the project to delete.
+    db : Session
+        Active SQLAlchemy session used for database operations.
+    Returns:
+    --------
+    dict
+        Confirmation message if the deletion is successful.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -145,11 +199,20 @@ def delete_project(id_projet: str, db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Delete a phase
 # ============================================
-
 @router.delete("/phases/{id_phase}")
 def delete_phase(id_phase: str, db: Session = Depends(get_db)):
     """Deletes a phase from the database.
-    Raises 404 if not found.
+    If the specified phase does not exist, raises a 404 error.
+    Parameters:
+    -----------
+    id_phase : str
+        The unique identifier of the phase to delete.
+    db : Session
+        Active SQLAlchemy session used for database operations.
+    Returns:
+    --------
+    dict
+        Confirmation message if the deletion is successful.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -166,11 +229,21 @@ def delete_phase(id_phase: str, db: Session = Depends(get_db)):
 # ============================================
 # ROUTE : Delete a facture
 # ============================================
-
 @router.delete("/factures/{id_facture}")
 def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     """Deletes a facture from the database.
-    Raises 404 if not found.
+    If the specified facture does not exist, raises a 404 error.
+    Rolls back the transaction and raises a 500 error if deletion fails.
+    Parameters:
+    -----------
+    id_facture : str
+        The unique identifier of the invoice to delete.
+    db : Session
+        Active SQLAlchemy session used for database operations.
+    Returns:
+    --------
+    dict
+        Confirmation message if the deletion is successful.
     Version:
     --------
     specification: Esteban Barracho (v.1 19/06/2025)
@@ -180,12 +253,10 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
     facture = db.query(Facture).filter(Facture.id_facture == id_facture).first()
     if not facture:
         raise HTTPException(status_code=404, detail="Facture not found")
-
     try:
         db.delete(facture)
         db.commit()
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
-
     return {"message": f"Facture {id_facture} deleted successfully"}

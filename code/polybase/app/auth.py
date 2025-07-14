@@ -10,7 +10,7 @@ from .database import SessionLocal
 from .models import Personnel
 
 # ============================================
-# BASE DE DONNÉES - SESSION
+# DATABASE - SESSION
 # ============================================
 
 def get_db():
@@ -30,7 +30,7 @@ def get_db():
         db.close()
 
 # ============================================
-# AUTHENTIFICATION UTILISATEUR
+# USER AUTHENTICATION
 # ============================================
 
 def authenticate_user(email: str, plain_password: str, db: Session):
@@ -38,8 +38,8 @@ def authenticate_user(email: str, plain_password: str, db: Session):
     Parameter:
     ----------
     email (str): The user's email address.
-    plain_password (str): The password entered by the user.
-    db (Session): The active database session.
+    Plain_password (str): The password entered by the user.
+    Db (Session): The active database session.
     Return:
     -------
     (Personnel | None): Returns the user if authenticated, else None.
@@ -60,7 +60,7 @@ def authenticate_user(email: str, plain_password: str, db: Session):
     return user
 
 # ============================================
-# UTILISATEUR COURANT (via COOKIE)
+# REGULAR USER (via COOKIE)
 # ============================================
 
 def get_current_user(session_id: str = Cookie(None), db: Session = Depends(get_db)):
@@ -68,7 +68,7 @@ def get_current_user(session_id: str = Cookie(None), db: Session = Depends(get_d
     Parameter:
     ----------
     session_id (str): The session ID stored in the user's cookies.
-    db (Session): The active database session.
+    Db (Session): The active database session.
     Return:
     -------
     (Personnel): The authenticated user object.
