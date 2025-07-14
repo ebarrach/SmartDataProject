@@ -1,6 +1,6 @@
 /* ==============================================
    Spécification : Esteban Barracho (v.1 22/06/2025)
-   Mise à jour : 13/07/2025 (v.2.1 palette rose/brique)
+   Mise à jour : 13/07/2025 (v.2.2 – bouton alerte prestation)
    ============================================== */
 
 .stats-grid {
@@ -40,4 +40,39 @@
 
 .full-width {
     grid-column: 1 / -1;
+}
+
+/* Bouton encodage prestation */
+.action-btn.update-btn {
+    background-color: #802D15;
+    color: white;
+    padding: 10px 22px;
+    border-radius: 6px;
+    border: 2px solid #551300;
+    font-weight: bold;
+    font-size: 1em;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s ease-in-out, transform 0.15s ease;
+    position: relative;
+}
+
+.action-btn.update-btn:hover {
+    background-color: #551300;
+    transform: scale(1.04);
+}
+
+/* Badge alerte encodage */
+#badge-retard {
+    background-color: #c00000;
+    color: white;
+    font-size: 0.85em;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 20px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: inline-block;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }

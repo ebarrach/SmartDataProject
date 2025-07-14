@@ -248,7 +248,8 @@ class PrestationCollaborateur(Base):
     __tablename__ = "PrestationCollaborateur"
     id_prestation = Column(String(10), primary_key=True)
     date = Column(Date)
-    id_tache = Column(String(10), ForeignKey("Tache.id_tache"))
+    id_tache = Column(String(10), ForeignKey("Tache.id_tache"), nullable=True)
+    id_projet = Column(String(10), ForeignKey("Projet.id_projet"), nullable=True)
     id_collaborateur = Column(String(10), ForeignKey("Collaborateur.id_personnel"))
     heures_effectuees = Column(DECIMAL(5, 2))
     mode_facturation = Column(Enum("horaire", "forfaitaire"))
@@ -259,6 +260,7 @@ class PrestationCollaborateur(Base):
     tache = relationship("Tache", back_populates="prestations")
     collaborateur = relationship("Collaborateur", back_populates="prestations")
     facture = relationship("Facture", back_populates="prestations")
+    projet = relationship("Projet")
     assert __tablename__ == "PrestationCollaborateur"
 
 # ============================================

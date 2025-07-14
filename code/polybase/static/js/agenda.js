@@ -1,6 +1,6 @@
 // =============================================
 // specification: Esteban Barracho (v.1 21/06/2025)
-// implement: Esteban Barracho (v.2 11/07/2025)
+// implement: Esteban Barracho (v.2.1 14/07/2025)
 // =============================================
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -55,5 +55,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     } catch (err) {
         console.error("Erreur chargement tâches :", err);
+    }
+
+    // Badge alerte encodage
+    try {
+        const alertes = await fetch("/dashboard/alertes-retard").then(res => res.json());
+        if (alertes.retard_utilisateur?.length > 0 || alertes.retard_admin?.length > 0) {
+            document.getElementById("badge-retard")?.style.setProperty("display", "inline-block");
+        }
+    } catch (err) {
+        console.warn("Impossible de vérifier les retards encodage :", err);
     }
 });

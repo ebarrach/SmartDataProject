@@ -3,11 +3,17 @@
 # ============================================
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi import Form
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
+from datetime import date
+from app.auth import get_current_user
 
 from app.database import SessionLocal
 from app.models import PrestationCollaborateur, Facture
 from app.schemas import PrestationCreate, PrestationOut
+from app.models import PrestationCollaborateur
+from app.routers.admin import generate_id
 
 # ============================================
 # ROUTER INITIALIZATION
@@ -155,3 +161,29 @@ def delete_facture(id_facture: str, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Deletion failed: {str(e)}")
     return {"message": f"Facture {id_facture} deleted successfully"}
+
+@router.post("/api/encodage")
+def encodage_libre(
+    date: date = Form(...),
+    id_projet: str = Form(...),
+    heures_effectuees: float = Form(...),
+    commentaire: str = Form(...),
+    user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    new_id = generate_id("PC")
+    prestation = PrestationCollaborateur(
+        id_prestation=new_id,
+        date=date,
+        id_tache=None,
+        id_projet=id_projet,
+        id_collaborateur=user.id_personnel,
+        heures_effectuees=heures_effectuees,
+        mode_facturation="horaire",
+        facture_associee=None,
+        taux_horaire=user.taux_honoraire_standard,
+        commentaire=commentaire
+    )
+    db.add(prestation)
+    db.commit()
+    return RedirectResponse(url="/agenda", status_code=302)

@@ -430,6 +430,8 @@ input[type="password"] {
     opacity: 0;
 }
 
+
+
 /* ----- Responsive mobile/tablette ----- */
 @media (max-width: 1024px) {
     #admin-content-flex {

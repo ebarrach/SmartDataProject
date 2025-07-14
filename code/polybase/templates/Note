@@ -1,6 +1,0 @@
-page avec conditionnel :
-
-{% if user.fonction == "Administrateur des finances" %}
-<a href="/finance">Finance</a>
-{% endif %}
-

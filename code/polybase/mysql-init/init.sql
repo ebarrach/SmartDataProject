@@ -153,13 +153,15 @@ create table PlanificationCollaborateur (
 create table PrestationCollaborateur (
                                          id_prestation varchar(10) not null,
                                          date date not null,
-                                         id_tache varchar(10) not null,
+                                         id_tache varchar(10),
+                                         id_projet varchar(10) default null,
                                          id_collaborateur varchar(10) not null,
                                          heures_effectuees decimal(5,2) not null,
                                          mode_facturation ENUM('horaire', 'forfaitaire') not null,
                                          facture_associee varchar(10),
                                          taux_horaire decimal(8,2) not null,
                                          commentaire TEXT not null,
+                                         foreign key (id_projet) references Projet(id_projet) ON DELETE CASCADE,
                                          constraint ID_PrestationCollaborateur_ID primary key (id_prestation),
                                          foreign key (id_tache) references Tache(id_tache) ON DELETE CASCADE,
                                          foreign key (id_collaborateur) references Collaborateur(id_personnel) ON DELETE CASCADE,
@@ -286,13 +288,16 @@ VALUES
 
 -- ======= PRESTATION COLLABORATEUR =======
 INSERT INTO PrestationCollaborateur (
-    id_prestation, date, id_tache, id_collaborateur, heures_effectuees, mode_facturation,
-    facture_associee, taux_horaire, commentaire
-) VALUES (
-             'PC001', '2025-06-21', 'T001',
-             'P002', 37.50, 'horaire',
-             'F001', 120.00, 'Phase d’audit réalisée selon planning.'
-         );
+    id_prestation, date, id_tache, id_projet, id_collaborateur,
+    heures_effectuees, mode_facturation, facture_associee,
+    taux_horaire, commentaire
+)
+VALUES (
+    'PC002', '2025-07-10', NULL, 'PRJ001', 'P002',
+    3.0, 'horaire', NULL,
+    120.0, 'Installation des dépendances et configuration initiale'
+);
+
 
 -- ======= COUTS =======
 INSERT INTO Cout (id_cout, type_cout, montant, nature_cout, date, source, id_projet)

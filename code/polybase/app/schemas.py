@@ -235,6 +235,7 @@ class PrestationCreate(BaseModel):
     """
 
     id_prestation: str
+    id_projet: Optional[str] = None
     date: date
     id_tache: str
     id_collaborateur: str

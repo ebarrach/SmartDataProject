@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="encodage-container">
+  <h2>Encodage manuel de prestation</h2>
+  <form action="/api/encodage" method="post" id="encodage-form">
+    <label for="date">📅 Date de la prestation :</label>
+    <input type="date" name="date" required>
+
+    <label for="id_projet">📁 Projet concerné :</label>
+    <select name="id_projet" id="id_projet" required>
+      <option value="">-- Chargement... --</option>
+    </select>
+
+    <label for="heures_effectuees">⏱ Durée (en heures) :</label>
+    <input type="number" name="heures_effectuees" step="0.25" min="0" required>
+
+    <label for="commentaire">📝 Description du travail :</label>
+    <textarea name="commentaire" rows="4" required placeholder="Décris ici le travail effectué..."></textarea>
+
+    <button type="submit">✅ Valider l’encodage</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Chargement dynamique des projets
+document.addEventListener("DOMContentLoaded", () => {
+    const selectProjet = document.getElementById("id_projet");
+    fetch("/admin/table/Projet")
+        .then(res => res.json())
+        .then(data => {
+            selectProjet.innerHTML = '<option value="">-- Sélectionner un projet --</option>';
+            data.forEach(p => {
+                const opt = document.createElement("option");
+                opt.value = p.id_projet;
+                opt.textContent = `${p.nom_projet} (${p.id_projet})`;
+                selectProjet.appendChild(opt);
+            });
+        })
+        .catch(() => {
+            selectProjet.innerHTML = '<option value="">Erreur de chargement</option>';
+        });
+});
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+#encodage-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #FFF1EE;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(212, 130, 106, 0.15);
+    font-family: Arial, sans-serif;
+}
+
+#encodage-container h2 {
+    color: #AA5239;
+    font-size: 1.6em;
+    margin-bottom: 20px;
+}
+
+#encodage-form label {
+    font-weight: 700;
+    color: #AA5239;
+    display: block;
+    margin-top: 14px;
+    margin-bottom: 6px;
+}
+
+#encodage-form input,
+#encodage-form select,
+#encodage-form textarea {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1em;
+    border-radius: 8px;
+    border: 1.7px solid #D4826A;
+    background: #fff;
+    color: #551300;
+    box-sizing: border-box;
+}
+
+#encodage-form input:focus,
+#encodage-form select:focus,
+#encodage-form textarea:focus {
+    outline: none;
+    border-color: #AA5239;
+    background: #FFE7E2;
+}
+
+#encodage-form button[type="submit"] {
+    background-color: #802D15;
+    border: 2px solid #551300;
+    box-shadow: 0 2px 10px rgba(212, 130, 106, 0.12);
+    color: white;
+    font-weight: bold;
+    border-radius: 7px;
+    padding: 12px 28px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+#encodage-form button[type="submit"]:hover {
+    background-color: #551300;
+    box-shadow: 0 4px 16px rgba(212, 130, 106, 0.2);
+}
+</style>
+{% endblock %}

@@ -1,12 +1,12 @@
-# PolyBase - (License "All Rights Reserved")
+# SmartDataProject - (License "All Rights Reserved")
 
-This project was carried out as part of a professional collaboration with **Poly-Tech Engineering SA**.
+This project was carried out as part of a professional collaboration with **S2 Engineering**.
 
 ---
 
 ## 📌 Project Description
 
-PolyBase is a secure internal platform designed to optimize project coordination, collaborative planning, and operational traceability.  
+SmartDataProject is a secure internal platform designed to optimize project coordination, collaborative planning, and operational traceability.  
 It offers both a RESTful backend and a structured web interface tailored to technical teams, financial administrators, and project managers.
 
 The platform enables:
@@ -47,8 +47,7 @@ The codebase is composed of the following key components:
 
 ```bash
 docker compose up -d --build
-
-````
+```
 
 To shut down:
 
@@ -77,8 +76,8 @@ docker logs polybase-api
 #### 1. Clone and install dependencies
 
 ```bash
-git clone https://github.com/ebarrach/PolyBase
-cd PolyBase/code/polybase
+git clone https://github.com/ebarrach/SmartDataProject
+cd SmartDataProject/code/polybase
 pip install -r requirements.txt
 ```
 

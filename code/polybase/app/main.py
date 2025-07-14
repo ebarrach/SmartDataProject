@@ -319,3 +319,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         "message": "Erreur de validation",
         "hint": "Vérifie les champs saisis ou l’URL appelée."
     }, status_code=422)
+
+@app.get("/encodage", response_class=HTMLResponse)
+def encodage_page(request: Request, user=Depends(get_current_user)):
+    assert user is not None, "Utilisateur non connecté"
+    return templates.TemplateResponse("encodage.html", {"request": request, "user": user})

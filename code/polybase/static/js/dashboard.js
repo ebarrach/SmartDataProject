@@ -1,8 +1,8 @@
 // =============================================
 // specification: Esteban Barracho (v.1 21/06/2025)
-// implement: Esteban Barracho (v.1 21/06/2025)
+// implement: Esteban Barracho (v.2.1 14/07/2025)
 // =============================================
-// ----- Chargement des données du tableau de bord -----
+
 window.onload = async () => {
     try {
         // Tâches en retard
@@ -25,8 +25,13 @@ window.onload = async () => {
             factureEl.innerHTML = list;
         }
 
+        // Badge alerte encodage
+        const alertes = await fetch("/dashboard/alertes-retard").then(res => res.json());
+        if (alertes.retard_utilisateur?.length > 0 || alertes.retard_admin?.length > 0) {
+            document.getElementById("badge-retard")?.style.setProperty("display", "inline-block");
+        }
+
     } catch (e) {
         console.error("Erreur de chargement du tableau de bord :", e);
     }
 };
-
