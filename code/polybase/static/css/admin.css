@@ -369,6 +369,67 @@ input[type="password"] {
     flex-wrap: wrap;
 }
 
+/* ----- Suggestion IA ----- */
+#suggestion-block {
+    background: #fff3cd;
+    border: 1.8px solid #ffeeba;
+    padding: 14px 20px;
+    border-radius: 10px;
+    color: #856404;
+    font-size: 1.05em;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(255, 236, 170, 0.25);
+    line-height: 1.6;
+    transition: all 0.2s ease-in-out;
+}
+
+#suggestion-block strong {
+    display: block;
+    font-size: 1.12em;
+    margin-bottom: 8px;
+    color: #7a5400;
+}
+
+#suggestion-content {
+    white-space: pre-wrap;
+}
+
+/* ----- Bouton de repli pour la suggestion IA ----- */
+#toggle-suggestion {
+    background: none;
+    border: none;
+    color: #7a5400;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.95em;
+    margin-top: 6px;
+    margin-left: 10px;
+    padding: 4px;
+}
+
+#toggle-suggestion:hover {
+    text-decoration: none;
+    color: #5c4000;
+}
+
+/* Animation ouverture/fermeture du contenu suggestion */
+#suggestion-content {
+    transition: all 0.3s ease-in-out;
+}
+
+/* ----- Suggestion IA avec effet coulissant ----- */
+#suggestion-content {
+    overflow: hidden;
+    max-height: 1000px; /* Assez grand pour contenir n'importe quelle suggestion */
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 1;
+}
+
+#suggestion-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
 /* ----- Responsive mobile/tablette ----- */
 @media (max-width: 1024px) {
     #admin-content-flex {

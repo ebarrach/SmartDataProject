@@ -383,4 +383,81 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+    importBtn.onclick = () => {
+    const file = importFile.files[0];
+    if (!file) return alert("Veuillez choisir un fichier Excel.");
+    const formData = new FormData();
+    formData.append("file", file);
+    fetch(`/admin/import/${tableName}`, {
+        method: "POST",
+        body: formData
+    }).then(res => res.json())
+    .then(result => {
+        if (result.status === "ok") {
+            alert(`${result.inserted} ligne(s) importée(s).`);
+            loadTableData();
+            // Affiche la suggestion IA
+            const suggestionBlock = document.getElementById("suggestion-block");
+            const suggestionContent = document.getElementById("suggestion-content");
+            if (suggestionBlock && suggestionContent) {
+                suggestionContent.innerHTML = result.suggestion || "Aucune suggestion IA reçue.";
+                suggestionBlock.style.display = "block";
+            }
+        } else {
+            alert("Erreur d'import : " + JSON.stringify(result));
+        }
+    }).catch(err => {
+        alert("Erreur réseau : " + err.message);
+    });
+    };
+    document.getElementById("toggle-suggestion")?.addEventListener("click", () => {
+    const content = document.getElementById("suggestion-content");
+    const btn = document.getElementById("toggle-suggestion");
+    content.classList.toggle("collapsed");
+    btn.textContent = content.classList.contains("collapsed") ? "Déplier" : "Réduire";
+    });
+    searchForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const query = searchInput.value.trim();
+    if (!query) return;
+
+    fetch(`/admin/search_global?query=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(matches => {
+            if (!matches.length) {
+                alert("Aucun résultat approximatif trouvé.");
+                return;
+            }
+
+            const suggestionBlock = document.getElementById("suggestion-block");
+            const suggestionContent = document.getElementById("suggestion-content");
+            suggestionBlock.style.display = "block";
+            suggestionContent.innerHTML = matches.map(match => `
+                🔍 <strong>${match.value}</strong> (colonne <code>${match.col}</code> dans <code>${match.table}</code>) 
+                <button class="goto-btn" data-table="${match.table}" data-id="${match.id}" style="margin-left:10px;">Voir et éditer</button>
+                <br>`).join("");
+
+            document.querySelectorAll(".goto-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const tableNameTarget = btn.dataset.table;
+                    const rowId = btn.dataset.id;
+
+                    tableSelect.value = tableNameTarget;
+                    tableName = tableNameTarget;
+                    currentTable.textContent = tableName;
+
+                    loadTableStructure();
+                    fetch(`/admin/table/${tableName}`).then(res => res.json()).then(data => {
+                        tableData = data;
+                        renderTable(data, query.toLowerCase());
+                        const entry = data.find(row => {
+                            const idField = Object.keys(row).find(k => /^id_/.test(k));
+                            return row[idField] == rowId;
+                        });
+                        if (entry) startEditRow(entry);
+                    });
+                });
+            });
+        });
+    });
 });

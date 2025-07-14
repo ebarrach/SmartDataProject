@@ -7,7 +7,7 @@ import string
 import os
 import pandas as pd
 from fastapi.responses import FileResponse
-from app.utils.deepseek_adapter import adapt_excel_to_table
+from app.utils.openrouter_adapter import adapt_excel_to_table
 
 import Levenshtein
 import bcrypt
@@ -526,6 +526,6 @@ async def import_table(table: str, request: Request, db: Session = Depends(get_d
     path = os.path.join(UPLOAD_DIR, f"import_{table}.xlsx")
     with open(path, "wb") as f:
         f.write(contents)
-    result = adapt_excel_to_table(table, path, db)
-    return {"status": "ok", "inserted": result}
+    inserted, suggestion = adapt_excel_to_table(table=table, file_path=path, db=db)
+    return {"status": "ok", "inserted": inserted, "suggestion": suggestion}
 

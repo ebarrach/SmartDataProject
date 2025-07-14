@@ -1,0 +1,52 @@
+{
+  "name": "ChatGPT Extraction Email",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Extrais les e-mails de ce texte : 'Voici contact@demo.com et esteban@unamur.be à traiter.'"
+          }
+        ]
+      },
+      "id": "2",
+      "name": "ChatGPT",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [450, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai_api_credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "return [\n  {\n    json: {\n      resultat: $json[\"choices\"][0][\"message\"][\"content\"]\n    }\n  }\n];"
+      },
+      "id": "3",
+      "name": "Afficher Résultat",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [650, 300]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [[{ "node": "ChatGPT", "type": "main", "index": 0 }]]
+    },
+    "ChatGPT": {
+      "main": [[{ "node": "Afficher Résultat", "type": "main", "index": 0 }]]
+    }
+  }
+}

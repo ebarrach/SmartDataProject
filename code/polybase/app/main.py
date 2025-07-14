@@ -9,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_302_FOUND
 
-import app.utils.deepseek_adapter as deepseek
+import app.utils.openrouter_adapter as deepseek
 import app.utils.outlook_sync as outlook_sync
 from app.auth import authenticate_user, get_current_user, get_db
 from app.models import Client, Projet

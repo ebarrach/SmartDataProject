@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Administration - PolyBase{% endblock %}
+{% block title %}Administration - Smart Data Project{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="/static/css/admin.css">
@@ -9,6 +9,7 @@
 {% block content %}
 <div id="admin-container">
     <h1>Administration base de données</h1>
+
     <div class="admin-toolbar" style="margin-bottom: 16px;">
         <label for="table-select">Table :</label>
         <select id="table-select"></select>
@@ -16,8 +17,9 @@
         <button id="export-btn" type="button">Exporter Excel</button>
         <button id="import-btn" type="button">Importer Excel</button>
         <input type="file" id="import-file" accept=".xlsx,.xls" style="display:none;">
+
         <form id="search-form" style="display:inline; margin-left:12px;">
-            <input type="text" id="search-input" placeholder="Recherche (nom, identifiant...)" autocomplete="off" style="padding: 6px 10px; width:200px;">
+            <input type="text" id="search-input" placeholder="Recherche approximative (nom, id...)" autocomplete="off" style="padding: 6px 10px; width:250px;">
             <button type="submit" id="search-btn" aria-label="Rechercher" style="margin-left:4px; vertical-align:middle; padding:6px 12px;">
                 <svg width="16" height="16" viewBox="0 0 20 20" style="vertical-align:middle;">
                     <circle cx="9" cy="9" r="7" stroke="white" stroke-width="2" fill="none"/>
@@ -26,10 +28,29 @@
             </button>
         </form>
     </div>
+
     <h2>Table : <span id="current-table"></span></h2>
     <div style="margin-bottom:10px;"></div>
+
     <div id="form-insert"></div>
     <div id="form-update" style="display:none;"></div>
+
+    <!-- Bloc de suggestions IA -->
+    <div id="suggestion-block" style="display:none; background:#fff3cd; border:1px solid #ffeeba; padding:1em; margin-top:1em; border-radius:5px; color:#856404;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>💡 Suggestion IA :</strong>
+            <button id="toggle-suggestion" style="font-size: 0.9em;">Réduire</button>
+        </div>
+        <div id="suggestion-content" style="margin-top: 0.8em;"></div>
+    </div>
+
+    <!-- Résultats de recherche fuzzy (Levenshtein) -->
+    <div id="fuzzy-search-result" style="display:none; margin-top:1em;">
+        <h3>🔍 Résultats similaires trouvés :</h3>
+        <div id="fuzzy-result-container"></div>
+    </div>
+
+    <!-- Table principale -->
     <div id="table-wrapper">
         <table id="data-table"></table>
     </div>

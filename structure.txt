@@ -32,7 +32,7 @@ code/
                 user.py
             schemas.py
             utils/
-                deepseek_adapter.py
+                openrouter_adapter.py
                 outlook_sync.py
         docker-compose.yml
         mysql-init/
@@ -62,6 +62,7 @@ code/
             img/
                 avatar-polybase.png
                 login-illustration.png
+                logo-SmartDataProject.png
                 logo-polybase.png
             js/
                 admin.js
@@ -136,6 +137,7 @@ method/
         PolyBase2.ddl
     implementation/
         Note
+        chatgpt_email_extractor.json
         demo/
             demo.sql
             demo_api.py
@@ -154,6 +156,8 @@ method/
             preview_login.html
             preview_task_detail.html
         test.db.py
+        test.deepseek.py
+        test.openrouter.py
 planning/
     README.txt
     gantt.xlsx

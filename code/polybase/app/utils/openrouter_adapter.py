@@ -1,0 +1,157 @@
+# ============================================
+# IMPORTS
+# ============================================
+
+import pandas as pd
+import requests
+import json
+from app.database import SessionLocal
+from sqlalchemy import inspect, text
+import time
+import sqlalchemy.exc
+
+
+# ============================================
+# CONFIG OPENROUTER
+# ============================================
+
+OPENROUTER_API_KEY = "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"  # remplace par ta clé valide
+OPENROUTER_MODEL = "mistralai/mistral-small-3.2-24b-instruct:free"
+OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
+HEADERS = {
+    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+    "HTTP-Referer": "http://localhost",
+    "Content-Type": "application/json"
+}
+
+
+def suggest_structure_from_ia(df: pd.DataFrame, table: str) -> str:
+    """Envoie les colonnes et exemples du fichier Excel au modèle IA via OpenRouter
+    pour suggérer des corrections ou améliorations.
+    """
+    preview = df.head(3).to_dict(orient="records")
+    prompt = (
+        f"Voici un extrait d’un fichier Excel destiné à être importé dans une base SQL dans la table `{table}`.\n"
+        f"Données :\n{json.dumps(preview, indent=2)}\n\n"
+        "Peux-tu identifier des incohérences, des colonnes suspectes, des types mal alignés ou des fautes ? "
+        "Suggère des corrections ou améliorations pour que l’importation soit propre et cohérente avec une base relationnelle."
+    )
+
+    payload = {
+        "model": OPENROUTER_MODEL,
+        "messages": [
+            {"role": "user", "content": prompt}
+        ]
+    }
+
+    try:
+        response = requests.post(OPENROUTER_ENDPOINT, headers=HEADERS, json=payload)
+        if response.status_code == 200:
+            return response.json()["choices"][0]["message"]["content"]
+        else:
+            return f"❌ Erreur IA ({response.status_code}) : {response.text}"
+    except Exception as e:
+        return f"❌ Exception lors de l'appel OpenRouter : {e}"
+
+
+def reorder_columns(df: pd.DataFrame, table: str):
+    db = SessionLocal()
+    try:
+        inspector = inspect(db.get_bind())
+        sql_columns = [col["name"] for col in inspector.get_columns(table)]
+        df_cols = df.columns.tolist()
+        missing = [col for col in sql_columns if col not in df_cols]
+        extra = [col for col in df_cols if col not in sql_columns]
+        print(f"ℹ Colonnes manquantes: {missing}")
+        print(f"ℹ Colonnes inutiles: {extra}")
+        ordered = [col for col in sql_columns if col in df.columns]
+        return df[ordered]
+    finally:
+        db.close()
+
+
+def fix_types(df: pd.DataFrame, table: str):
+    db = SessionLocal()
+    try:
+        inspector = inspect(db.get_bind())
+        for col in inspector.get_columns(table):
+            name = col["name"]
+            sql_type = str(col["type"]).upper()
+            if name not in df.columns:
+                continue
+            if "DATE" in sql_type:
+                df[name] = pd.to_datetime(df[name], errors="coerce").dt.strftime("%Y-%m-%d")
+            elif "INT" in sql_type:
+                df[name] = pd.to_numeric(df[name], errors="coerce").astype("Int64")
+            elif "DECIMAL" in sql_type or "FLOAT" in sql_type:
+                df[name] = pd.to_numeric(df[name], errors="coerce")
+            elif "BOOLEAN" in sql_type:
+                df[name] = df[name].astype(bool)
+        return df
+    finally:
+        db.close()
+
+
+def adapt_excel_to_table(table: str, file_path: str, db):
+    df = pd.read_excel(file_path)
+    df.columns = df.columns.str.strip()
+
+    suggestion = suggest_structure_from_ia(df, table)
+    print("🧠 Suggestion IA :", suggestion)
+
+    df = reorder_columns(df, table)
+    df = fix_types(df, table)
+    rows = df.fillna("").to_dict(orient="records")
+
+    # Insertion SQL
+    if not rows:
+        return [], suggestion
+    columns = rows[0].keys()
+    keys = ", ".join([f"`{k}`" for k in columns])
+    vals = ", ".join([f":{k}" for k in columns])
+    sql = text(f"INSERT INTO `{table}` ({keys}) VALUES ({vals})")
+    count = 0
+    for row in rows:
+        try:
+            db.execute(sql, row)
+            count += 1
+        except Exception as e:
+            print(f"❌ Erreur ligne ignorée : {e}")
+    db.commit()
+    return count, suggestion
+
+
+
+def prepare_adaptation():
+    max_retries = 10
+    for attempt in range(max_retries):
+        try:
+            db = SessionLocal()
+            db.execute(text("SELECT 1"))
+            print("🧠 OpenRouter prêt pour l'adaptation Excel intelligente.")
+            return
+        except sqlalchemy.exc.OperationalError as e:
+            print(f"⏳ Connexion base échouée (tentative {attempt+1}) : {e}")
+            time.sleep(2)
+        finally:
+            db.close()
+    print("❌ Échec de connexion DB pour l’adaptation.")
+
+
+def adapt_excel_to_table(table: str, file_path: str, db):
+    rows = adapt_excel(file_path, table)
+    if not rows:
+        return 0
+    columns = rows[0].keys()
+    keys = ", ".join([f"`{k}`" for k in columns])
+    vals = ", ".join([f":{k}" for k in columns])
+    sql = text(f"INSERT INTO `{table}` ({keys}) VALUES ({vals})")
+    count = 0
+    for row in rows:
+        try:
+            db.execute(sql, row)
+            count += 1
+        except Exception as e:
+            print(f"❌ Erreur ligne ignorée : {e}")
+    db.commit()
+    return count
