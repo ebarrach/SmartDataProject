@@ -80,8 +80,6 @@ This developer guide was prepared by:
 
 - **Esteban BARRACHO**
 
-For internal use by the development team of **Poly-Tech Engineering SA**.
-
 ---
 
 ## 📄 License
