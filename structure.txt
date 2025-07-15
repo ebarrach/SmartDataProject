@@ -6,7 +6,6 @@ bin/
     README.txt
 code/
     README.md
-    README.txt
     polybase/
         .env
         Dockerfile
@@ -47,6 +46,7 @@ code/
                 clients.css
                 dashboard.css
                 documents.css
+                encodage.css
                 error.css
                 facture.css
                 finance.css
@@ -71,6 +71,7 @@ code/
                 clients.js
                 dashboard.js
                 documents.js
+                encodage.js
                 error.js
                 facture.js
                 finance.js
@@ -81,13 +82,13 @@ code/
                 projects.js
                 task_detail.js
         templates/
-            Note
             admin.html
             agenda.html
             base.html
             clients.html
             dashboard.html
             documents.html
+            encodage.html
             error.html
             factures.html
             finance.html
@@ -101,34 +102,28 @@ code/
         bookmarks_polybase.png
 doc/
     PDFs/
-        _README.txt
-    README.txt
-    sources/
-        README.txt
-        programmer/
-        user/
+        programmer-guide_En.pdf
+        user-guide_En.pdf
 legacy/
-    README.txt
+license/
 method/
     analysis/
         Charter/
             PDFs/
-                Readme.txt
-            sources/
-                README.txt
+                2025-07-14 – charter_En.pdf
         Meeting/
-            00-06-2025 – PolyBase.docx
-            12-06-2025 – PolyBase.Draw.pdf
-            12-06-2025 – PolyBase.pdf
+            00-06-2025 – SmartDataProject.docx
+            12-06-2025 –  SmartDataProject.Draw.pdf
+            12-06-2025 –  SmartDataProject.pdf
         Step Charter/
             PDF/
-                14-06-2025 – BaseDonnee.pdf
-                19-06-2025 – BaseDonnee.pdf
-                20-06-2025 – OpenVpnWindows.pdf
-                20-06-2025 – Prototype.pdf
-                README.txt
-            Sources/
-                README.txt
+                2025-06-14 – BaseDonnee.pdf
+                2025-06-19 – BaseDonnee2.pdf
+                2025-06-20 – OpenVpnWindows.pdf
+                2025-06-20 – Prototype.pdf
+                2025-06-21 – OutlookSynch.pdf
+                2025-06-24  – Demo.pdf
+                2025-07-01 – Demo_2.pdf
     design/
         13-06-2025 – BDConceptuelle/
             .~l4E86.tmp
@@ -155,6 +150,8 @@ method/
             preview_finance.html
             preview_login.html
             preview_task_detail.html
+        prototype3/
+            encodage.html
         test.db.py
         test.deepseek.py
         test.openrouter.py
