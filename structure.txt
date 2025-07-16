@@ -106,6 +106,7 @@ doc/
         user-guide_En.pdf
 legacy/
 license/
+    licenseSDP.pdf
 method/
     analysis/
         Charter/
