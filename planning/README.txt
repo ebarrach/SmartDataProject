@@ -1,1 +1,0 @@
-La planning du projet actualisé régulèrement
