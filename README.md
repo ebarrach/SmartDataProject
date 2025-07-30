@@ -1,4 +1,6 @@
 # SmartDataProject - (License CC BY-ND 4.0 + Annex)
+[![License: CC BY-ND 4.0](https://img.shields.io/badge/License-CC%20BY--ND%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nd/4.0/)
+[![Custom Annex](https://img.shields.io/badge/Annex-Signed%20License-blue.svg)](legal/licenseSDP.pdf)
 
 This project was carried out as part of a professional collaboration with **S2 Engineering**.
 
@@ -113,7 +115,7 @@ This project was developed by:
 
 This project is distributed under the terms of the **Creative Commons BY-ND 4.0** license.  
 A signed annex grants exclusive modification and redistribution rights to **S²Engineering** and **Mr. Vincent Pirnay**.  
-The full annex is available in [`license/licenseSDP.pdf`](license/licenseSDP.pdf).
+The full annex is available in [`legal/licenseSDP.pdf`](legal/licenseSDP.pdf).
 
 ⚠️ Any unauthorized modification, redistribution, or removal of attribution will be considered a license violation  
 and may result in a **GitHub DMCA takedown**.

@@ -105,7 +105,7 @@ doc/
         programmer-guide_En.pdf
         user-guide_En.pdf
 legacy/
-license/
+legal/
     licenseSDP.pdf
 method/
     analysis/
