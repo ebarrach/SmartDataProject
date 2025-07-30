@@ -1,9 +1,9 @@
 Structure du projet :
 
 .gitignore
+LICENSE
 README.md
 bin/
-    README.txt
 code/
     README.md
     polybase/
@@ -157,7 +157,6 @@ method/
         test.deepseek.py
         test.openrouter.py
 planning/
-    README.txt
     gantt.xlsx
 structure.py
 structure.txt
