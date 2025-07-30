@@ -1,4 +1,4 @@
-# SmartDataProject - (License "All Rights Reserved")
+# SmartDataProject - (License CC BY-ND 4.0 + Annex)
 
 This project was carried out as part of a professional collaboration with **S2 Engineering**.
 
