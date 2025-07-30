@@ -111,5 +111,9 @@ This project was developed by:
 
 ## 📄 License
 
-This project is licensed **"All Rights Reserved"**.  
-See the LICENSE file for more details.
+This project is distributed under the terms of the **Creative Commons BY-ND 4.0** license.  
+A signed annex grants exclusive modification and redistribution rights to **S²Engineering** and **Mr. Vincent Pirnay**.  
+The full annex is available in [`license/licenseSDP.pdf`](license/licenseSDP.pdf).
+
+⚠️ Any unauthorized modification, redistribution, or removal of attribution will be considered a license violation  
+and may result in a **GitHub DMCA takedown**.
